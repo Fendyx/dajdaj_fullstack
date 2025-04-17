@@ -42,6 +42,7 @@ const NavBar = () => {
             dispatch(logoutUser(null));
             toast.warning("Logged out!", { position: "bottom-left" });
           }}
+          style={{color: "black"}}
         >
           Logout
         </Logout>

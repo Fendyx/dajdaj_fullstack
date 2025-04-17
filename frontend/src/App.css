@@ -35,7 +35,7 @@
 }
 .nav-bar a {
   text-decoration: none;
-  color: white;
+  color: black;
 }
 .nav-bar h2 {
   font-size: 40px;
@@ -262,9 +262,12 @@
 }
 .cart-item .cart-product img {
   width: 100px;
+  height: auto; /* это сохраняет пропорции */
   max-width: 100%;
   margin-right: 1rem;
+  object-fit: contain; /* или cover — в зависимости от желаемого эффекта */
 }
+
 .cart-item .cart-product h3 {
   font-weight: 400;
 }

@@ -13,7 +13,7 @@ const app = express();
 
 // CORS настройки
 const corsOptions = {
-  origin: "CLIENT_URL = https://dajdaj-fullstack-frontend.onrender.com", // твой фронтенд
+  origin: process.env.CLIENT_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 };

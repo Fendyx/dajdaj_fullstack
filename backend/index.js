@@ -13,7 +13,7 @@ const app = express();
 
 // CORS настройки
 const corsOptions = {
-  origin: "https://dajdaj-fullstack-frontend.onrender.com", // твой фронтенд
+  origin: "http://localhost:3000", // твой фронтенд
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 };
@@ -57,5 +57,6 @@ mongoose
 app.listen(port, () => {
   console.log(`🟢 Server running on port: ${port}...`);
 });
+
 
 

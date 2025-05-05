@@ -1,4 +1,4 @@
-
+import Female_bodybuilder from "../../assets/img/female_wooden_stand_2.png";
 const FemaleBodybuilder = () => {
     return(
         <>
@@ -11,9 +11,10 @@ const FemaleBodybuilder = () => {
     src="/3dObj/female_bodybuilder/female_bodybuilder.gltf"
     shadow-intensity="1"
     autoplay
-    camera-orbit="100deg 75deg "
+    camera-orbit="0deg 75deg "
     camera-controls
     disable-zoom
+    poster={Female_bodybuilder}
     
     >
   </model-viewer>

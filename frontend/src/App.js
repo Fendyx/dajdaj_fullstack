@@ -8,7 +8,7 @@ import Footer from "./components/Footer/Footer";
 import NotFound from "./components/NotFound";
 import Cart from "./components/Cart";
 import MaleBodybuilder from "./components/MaleBodybuilder/MaleBodybuilder";
-import FemaleBodybuilder from "./components/FemaleBodybuilder/FenaleBodybuilder";
+import FemaleBodybuilder from "./components/FemaleBodybuilder/FemaleBodybuilder";
 
 import "react-toastify/dist/ReactToastify.css";
 import Register from "./components/auth/Register";
@@ -17,6 +17,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loadUser } from "./slices/authSlice";
 import CheckoutSuccess from "./components/CheckoutSuccess";
+import ScrollToTop from "./components/ScrollToTop"; // Импортируйте компонент
 
 function App() {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ function App() {
       <BrowserRouter>
         <ToastContainer />
         <NavBar />
+        <ScrollToTop /> {/* Добавьте ScrollToTop */}
         <div className="content-container">
           <Routes>
             <Route path="/" element={<Home />} />
@@ -49,3 +51,6 @@ function App() {
 }
 
 export default App;
+
+
+

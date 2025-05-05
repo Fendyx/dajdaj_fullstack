@@ -1,4 +1,5 @@
 import "./Products.css";
+import Male_bodybuilder from "../../assets/img/arnold_wooden_stand_2.png"
 
 const MaleBodybuilder = () => {
     return(
@@ -12,9 +13,10 @@ const MaleBodybuilder = () => {
     src="/3dObj/male_bodybuilder/another_stand.gltf"
     shadow-intensity="1"
     autoplay
-    camera-orbit="100deg 75deg "
+    camera-orbit="-90deg 75deg "
     camera-controls
     disable-zoom
+    poster={Male_bodybuilder}
     
     >
   </model-viewer>

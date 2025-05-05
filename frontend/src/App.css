@@ -133,11 +133,12 @@
   width: 100%;
   max-width: 300px;
   transition: all 0.3s ease-in-out;
+  
 }
 
 /* Анимация при наведении */
 .product:hover {
-  transform: translateY(-5px) scale(1.02);
+  transform: translateY(-4px) scale(1.01);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 

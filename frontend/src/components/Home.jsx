@@ -11,9 +11,20 @@ const Home = () => {
 
   const { data, error, isLoading } = useGetAllProductsQuery();
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = (product, e) => {
+    e.stopPropagation(); // не даём всплыть клику до карточки
     dispatch(addToCart(product));
     navigate("/cart");
+  };
+
+  const handleCardClick = (link, e) => {
+    // если клик был по кнопке или ссылке — ничего не делаем
+    if (
+      e.target.closest("button") || 
+      e.target.closest("a")
+    ) return;
+    
+    navigate(link);
   };
 
   return (
@@ -21,12 +32,18 @@ const Home = () => {
       {status === "success" ? (
         <>
           <div className="background-quote">
-            <p class="hero-text">A one-of-a-kind gift for your loved one and beyond!. Be unforgettable — give a piece of your heart</p>
+            <p className="hero-text">
+              A one-of-a-kind gift for your loved one and beyond! Be unforgettable — give a piece of your heart
+            </p>
           </div>
           <div className="products">
             {data &&
-              data?.map((product) => (
-                <div key={product.id} className="product">
+              data.map((product) => (
+                <div
+                  key={product.id}
+                  className="product"
+                  onClick={(e) => handleCardClick(product.link, e)}
+                >
                   <h3>{product.name}</h3>
                   <img src={product.image} alt={product.name} />
                   <div className="details">
@@ -34,12 +51,17 @@ const Home = () => {
                     <span className="price">${product.price}</span>
                   </div>
                   <div>
-                    <Link to={product.link} className="learn-more">Show more</Link>
-                    <button onClick={() => handleAddToCart(product)}>
+                    <Link
+                      to={product.link}
+                      className="learn-more"
+                      onClick={(e) => e.stopPropagation()} // чтобы не было перехода двойного
+                    >
+                      Show more
+                    </Link>
+                    <button onClick={(e) => handleAddToCart(product, e)}>
                       Add To Cart
                     </button>
                   </div>
-                  
                 </div>
               ))}
           </div>
@@ -47,7 +69,7 @@ const Home = () => {
       ) : status === "pending" ? (
         <p>Loading...</p>
       ) : (
-        <p>Unexpected error occured...</p>
+        <p>Unexpected error occurred...</p>
       )}
     </div>
   );

@@ -41,6 +41,14 @@ footer{
     margin-left: 5px;
     margin-bottom: 10px;
 }
+.link_container a{
+    text-decoration: none;
+    color: inherit;
+}
+.link_container a:hover{
+    text-decoration: underline;
+    cursor:pointer
+}
 .footer_slogan{
     width: 100%;
     background-color: white;

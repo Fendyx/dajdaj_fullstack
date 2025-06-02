@@ -1,6 +1,9 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { loadUser } from "./slices/authSlice";
 
 import Home from "./components/Home";
 import NavBar from "./components/NavBar";
@@ -8,16 +11,18 @@ import Footer from "./components/Footer/Footer";
 import NotFound from "./components/NotFound";
 import Cart from "./components/Cart";
 import MaleBodybuilder from "./components/MaleBodybuilder/MaleBodybuilder";
-import FemaleBodybuilder from "./components/FemaleBodybuilder/FemaleBodybuilder";
-
-import "react-toastify/dist/ReactToastify.css";
+import BeerEdition from "./components/BeerEdition/BeerEdition";
+import TrustBulk from "./components/TrustBulk/TrustBulk";
+import NeverSkipLegs from "./components/NeverSkipLegs/NeverSkipLegs";
+import FemaleBlond from "./components/FemaleBlond/FemaleBlond";
+import FemaleBrunette from "./components/FemaleBrunette/FemaleBrunette";
+import FemalePink from "./components/FemalePink/FemalePink";
+import SpecialGirl from "./components/SpecialGirl/SpecialGirl";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { loadUser } from "./slices/authSlice";
 import CheckoutSuccess from "./components/CheckoutSuccess";
-import ScrollToTop from "./components/ScrollToTop"; // Импортируйте компонент
+import ScrollToTop from "./components/ScrollToTop";
+import { ScrollProvider } from "./components/ScrollContext"; // ✅ Добавлено
 
 function App() {
   const dispatch = useDispatch();
@@ -29,28 +34,38 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <ToastContainer />
-        <NavBar />
-        <ScrollToTop /> {/* Добавьте ScrollToTop */}
-        <div className="content-container">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout-success" element={<CheckoutSuccess />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/male-bodybuilder" element={<MaleBodybuilder />} />
-            <Route path="/female-bodybuilder" element={<FemaleBodybuilder />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </div>
-        <Footer />
+        <ScrollProvider> {/* ✅ Обернули */}
+          <ToastContainer />
+          <NavBar />
+          <ScrollToTop />
+          <div className="content-container">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout-success" element={<CheckoutSuccess />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/male-bodybuilder" element={<MaleBodybuilder />} />
+              <Route path="/beer-edition" element={<BeerEdition />} />
+              <Route path="/trust-bulk" element={<TrustBulk />} />
+              <Route path="/never-skip-legs" element={<NeverSkipLegs />} />
+              <Route path="/female-blond" element={<FemaleBlond />} />
+              <Route path="/female-brunette" element={<FemaleBrunette />} />
+              <Route path="/female-pink" element={<FemalePink />} />
+              <Route path="/special-girl" element={<SpecialGirl />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          <Footer />
+        </ScrollProvider>
       </BrowserRouter>
     </div>
   );
 }
 
 export default App;
+
+
 
 
 

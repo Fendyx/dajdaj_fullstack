@@ -14,46 +14,59 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart(state, action) {
-      const toastId = "cart-action"; // Общий toastId для всех действий с корзиной
-
+      const toastId = "cart-action";
+      const { customText, ...product } = action.payload;
+      
       const existingIndex = state.cartItems.findIndex(
-        (item) => item.id === action.payload.id
+        (item) => item.id === product.id
       );
 
       if (existingIndex >= 0) {
         state.cartItems[existingIndex] = {
           ...state.cartItems[existingIndex],
           cartQuantity: state.cartItems[existingIndex].cartQuantity + 1,
+          ...(customText && { customText }) // Обновляем кастомный текст если он есть
         };
 
-        // Проверяем, существует ли уже тост с этим ID
         if (toast.isActive(toastId)) {
           toast.update(toastId, {
-            render: "Increased product quantity",
+            render: customText 
+              ? "Updated product with custom text" 
+              : "Increased product quantity",
             type: toast.TYPE.INFO,
             position: "bottom-left",
             autoClose: 2000,
           });
         } else {
-          toast.info("Increased product quantity", {
+          toast.info(customText 
+            ? "Updated product with custom text" 
+            : "Increased product quantity", {
             position: "bottom-left",
             toastId,
             autoClose: 2000,
           });
         }
       } else {
-        let tempProductItem = { ...action.payload, cartQuantity: 1 };
+        let tempProductItem = { 
+          ...product, 
+          cartQuantity: 1,
+          ...(customText && { customText }) // Добавляем кастомный текст если он есть
+        };
         state.cartItems.push(tempProductItem);
 
         if (toast.isActive(toastId)) {
           toast.update(toastId, {
-            render: "Product added to cart",
-            type: toast.TYPE.SUCCESS,
+            render: customText
+              ? "Product with custom text added to cart"
+              : "Product added to cart",
+            type: customText ? toast.TYPE.SUCCESS : toast.TYPE.INFO,
             position: "bottom-left",
             autoClose: 2000,
           });
         } else {
-          toast.success("Product added to cart", {
+          toast.success(customText
+            ? "Product with custom text added to cart"
+            : "Product added to cart", {
             position: "bottom-left",
             toastId,
             autoClose: 2000,

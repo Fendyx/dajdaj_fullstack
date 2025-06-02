@@ -1,0 +1,198 @@
+.AddCustomName_window {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+  }
+  
+  .modal {
+    position: relative;
+    background: #F4F3EF;
+    padding: 20px;
+    border-radius: 10px;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 600px;
+    min-width: 300px;
+    height: auto;
+    min-height: 400px;
+    max-height: 90vh;
+    margin: 20px;
+    justify-content: space-around;
+    box-sizing: border-box;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #666;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.3s ease;
+  }
+  
+  .close-button:hover {
+    color: #333;
+  }
+  
+  .modal img {
+    width: 80%;
+    max-width: 400px;
+    height: auto;
+  }
+  
+  .AddCustomName_productName {
+    font-size: clamp(1.5rem, 4vw, 2rem);
+    font-weight: 600;
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .AddCustomName_InputDescription {
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    font-weight: 600;
+    text-align: center;
+    margin: 10px 0;
+  }
+  
+  .modal input {
+    width: 80%;
+    max-width: 500px;
+    height: 40px;
+    padding: 0 15px;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 2px solid #ccc;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+    margin: 10px 0;
+  }
+  
+  .modal input::placeholder {
+    color: #999;
+    font-style: italic;
+  }
+  
+  .modal input:focus {
+    border-color: #4b70e2;
+    box-shadow: 0 0 8px rgba(75,112,226, 0.6);
+    background-color: #fff;
+  }
+  
+  .confirm-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+    max-width: 300px;
+    height: 50px;
+    min-height: 40px;
+    background-color: #4b70e2;
+    color: white;
+    border-radius: 10px;
+    font-size: clamp(1rem, 3vw, 1.5rem);
+    border: none;
+    cursor: pointer;
+    margin: 10px 0;
+    transition: background-color 0.3s ease;
+  }
+  
+  .confirm-button:hover {
+    background-color: #3a5bc7;
+  }
+  
+  /* Медиа-запросы для разных устройств */
+  @media (max-width: 768px) {
+    .modal {
+      width: 95%;
+      padding: 15px;
+    }
+    
+    .modal input {
+      height: 35px;
+      font-size: 0.9rem;
+    }
+    
+    .confirm-button {
+      height: 45px;
+    }
+    
+    .close-button {
+      top: 10px;
+      right: 10px;
+      font-size: 1.8rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .modal {
+      padding: 10px;
+      border-radius: 8px;
+    }
+    
+    .modal img {
+      width: 90%;
+    }
+    
+    .AddCustomName_productName {
+      font-size: 1.3rem;
+    }
+    
+    .AddCustomName_InputDescription {
+      font-size: 1rem;
+    }
+    
+    .modal input {
+      width: 90%;
+      height: 30px;
+      font-size: 0.8rem;
+      padding: 0 10px;
+    }
+    
+    .confirm-button {
+      width: 90%;
+      height: 40px;
+      font-size: 1rem;
+    }
+    
+    .close-button {
+      width: 30px;
+      height: 30px;
+      font-size: 1.5rem;
+    }
+  }
+  
+  @media (max-height: 600px) {
+    .modal {
+      max-height: 95vh;
+      overflow-y: auto;
+    }
+  }
+
+  
+  

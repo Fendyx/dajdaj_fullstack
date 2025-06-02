@@ -9,7 +9,8 @@ const login = require("./routes/login");
 const stripe = require("./routes/stripe");
 const products = require("./products");
 
-const app = express();
+const app = express(); // <-- здесь создаём app
+
 
 // CORS настройки
 const corsOptions = {

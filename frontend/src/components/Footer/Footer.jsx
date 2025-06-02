@@ -1,36 +1,42 @@
 import "./Footer.css";
-import footer_logo from "../../assets/img/footer_logo.png"
+import footer_logo from "../../assets/img/footer_logo.png";
 
 function Footer() {
     return (
         <footer>
-        <div class="img_and_links">
-            <img src={footer_logo}></img>
-            <div class="link_container_wrapper">
-                <div class="link_container">
-                    <span class="link_title">Pages</span>
-                    <span class="footer_link">Home</span>
-                    <span class="footer_link">Products</span>
-                    <span class="footer_link">Contact</span>
-                </div>
-                <div class="link_container">
-                    <span class="link_title">FAQ</span>
-                    <span class="footer_link">Return policy</span>
-                    <span class="footer_link"></span>
-                </div>
-                <div class="link_container">
-                    <span class="link_title">Our social</span>
-                    <span class="footer_link">Tik tok</span>
-                    <span class="footer_link">Instagram</span>
-                    <span class="footer_link">Youtube</span>
+            <div className="img_and_links">
+                <img src={footer_logo} alt="Logo" />
+                <div className="link_container_wrapper">
+                    <div className="link_container">
+                        <span className="link_title">Nawigacja</span>
+                        <a href="/"><span className="footer_link">Główna</span></a>
+                        <a href="/kontakt"><span className="footer_link">Kontakt</span></a>
+                    </div>
+                    <div className="link_container">
+                        <span className="link_title">FAQ</span>
+                        <a href="/polityka-zwrotu"><span className="footer_link">Polityka zwrotu</span></a>
+                        <a href="/sposoby-platnosci"><span className="footer_link">Sposoby płatności</span></a>
+                        <a href="/dostawa"><span className="footer_link">Dostawa</span></a>
+                    </div>
+                    <div className="link_container">
+                        <span className="link_title">Media</span>
+                        <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer">
+                            <span className="footer_link">TikTok</span>
+                        </a>
+                        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+                            <span className="footer_link">Instagram</span>
+                        </a>
+                        <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+                            <span className="footer_link">Facebook</span>
+                        </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer_slogan">
-            <span>MORE THAN A GIFT</span>
-        </div>
-    </footer>
+            <div className="footer_slogan">
+                <span>WIĘCEJ NIŻ PREZENT</span>
+            </div>
+        </footer>
     );
-  }
-  
-  export default Footer;
+}
+
+export default Footer;

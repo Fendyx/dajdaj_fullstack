@@ -1,79 +1,114 @@
 .women-banner {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    overflow: hidden;
-  
-    opacity: 0;
-    transform: translateY(80px);
-    transition: opacity 1s ease, transform 1s ease;
-  }
-  
-  .women-banner.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  
+  position: relative;
+  width: 100%;
+  height: 400px; /* Фиксированная высота блока */
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(80px);
+  transition: opacity 1s ease, transform 1s ease;
+}
+
+.women-banner.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Основные стили видео - растягиваем на весь блок с обрезкой */
+.women-banner-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Важно: обрезаем видео, сохраняя пропорции */
+  z-index: 0;
+}
+
+/* Для очень узких экранов можно настроить позиционирование */
+@media screen and (max-width: 480px) {
   .women-banner-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    z-index: 0;
-    display: block;
+    object-position: 50% 30%; /* Центрируем по вертикали на 30% */
   }
-  
-  .women-banner-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-  }
-  
-  .women-banner-content {
-    position: relative;
-    z-index: 2;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    text-align: center;
-    padding: 0 20px;
-  }
-  
+}
+
+/* Оверлей */
+.women-banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+/* Контент поверх видео */
+.women-banner-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.women-banner-content h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.women-banner-content p {
+  font-size: 1.5rem;
+  margin-bottom: 30px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.women-banner-content button {
+  padding: 12px 24px;
+  font-size: 1rem;
+  background-color: #e91e63;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.3s ease;
+}
+
+.women-banner-content button:hover {
+  background-color: #c2185b;
+}
+
+/* Адаптивные настройки для текста */
+@media screen and (max-width: 768px) {
   .women-banner-content h1 {
-    font-size: 3rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    font-size: 2rem;
   }
   
   .women-banner-content p {
+    font-size: 1.2rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .women-banner-content h1 {
     font-size: 1.5rem;
-    margin-bottom: 30px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .women-banner-content p {
+    font-size: 1rem;
   }
   
   .women-banner-content button {
-    padding: 12px 24px;
-    font-size: 1rem;
-    background-color: #e91e63;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s ease;
+    padding: 10px 20px;
+    font-size: 0.9rem;
   }
-  
-  .women-banner-content button:hover {
-    background-color: #c2185b;
-  }
+}
+
   

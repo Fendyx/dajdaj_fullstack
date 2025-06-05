@@ -96,7 +96,7 @@ const Home = () => {
                       className="learn-more"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      Pokaż 3D model
+                      Pokaż model 3D 
                     </Link>
                     <button onClick={(e) => openModal(product, e)}>
                       Dodaj do koszyka
@@ -137,7 +137,7 @@ const Home = () => {
                       className="learn-more"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      Pokaż 3D model
+                      Pokaż model 3D
                     </Link>
                     <button onClick={(e) => openModal(product, e)}>
                       Dodaj do koszyka
@@ -170,7 +170,7 @@ const Home = () => {
                       className="learn-more"
                       onClick={(e) => e.stopPropagation()}
                     >
-                      Pokaż 3D model
+                      Pokaż model 3D 
                     </Link>
                     <button onClick={(e) => openModal(product, e)}>
                       Dodaj do koszyka

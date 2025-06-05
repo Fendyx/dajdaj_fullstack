@@ -1,0 +1,43 @@
+.shipping {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #fff;
+  }
+  
+  .shipping__title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    color: #222;
+  }
+  
+  .shipping__list {
+    list-style: decimal inside;
+    padding: 0;
+  }
+  
+  .shipping__list li {
+    margin-bottom: 1.5rem;
+  }
+  
+  .shipping__list h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+    color: #111;
+  }
+  
+  .shipping__list p {
+    margin: 0;
+  }
+  
+  .shipping__info {
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    color: #666;
+    text-align: center;
+  }
+  

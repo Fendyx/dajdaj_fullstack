@@ -10,13 +10,13 @@ function Footer() {
                     <div className="link_container">
                         <span className="link_title">Nawigacja</span>
                         <a href="/"><span className="footer_link">Główna</span></a>
-                        <a href="/kontakt"><span className="footer_link">Kontakt</span></a>
+                        <a href="/contact"><span className="footer_link">Kontakt</span></a>
                     </div>
                     <div className="link_container">
                         <span className="link_title">FAQ</span>
-                        <a href="/polityka-zwrotu"><span className="footer_link">Polityka zwrotu</span></a>
-                        <a href="/sposoby-platnosci"><span className="footer_link">Sposoby płatności</span></a>
-                        <a href="/dostawa"><span className="footer_link">Dostawa</span></a>
+                        <a href="/return-policy"><span className="footer_link">Polityka zwrotu</span></a>
+                        <a href="/payment-methodes"><span className="footer_link">Sposoby płatności</span></a>
+                        <a href="/shipping"><span className="footer_link">Dostawa</span></a>
                     </div>
                     <div className="link_container">
                         <span className="link_title">Media</span>

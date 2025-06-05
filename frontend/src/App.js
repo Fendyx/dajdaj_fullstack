@@ -21,6 +21,10 @@ import SpecialGirl from "./components/SpecialGirl/SpecialGirl";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
 import CheckoutSuccess from "./components/CheckoutSuccess";
+import ReturnPolicy from "./Pages/ReturnPolicy/ReturnPolicy";
+import PaymentMethods from "./Pages/PaymentsMethods/PaymentMethods";
+import Shipping from "./Pages/Shipping/Shipping";
+import Contact from "./Pages/Contact/Contact";
 import ScrollToTop from "./components/ScrollToTop";
 import { ScrollProvider } from "./components/ScrollContext"; // ✅ Добавлено
 
@@ -53,6 +57,10 @@ function App() {
               <Route path="/female-brunette" element={<FemaleBrunette />} />
               <Route path="/female-pink" element={<FemalePink />} />
               <Route path="/special-girl" element={<SpecialGirl />} />
+              <Route path="/return-policy" element={<ReturnPolicy />} />
+              <Route path="/payment-methodes" element={<PaymentMethods />} />
+              <Route path="/shipping" element={<Shipping />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </div>

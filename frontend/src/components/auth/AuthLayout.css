@@ -1,0 +1,82 @@
+.auth-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .auth-image, .auth-form {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .auth-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+  }
+  
+  .image-text {
+    color: white;
+    text-align: center;
+    padding: 20px;
+    z-index: 2;
+  }
+  
+  .image-text h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+  
+  .image-text p {
+    font-size: 1.5rem;
+  }
+  
+  /* Мобильная версия */
+  .mobile-image {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .auth-container {
+      flex-direction: column;
+    }
+  
+    .desktop-image {
+      display: none !important;
+    }
+  
+    .mobile-image {
+      display: flex;
+      height: 40vh;
+      order: -1; /* Всегда сверху */
+    }
+  
+    .auth-form {
+      height: 60vh;
+      padding: 1rem;
+    }
+  
+    .image-text h1 {
+      font-size: 2rem;
+    }
+  
+    .image-text p {
+      font-size: 1.2rem;
+    }
+  }

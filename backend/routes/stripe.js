@@ -7,21 +7,31 @@ const router = express.Router();
 
 router.post('/create-checkout-session', async (req, res) => {
   try {
+    if (!req.body.cartItems || !Array.isArray(req.body.cartItems)) {
+      return res.status(400).json({ error: 'cartItems is required and must be an array' });
+    }
+
+    console.log('cartItems:', req.body.cartItems);
+
     const line_items = req.body.cartItems.map(item => {
+      if (!item.name || !item.price || !item.cartQuantity) {
+        throw new Error('Invalid item in cartItems: missing name, price or cartQuantity');
+      }
+
       const productData = {
         name: item.name,
-        images: [item.image],
+        // если image есть и это публичный URL, можно раскомментировать следующую строку
+        // images: item.image ? [item.image] : undefined,
         metadata: {
           id: item.id,
           ...(item.customText && { custom_text: item.customText })
         }
       };
 
-      // Формируем описание продукта
+      // Добавляем описание, если есть
       const descriptionParts = [];
       if (item.desc) descriptionParts.push(item.desc);
       if (item.customText) descriptionParts.push(`Custom Text: ${item.customText}`);
-      
       if (descriptionParts.length > 0) {
         productData.description = descriptionParts.join('\n\n');
       }
@@ -30,13 +40,12 @@ router.post('/create-checkout-session', async (req, res) => {
         price_data: {
           currency: 'pln',
           product_data: productData,
-          unit_amount: Math.round(item.price * 100), // Округляем для избежания ошибок
+          unit_amount: Math.round(item.price * 100),
         },
         quantity: item.cartQuantity,
       };
     });
 
-    // Собираем все кастомные тексты для метаданных сессии
     const customTexts = req.body.cartItems
       .filter(item => item.customText)
       .reduce((acc, item) => {
@@ -101,30 +110,7 @@ router.post('/create-checkout-session', async (req, res) => {
               maximum: { unit: 'business_day', value: 7 }
             }
           }
-        },
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: { amount: 1500, currency: 'pln' },
-            display_name: 'Odbiór w punkcie (Żabka, Orlen, RUCH)',
-            delivery_estimate: {
-              minimum: { unit: 'business_day', value: 5 },
-              maximum: { unit: 'business_day', value: 7 }
-            }
-          }
-        },
-        {
-          shipping_rate_data: {
-            type: 'fixed_amount',
-            fixed_amount: { amount: 1500, currency: 'pln' },
-            display_name: 'FedEx',
-            delivery_estimate: {
-              minimum: { unit: 'business_day', value: 5 },
-              maximum: { unit: 'business_day', value: 7 }
-            }
-          }
-        },
-        // ... другие shipping options
+        }
       ],
       phone_number_collection: { enabled: true },
       line_items,
@@ -141,9 +127,11 @@ router.post('/create-checkout-session', async (req, res) => {
     res.send({ url: session.url });
   } catch (error) {
     console.error('Stripe error:', error);
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message, stack: error.stack });
   }
 });
 
 module.exports = router;
+
+
 

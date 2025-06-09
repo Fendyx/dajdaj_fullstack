@@ -1,6 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
 import "./AddCustomName.css";
-import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 const AddCustomName = ({ product, onClose, onConfirm }) => {
@@ -10,7 +9,7 @@ const AddCustomName = ({ product, onClose, onConfirm }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!text.trim()) {
-            toast.error("Please enter custom text", {
+            toast.error("Wprowadź tekst personalizacji", {
                 position: "bottom-left",
                 autoClose: 2000,
             });
@@ -29,19 +28,22 @@ const AddCustomName = ({ product, onClose, onConfirm }) => {
     return (
         <div className="AddCustomName_window">
             <div className="overlay" onClick={onClose}></div>
-            <div className="modal">
+            <div className="modal modal-fade-in">
                 <button className="close-button" onClick={onClose} disabled={isSubmitting}>
                     &times;
                 </button>
                 <img src={product.image} alt={product.name} />
                 <div className="AddCustomName_productName">{product.name}</div>
                 <span className="AddCustomName_InputDescription">
-                    Write down a text you want to see on the stand
+                    Wpisz tekst, który ma pojawić się na podstawce
+                </span>
+                <span className="AddCustomName_Warning">
+                    Jeśli nie podasz własnego tekstu, zostanie użyty domyślny, jak na zdjęciu.
                 </span>
                 <form onSubmit={handleSubmit}>
                     <input
                         type="text"
-                        placeholder="Enter text for stand"
+                        placeholder="Wpisz tekst do wygrawerowania"
                         value={text}
                         onChange={(e) => setText(e.target.value)}
                         required
@@ -54,7 +56,7 @@ const AddCustomName = ({ product, onClose, onConfirm }) => {
                         type="submit"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? "Adding..." : "Add to Cart"}
+                        {isSubmitting ? "Dodawanie..." : "Dodaj do koszyka"}
                     </button>
                 </form>
             </div>
@@ -63,5 +65,6 @@ const AddCustomName = ({ product, onClose, onConfirm }) => {
 };
 
 export default AddCustomName;
+
   
 

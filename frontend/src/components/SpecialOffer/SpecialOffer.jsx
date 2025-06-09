@@ -17,7 +17,7 @@ const SpecialOffer = () => {
       onClick={handleClick}
       title="Special offer"
     >
-      Special<br />offer
+      Oferta<br />specjalna
     </div>
   );
 };

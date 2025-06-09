@@ -20,7 +20,7 @@ const PayButton = ({cartItems}) => {
     };
     return(
         <>
-        <button onClick={() => handleCheckout()}>Check out</button>
+        <button onClick={() => handleCheckout()}>Przejdź do płatności</button>
         </>
 
     );

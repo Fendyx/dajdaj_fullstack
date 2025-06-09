@@ -57,8 +57,8 @@ const NavBar = () => {
         </Logout>
       ) : (
         <AuthLinks>
-          <Link to="/login">Login</Link>
-          <Link to="/register">Register</Link>
+          <Link to="/login">Logowanie</Link>
+          <Link to="/register">Rejestracja</Link>
         </AuthLinks>
       )}
     </nav>

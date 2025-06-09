@@ -46,7 +46,7 @@ const Login = () => {
           required
         />
         <button type="submit">
-          {auth.loginStatus === "pending" ? "Submitting..." : "Login"}
+          {auth.loginStatus === "pending" ? "Submitting..." : "Logowanie"}
         </button>
         {auth.loginStatus === "rejected" && <p>{auth.loginError}</p>}
 

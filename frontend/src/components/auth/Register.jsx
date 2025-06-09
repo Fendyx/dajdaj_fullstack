@@ -54,7 +54,7 @@ const Register = () => {
           required
         />
         <button type="submit">
-          {auth.registerStatus === "pending" ? "Submitting..." : "Register"}
+          {auth.registerStatus === "pending" ? "Submitting..." : "Rejestracja"}
         </button>
         {auth.registerStatus === "rejected" && <p>{auth.registerError}</p>}
 

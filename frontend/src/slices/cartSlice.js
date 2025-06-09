@@ -31,16 +31,16 @@ const cartSlice = createSlice({
         if (toast.isActive(toastId)) {
           toast.update(toastId, {
             render: customText 
-              ? "Updated product with custom text" 
-              : "Increased product quantity",
+              ? "Zaktualizowano produkt z tekstem" 
+              : "Zwiększono ilość produktu",
             type: toast.TYPE.INFO,
             position: "bottom-left",
             autoClose: 2000,
           });
         } else {
           toast.info(customText 
-            ? "Updated product with custom text" 
-            : "Increased product quantity", {
+            ? "Zaktualizowano produkt z tekstem" 
+            : "Zwiększono ilość produktu", {
             position: "bottom-left",
             toastId,
             autoClose: 2000,
@@ -57,16 +57,16 @@ const cartSlice = createSlice({
         if (toast.isActive(toastId)) {
           toast.update(toastId, {
             render: customText
-              ? "Product with custom text added to cart"
-              : "Product added to cart",
+              ? "Produkt z tekstem dodany do koszyka"
+              : "Produkt dodany do koszyka",
             type: customText ? toast.TYPE.SUCCESS : toast.TYPE.INFO,
             position: "bottom-left",
             autoClose: 2000,
           });
         } else {
           toast.success(customText
-            ? "Product with custom text added to cart"
-            : "Product added to cart", {
+            ? "	Produkt z dodanym niestandardowym tekstem dodany do koszyka"
+            : "Produkt dodany do koszyka", {
             position: "bottom-left",
             toastId,
             autoClose: 2000,
@@ -89,13 +89,13 @@ const cartSlice = createSlice({
 
         if (toast.isActive(toastId)) {
           toast.update(toastId, {
-            render: "Decreased product quantity",
+            render: "Zmniejszono ilość produktu",
             type: toast.TYPE.INFO,
             position: "bottom-left",
             autoClose: 2000,
           });
         } else {
-          toast.info("Decreased product quantity", {
+          toast.info("Zmniejszono ilość produktu", {
             position: "bottom-left",
             toastId,
             autoClose: 2000,
@@ -109,13 +109,13 @@ const cartSlice = createSlice({
 
         if (toast.isActive(toastId)) {
           toast.update(toastId, {
-            render: "Product removed from cart",
+            render: "Produkt został usunięty z koszyka",
             type: toast.TYPE.ERROR,
             position: "bottom-left",
             autoClose: 2000,
           });
         } else {
-          toast.error("Product removed from cart", {
+          toast.error("Produkt został usunięty z koszyka", {
             position: "bottom-left",
             toastId,
             autoClose: 2000,
@@ -139,13 +139,13 @@ const cartSlice = createSlice({
 
           if (toast.isActive(toastId)) {
             toast.update(toastId, {
-              render: "Product removed from cart",
+              render: "Produkt został usunięty z koszyka",
               type: toast.TYPE.ERROR,
               position: "bottom-left",
               autoClose: 2000,
             });
           } else {
-            toast.error("Product removed from cart", {
+            toast.error("Produkt został usunięty z koszyka", {
               position: "bottom-left",
               toastId,
               autoClose: 2000,

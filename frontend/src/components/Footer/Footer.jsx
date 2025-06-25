@@ -23,10 +23,10 @@ function Footer() {
                         <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer">
                             <span className="footer_link">TikTok</span>
                         </a>
-                        <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.instagram.com/dajdajshop/" target="_blank" rel="noopener noreferrer">
                             <span className="footer_link">Instagram</span>
                         </a>
-                        <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
+                        <a href="https://www.facebook.com/dajdajshop/" target="_blank" rel="noopener noreferrer">
                             <span className="footer_link">Facebook</span>
                         </a>
                     </div>

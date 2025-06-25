@@ -36,7 +36,7 @@ const ReturnPolicy = () => {
           <h2>Procedura zwrotu</h2>
           <p>
             Aby dokonać zwrotu, prosimy o wcześniejszy kontakt mailowy na adres:{" "}
-            <strong>kontakt@dajdaj.pl</strong>.<br />
+            <strong>info@dajdaj.pl</strong>.<br />
             W wiadomości prosimy o podanie numeru zamówienia lub innego dowodu zakupu.
           </p>
         </li>

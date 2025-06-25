@@ -53,7 +53,7 @@ const NavBar = () => {
           }}
           style={{ color: "black" }}
         >
-          Logout
+          Wyloguj się
         </Logout>
       ) : (
         <AuthLinks>

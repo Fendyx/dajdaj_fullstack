@@ -1,7 +1,7 @@
 const products = [
   {
     id: 1,
-    name: "Male bodybuilder",
+    name: "Kulturysta męski",
     brand: "DajDaj",
     desc: "Figurka męskiego kulturysty (własne imię/napis)",
     price: 59,

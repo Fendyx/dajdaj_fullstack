@@ -12,6 +12,7 @@ router.post('/create-checkout-session', async (req, res) => {
     }
 
     console.log('cartItems:', req.body.cartItems);
+    console.log('Using Stripe key:', process.env.STRIPE_KEY);
 
     const line_items = req.body.cartItems.map(item => {
       if (!item.name || !item.price || !item.cartQuantity) {
@@ -20,15 +21,12 @@ router.post('/create-checkout-session', async (req, res) => {
 
       const productData = {
         name: item.name,
-        // если image есть и это публичный URL, можно раскомментировать следующую строку
-        // images: item.image ? [item.image] : undefined,
         metadata: {
           id: item.id,
           ...(item.customText && { custom_text: item.customText })
         }
       };
 
-      // Добавляем описание, если есть
       const descriptionParts = [];
       if (item.desc) descriptionParts.push(item.desc);
       if (item.customText) descriptionParts.push(`Custom Text: ${item.customText}`);
@@ -125,13 +123,24 @@ router.post('/create-checkout-session', async (req, res) => {
     });
 
     res.send({ url: session.url });
+
   } catch (error) {
-    console.error('Stripe error:', error);
-    res.status(500).json({ error: error.message, stack: error.stack });
+    console.error('Stripe error:', {
+      message: error.message,
+      stack: error.stack,
+      raw: error.raw,
+    });
+
+    res.status(500).json({
+      error: error.message,
+      stack: error.stack,
+      raw: error.raw
+    });
   }
 });
 
 module.exports = router;
+
 
 
 

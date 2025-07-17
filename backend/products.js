@@ -74,7 +74,7 @@ const products = [
     name: "Nie poszło w nauce ...",
     brand: "DajDaj",
     desc: "Figurka szczęśliwej osoby (własne imię/napis)",
-    price: 59,
+    price: 10,
     image:
       "https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/Onlyfans.png",
       link: "/special-girl"

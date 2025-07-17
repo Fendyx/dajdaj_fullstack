@@ -57,7 +57,7 @@ router.post('/create-checkout-session', async (req, res) => {
         {
           shipping_rate_data: {
             type: 'fixed_amount',
-            fixed_amount: { amount: 1500, currency: 'pln' },
+            fixed_amount: { amount: 500, currency: 'pln' },
             display_name: 'Inpost',
             delivery_estimate: {
               minimum: { unit: 'business_day', value: 5 },
@@ -68,7 +68,7 @@ router.post('/create-checkout-session', async (req, res) => {
         {
           shipping_rate_data: {
             type: 'fixed_amount',
-            fixed_amount: { amount: 1500, currency: 'pln' },
+            fixed_amount: { amount: 500, currency: 'pln' },
             display_name: 'Poczta Polska',
             delivery_estimate: {
               minimum: { unit: 'business_day', value: 5 },
@@ -79,7 +79,7 @@ router.post('/create-checkout-session', async (req, res) => {
         {
           shipping_rate_data: {
             type: 'fixed_amount',
-            fixed_amount: { amount: 1500, currency: 'pln' },
+            fixed_amount: { amount: 500, currency: 'pln' },
             display_name: 'DPD',
             delivery_estimate: {
               minimum: { unit: 'business_day', value: 5 },
@@ -90,7 +90,7 @@ router.post('/create-checkout-session', async (req, res) => {
         {
           shipping_rate_data: {
             type: 'fixed_amount',
-            fixed_amount: { amount: 1500, currency: 'pln' },
+            fixed_amount: { amount: 500, currency: 'pln' },
             display_name: 'DHL',
             delivery_estimate: {
               minimum: { unit: 'business_day', value: 5 },
@@ -101,7 +101,7 @@ router.post('/create-checkout-session', async (req, res) => {
         {
           shipping_rate_data: {
             type: 'fixed_amount',
-            fixed_amount: { amount: 1500, currency: 'pln' },
+            fixed_amount: { amount: 500, currency: 'pln' },
             display_name: 'ORLEN Paczka',
             delivery_estimate: {
               minimum: { unit: 'business_day', value: 5 },

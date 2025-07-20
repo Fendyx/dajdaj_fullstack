@@ -19,6 +19,14 @@ const Register = () => {
 
   useEffect(() => {
     if (auth._id) {
+      // 👉 Meta Pixel: зарегистрирован
+      if (window.fbq) {
+        window.fbq("track", "CompleteRegistration", {
+          value: 0,
+          currency: "PLN",
+        });
+      }
+
       navigate("/cart");
     }
   }, [auth._id, navigate]);
@@ -73,4 +81,5 @@ const Register = () => {
 };
 
 export default Register;
+
 

@@ -8,6 +8,14 @@ const CheckoutSuccess = () => {
 
   useEffect(() => {
     dispatch(clearCart());
+
+    // 👉 Meta Pixel: покупка завершена
+    if (window.fbq) {
+      window.fbq("track", "Purchase", {
+        value: 59, // 💰 Замени на реальную сумму если нужно
+        currency: "PLN",
+      });
+    }
   }, [dispatch]);
 
   return (
@@ -27,4 +35,5 @@ const CheckoutSuccess = () => {
 };
 
 export default CheckoutSuccess;
+
 

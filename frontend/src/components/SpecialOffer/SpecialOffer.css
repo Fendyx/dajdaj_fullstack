@@ -1,4 +1,4 @@
-.special_offer{
+.special_offer {
     position: fixed;
     top: 100px;
     right: 20px;
@@ -18,5 +18,14 @@
     cursor: pointer;
     user-select: none;
     box-shadow: 0 0 10px rgba(0,0,0,0.3);
-
-}
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Альтернативный вариант с классом hidden вместо условного рендеринга */
+  .special_offer.hidden {
+    opacity: 0;
+    transform: scale(0.5);
+    pointer-events: none;
+  }

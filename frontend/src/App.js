@@ -26,7 +26,8 @@ import PaymentMethods from "./Pages/PaymentsMethods/PaymentMethods";
 import Shipping from "./Pages/Shipping/Shipping";
 import Contact from "./Pages/Contact/Contact";
 import ScrollToTop from "./components/ScrollToTop";
-import { ScrollProvider } from "./components/ScrollContext"; // ✅ Добавлено
+import { ScrollProvider } from "./components/ScrollContext";
+import { MenuProvider } from "./context/MenuContext"; // Добавлен импорт MenuProvider
 
 function App() {
   const dispatch = useDispatch();
@@ -38,33 +39,35 @@ function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <ScrollProvider> {/* ✅ Обернули */}
-          <ToastContainer />
-          <NavBar />
-          <ScrollToTop />
-          <div className="content-container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/cart" element={<Cart />} />
-              <Route path="/checkout-success" element={<CheckoutSuccess />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/male-bodybuilder" element={<MaleBodybuilder />} />
-              <Route path="/beer-edition" element={<BeerEdition />} />
-              <Route path="/trust-bulk" element={<TrustBulk />} />
-              <Route path="/never-skip-legs" element={<NeverSkipLegs />} />
-              <Route path="/female-blond" element={<FemaleBlond />} />
-              <Route path="/female-brunette" element={<FemaleBrunette />} />
-              <Route path="/female-pink" element={<FemalePink />} />
-              <Route path="/special-girl" element={<SpecialGirl />} />
-              <Route path="/return-policy" element={<ReturnPolicy />} />
-              <Route path="/payment-methodes" element={<PaymentMethods />} />
-              <Route path="/shipping" element={<Shipping />} />
-              <Route path="/contact" element={<Contact />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </div>
-          <Footer />
+        <ScrollProvider>
+          <MenuProvider> {/* Добавлен MenuProvider */}
+            <ToastContainer />
+            <NavBar />
+            <ScrollToTop />
+            <div className="content-container">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout-success" element={<CheckoutSuccess />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/male-bodybuilder" element={<MaleBodybuilder />} />
+                <Route path="/beer-edition" element={<BeerEdition />} />
+                <Route path="/trust-bulk" element={<TrustBulk />} />
+                <Route path="/never-skip-legs" element={<NeverSkipLegs />} />
+                <Route path="/female-blond" element={<FemaleBlond />} />
+                <Route path="/female-brunette" element={<FemaleBrunette />} />
+                <Route path="/female-pink" element={<FemalePink />} />
+                <Route path="/special-girl" element={<SpecialGirl />} />
+                <Route path="/return-policy" element={<ReturnPolicy />} />
+                <Route path="/payment-methodes" element={<PaymentMethods />} />
+                <Route path="/shipping" element={<Shipping />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
+            <Footer />
+          </MenuProvider>
         </ScrollProvider>
       </BrowserRouter>
     </div>
@@ -72,8 +75,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
-

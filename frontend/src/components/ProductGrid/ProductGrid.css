@@ -1,0 +1,229 @@
+/* ProductGrid.css */
+.product-grid {
+    padding: 4rem 1rem;
+    background-color: #ffffff;
+    color: #1f2937;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .section-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .section-header h2 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  
+  .section-header p {
+    font-size: 1rem;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .category-filter {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+  }
+  
+  .category-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    font-weight: 500;
+    background: #f1f5f9;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #64748b;
+  }
+  
+  .category-btn:hover {
+    color: #1f2937;
+  }
+  
+  .category-btn.active {
+    background: #3b82f6;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  @media (min-width: 1200px) {
+    .products-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  
+  .product-card {
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  .product-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+  }
+  
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+  
+  .product-card:hover .product-image img {
+    transform: scale(1.05);
+  }
+  
+  .badges {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .badge {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .badge.new {
+    background-color: #3b82f6;
+  }
+  
+  .badge.popular {
+    background: linear-gradient(to right, #ec4899, purple);
+  }
+  
+  .favorite {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 9999px;
+    padding: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    color: #aaa;
+    transition: all 0.3s ease;
+  }
+  
+  .favorite.favorited {
+    color: #ec4899;
+  }
+  
+  .actions {
+    position: absolute;
+    bottom: 0.75rem;
+    left: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .actions button {
+    flex: 1;
+    padding: 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .actions .buy-now {
+    background-color: #3b82f6;
+    color: white;
+  }
+  
+  .actions .buy-now:hover {
+    background-color: #2563eb;
+  }
+  
+  .actions .view3d {
+    background-color: white;
+    border: 1px solid #eee;
+  }
+  
+  .product-info {
+    padding: 1rem;
+  }
+  
+  .product-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .product-info p {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-bottom: 1rem;
+  }
+  
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .price {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #3b82f6;
+  }
+  
+  .tag {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 9999px;
+    font-weight: 500;
+  }
+  
+  .tag.male {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+  }
+  
+  .tag.female {
+    background: rgba(236, 72, 153, 0.1);
+    color: #ec4899;
+  }
+  
+  .engraving {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: #64748b;
+  }
+  

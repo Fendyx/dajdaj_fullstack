@@ -1,42 +1,83 @@
-import "./Footer.css";
-import footer_logo from "../../assets/img/footer_logo.png";
+import React from 'react';
+import './Footer.css';
 
-function Footer() {
-    return (
-        <footer>
-            <div className="img_and_links">
-                <img src={footer_logo} alt="Logo" />
-                <div className="link_container_wrapper">
-                    <div className="link_container">
-                        <span className="link_title">Nawigacja</span>
-                        <a href="/"><span className="footer_link">Główna</span></a>
-                        <a href="/contact"><span className="footer_link">Kontakt</span></a>
-                    </div>
-                    <div className="link_container">
-                        <span className="link_title">FAQ</span>
-                        <a href="/return-policy"><span className="footer_link">Polityka zwrotu</span></a>
-                        <a href="/payment-methodes"><span className="footer_link">Sposoby płatności</span></a>
-                        <a href="/shipping"><span className="footer_link">Dostawa</span></a>
-                    </div>
-                    <div className="link_container">
-                        <span className="link_title">Media</span>
-                        <a href="https://www.tiktok.com" target="_blank" rel="noopener noreferrer">
-                            <span className="footer_link">TikTok</span>
-                        </a>
-                        <a href="https://www.instagram.com/dajdajshop/" target="_blank" rel="noopener noreferrer">
-                            <span className="footer_link">Instagram</span>
-                        </a>
-                        <a href="https://www.facebook.com/dajdajshop/" target="_blank" rel="noopener noreferrer">
-                            <span className="footer_link">Facebook</span>
-                        </a>
-                    </div>
+export default function Footer() {
+  return (
+    <footer className="footer">
+      <div className="footer-container">
+        <div className="footer-main">
+          <div className="footer-grid">
+            {/* Brand Section */}
+            <div className="footer-brand">
+              <div className="brand-header">
+                <div className="brand-icon">❤️</div>
+                <div>
+                  <h3 className="brand-title">FigureCraft</h3>
+                  <p className="brand-subtitle">Meaningful Gifts</p>
                 </div>
+              </div>
+              <p className="footer-description">
+                Creating meaningful gifts that celebrate strength, dedication, and the special people in your life.
+              </p>
+              <div className="social-icons">
+                <button className="icon-button">📷</button>
+                <button className="icon-button">📘</button>
+                <button className="icon-button">🐦</button>
+                <button className="icon-button">▶️</button>
+              </div>
             </div>
-            <div className="footer_slogan">
-                <span>WIĘCEJ NIŻ PREZENT</span>
-            </div>
-        </footer>
-    );
-}
 
-export default Footer;
+            {/* Gift Guidance */}
+            <div className="footer-section">
+              <h4 className="footer-title">🎁 Gift Guidance</h4>
+              <ul className="footer-links">
+                <li><a href="#collections">Browse Figurines</a></li>
+                <li><a href="#personalize">How Personalization Works</a></li>
+                <li><a href="/gift-ideas">Gift Ideas</a></li>
+                <li><a href="/occasions">Perfect Occasions</a></li>
+                <li><a href="/size-guide">Size Guide</a></li>
+              </ul>
+            </div>
+
+            {/* Customer Care */}
+            <div className="footer-section">
+              <h4 className="footer-title">💗 Customer Care</h4>
+              <ul className="footer-links">
+                <li><a href="/shipping">Shipping Info</a></li>
+                <li><a href="/returns">Returns & Exchanges</a></li>
+                <li><a href="/faq">FAQ</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/care-instructions">Care Instructions</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <hr className="footer-separator" />
+
+        <div className="footer-contact">
+          <div className="contact-box">
+            <div className="contact-icon">📧</div>
+            <div>
+              <div className="contact-title">Email Us</div>
+              <div className="contact-email">hello@figurecraft.com</div>
+            </div>
+          </div>
+        </div>
+
+        <hr className="footer-separator" />
+
+        <div className="footer-bottom">
+          <div className="footer-copy">
+            © 2024 FigureCraft. Made with ❤️ for meaningful connections.
+          </div>
+          <div className="footer-legal">
+            <a href="/privacy">Privacy Policy</a>
+            <a href="/terms">Terms of Service</a>
+            <a href="/accessibility">Accessibility</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}

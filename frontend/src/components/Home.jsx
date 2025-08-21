@@ -13,6 +13,9 @@ import SpecialOfferBanner from "./SpecialOffer/SpecialOfferBanner";
 import { ScrollContext } from "./ScrollContext";
 
 import "react-toastify/dist/ReactToastify.css";
+import { HeroSection } from "./HeroSection/HeroSection";
+import { ProductGrid } from "./ProductGrid/ProductGrid";
+
 
 
 
@@ -68,126 +71,9 @@ const Home = () => {
       <SpecialOffer />
       {status === "success" ? (
         <>
-          <div className="background-quote">
-            <p className="hero-text">
-              Niepowtarzalny prezent dla ukochanej osoby i nie tylko! Bądź
-              niezapomniany — podaruj kawałek swojego serca
-            </p>
-          </div>
-
-          {/* ПЕРВЫЕ 4 ТОВАРА */}
-          <div className="products">
-            {data &&
-              data.slice(0, 4).map((product) => (
-                <div
-                  key={product.id}
-                  className="product"
-                  onClick={(e) => handleCardClick(product.link, e)}
-                >
-                  <h3>{product.name}</h3>
-                  <img src={product.image} alt={product.name} />
-                  <div className="details">
-                    <span>{product.desc}</span>
-                    <span className="price">{product.price} pln</span>
-                  </div>
-                  <div>
-                    <Link
-                      to={product.link}
-                      className="learn-more"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Pokaż model 3D 
-                    </Link>
-                    <button onClick={(e) => openModal(product, e)}>
-                      Dodaj do koszyka
-                    </button>
-                  </div>
-                </div>
-              ))}
-            {selectedProduct && (
-              <AddCustomName
-                product={selectedProduct}
-                onClose={closeModal}
-                onConfirm={handleConfirm}
-              />
-            )}
-          </div>
-
-          {/* БАННЕР */}
-          <WomenBanner onScrollToCollection={scrollToCollection} />
-
-          {/* ОСТАЛЬНЫЕ ТОВАРЫ */}
-          <div ref={middleProductsRef} className="products">
-            {data &&
-              data.slice(4, 7).map((product) => (
-                <div
-                  key={product.id}
-                  className="product"
-                  onClick={(e) => handleCardClick(product.link, e)}
-                >
-                  <h3>{product.name}</h3>
-                  <img src={product.image} alt={product.name} />
-                  <div className="details">
-                    <span>{product.desc}</span>
-                    <span className="price">{product.price} pln</span>
-                  </div>
-                  <div>
-                    <Link
-                      to={product.link}
-                      className="learn-more"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Pokaż model 3D
-                    </Link>
-                    <button onClick={(e) => openModal(product, e)}>
-                      Dodaj do koszyka
-                    </button>
-                  </div>
-                </div>
-              ))}
-          </div>
-          <div ref={specialOfferRef}>
-            <SpecialOfferBanner onScrollToCollection={scrollToFinalCollection}/>
-          </div>
-
-          <div ref={finalProductsRef} className="products">
-            {data &&
-              data.slice(7).map((product) => (
-                <div
-                  key={product.id}
-                  className="product"
-                  onClick={(e) => handleCardClick(product.link, e)}
-                >
-                  <h3>{product.name}</h3>
-                  <img src={product.image} alt={product.name} />
-                  <div className="details">
-                    <span>{product.desc}</span>
-                    <span className="price">{product.price} pln</span>
-                  </div>
-                  <div>
-                    <Link
-                      to={product.link}
-                      className="learn-more"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Pokaż model 3D 
-                    </Link>
-                    <button onClick={(e) => openModal(product, e)}>
-                      Dodaj do koszyka
-                    </button>
-                  </div>
-                </div>
-              ))}
-          </div>
-
-          {/* Модалка на случай если осталась открытой */}
-          {selectedProduct && (
-            <AddCustomName
-              product={selectedProduct}
-              onClose={closeModal}
-              onConfirm={handleConfirm}
-            />
-          )}
+          <HeroSection />
+          <ProductGrid />
+          
         </>
       ) : status === "pending" ? (
         <p>Loading...</p>

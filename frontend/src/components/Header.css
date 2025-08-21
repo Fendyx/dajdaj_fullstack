@@ -1,86 +1,335 @@
-/* Сброс стилей */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-/* Стили шапки */
-header {
-    display: flex;
-    width: 100%;
-    height: 75px;
-    background-color: #F5F3F0;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-    position: relative;
-    z-index: 10;  /* Для шапки */
-}
-
-/* Стили логотипа */
-.company_name_logo {
-    display: flex;
-    align-items: center;
-    color: black;
-}
-.company_name_logo img {
-    width: 75px;
-}
-
-/* Навигация (по центру на десктопе) */
-.navigation_menu {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 30px;
-}
-.nav_link {
-    font-size: 1.5rem;
-    text-decoration: none;
-    color: #333;
-}
-
-/* Бургер-меню (изначально скрыто) */
-.burger_menu {
-    display: none;
-    font-size: 30px;
-    cursor: pointer;
-}
-
-/* Боковое мобильное меню */
-.mobile_menu {
+/* Хедер (Header/NavBar) - обновленные стили */
+.nav-bar {
     position: fixed;
     top: 0;
-    right: -100%;
-    width: 250px;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    z-index: 999;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 4rem;
+  
+    background: rgba(255, 255, 255, 0.6); /* было 0.9 */
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .nav-left,
+  .nav-center,
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #1a1a1a;
+    font-weight: 600;
+    font-size: 1.2rem;
+    transition: opacity 0.3s ease;
+  }
+  
+  .logo-link:hover {
+    opacity: 0.8;
+  }
+  
+  .logo-link img {
+    height: 42px;
+    margin-right: 12px;
+  }
+  
+  /* Навигационные ссылки по центру */
+  .nav-center a {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 0;
+    font-size: 1rem;
+  }
+  
+  .nav-center a::after {
+    content: '';
+    display: block;
+    width: 0%;
+    height: 2px;
+    background: linear-gradient(90deg, #4b70e2, #e24bc0);
+    transition: 0.3s;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+  
+  .nav-center a:hover::after {
+    width: 100%;
+  }
+  
+  /* Общий стиль для навигационных кнопок */
+  .nav-icon {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+  }
+  
+  /* Sign in */
+  .nav-icon.sign-in {
+    color: #4a4a4a;
+  }
+  .nav-icon.sign-in:hover {
+    color: #1a1a1a;
+  }
+  .nav-icon.sign-in i {
+    font-size: 18px;
+  }
+  
+  /* Join us — голубая рамка, без фона */
+  .nav-icon.join-us {
+    border: 2px solid #4b70e2;
+    border-radius: 24px;
+    padding: 0.5rem 1rem;
+    color: #4b70e2;
+    transition: all 0.3s ease;
+  }
+  .nav-icon.join-us:hover {
+    background-color: rgba(75, 112, 226, 0.1);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(75, 112, 226, 0.2);
+  }
+  
+  /* Cart — синяя кнопка */
+  .cart-link {
+    background: linear-gradient(135deg, #4b70e2, #3a56c1);
+    color: #ffffff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .cart-link:hover {
+    background: linear-gradient(135deg, #3a56c1, #4b70e2);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(75, 112, 226, 0.3);
+  }
+  .cart-link i {
+    font-size: 18px;
+  }
+  
+  /* Кол-во товаров в корзине */
+  .bag-quantity {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    height: 22px;
+    width: 22px;
+    background: #ffd700;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: bold;
+    color: #1a1a1a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid white;
+  }
+  
+  /* Logout */
+  .logout-link {
+    margin-left: 1rem;
+    cursor: pointer;
+    font-weight: 500;
+    color: #4a4a4a;
+    transition: color 0.3s ease;
+  }
+  .logout-link:hover {
+    color: #1a1a1a;
+  }
+  
+  /* ========== FULLSCREEN MOBILE MENU - ОБНОВЛЕННЫЙ СТИЛЬ ========== */
+  
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    background-color: #F5F3F0;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 30%, #fff0f5 100%);
+    z-index: 1000;
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    padding: 20px;
-    transition: right 0.3s ease;
-    z-index: 100;  /* Убедимся, что меню поверх всех остальных элементов */
-}
-
-/* Кнопка закрытия меню */
-.close_menu {
-    font-size: 30px;
+    align-items: center;
+    padding: 5rem 2rem 3rem;
+    justify-content: flex-start;
+    opacity: 0;
+    transform: translateY(-100%);
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  
+  .mobile-menu.open {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  
+  .mobile-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    max-width: 320px;
+    font-size: 1.2rem;
+  }
+  
+  /* Ссылки и кнопка логаута */
+  .mobile-links a,
+  .mobile-links .logout-link {
+    display: flex;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    color: #1a1a1a;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Иконки в ссылках */
+  .mobile-links a i,
+  .mobile-links .logout-link i {
+    margin-right: 12px;
+    color: #4b70e2;
+    width: 24px;
+    text-align: center;
+  }
+  
+  /* Ховер эффект */
+  .mobile-links a:hover,
+  .mobile-links .logout-link:hover {
+    background: rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: #4b70e2;
+  }
+  
+  .mobile-links a:hover i,
+  .mobile-links .logout-link:hover i {
+    color: #e24bc0;
+  }
+  
+  /* Разделитель */
+  .mobile-links .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(75, 112, 226, 0.2), transparent);
+    margin: 1rem 0;
+  }
+  
+  /* Кнопка закрытия */
+  .close-btn {
+    position: absolute;
+    top: 1.8rem;
+    right: 1.8rem;
+    font-size: 1.8rem;
     cursor: pointer;
-    align-self: flex-end;
-}
-
-/* Медиа-запрос для мобильных устройств */
-@media screen and (max-width: 700px) {
-    .navigation_menu {
-        display: none;
+    color: #4b70e2;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    border: none;
+  }
+  
+  .close-btn:hover {
+    color: #e24bc0;
+    transform: rotate(90deg);
+    background: rgba(255, 255, 255, 0.9);
+  }
+  
+  /* Бургер */
+  .burger {
+    display: none;
+    font-size: 1.4rem; /* было 1.8rem — стало легче визуально */
+    cursor: pointer;
+    color: #1a1a1a;
+    background: rgba(255, 255, 255, 0.2); /* более стеклянно */
+    border-radius: 12px;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.3); /* легкая граница */
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  
+  .burger:hover {
+    color: #4b70e2;
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(75, 112, 226, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .burger {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-
-    .burger_menu {
-        display: block;
+  
+    .nav-center {
+      display: none !important;
     }
-}
-
-
+  
+    .nav-right {
+      gap: 0.8rem;
+    }
+  
+    /* Скрыть кнопки в хедере (кроме бургера) */
+    .nav-icon.sign-in,
+    .nav-icon.join-us,
+    .logout-link {
+      display: none;
+    }
+  
+    .nav-left span {
+      display: none;
+    }
+  }
+  
+  /* Responsive для хедера */
+  @media (max-width: 665px) {
+    .nav-bar {
+      padding: 0 1.5rem;
+      height: 70px;
+    }
+    .nav-bar h2 {
+      font-size: 1.5rem;
+    }
+    
+    .logo-link img {
+      height: 36px;
+    }
+    
+    .cart-link {
+      padding: 0.5rem 1rem;
+    }
+  }

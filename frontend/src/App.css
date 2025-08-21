@@ -5,7 +5,6 @@
   margin: 0;
   box-sizing: border-box;
   font-family: "Nunito", sans-serif;
-  
 }
 
 /* Not Found */
@@ -24,47 +23,13 @@
   font-size: 20px;
 }
 
-/* NavBar */
-
-.nav-bar {
-  height: 70px;
-  background: #F5F3F0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 4rem;
-}
-.nav-bar a {
-  text-decoration: none;
-  color: black;
-}
-.nav-bar h2 {
-  font-size: 40px;
-}
-.nav-bag {
-  display: flex;
-  align-items: center;
-}
-.bag-quantity {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 25px;
-  width: 25px;
-  border-radius: 50%;
-  background: yellow;
-  font-size: 14px;
-  font-weight: 700;
-  color: black;
-  margin-left: 5px;
-}
-
 /* Home */
 
 .home-container {
   position: relative;
   overflow: hidden;
   height: auto;
+  padding-top: 80px;
 }
 
 .home-container h2 {

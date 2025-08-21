@@ -1,0 +1,89 @@
+/* MinimalHero.css */
+
+.hero {
+    padding: 100px 20px;
+    background: linear-gradient(135deg, #f0f4ff, #ffe9f5);
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .hero__inner {
+    max-width: 800px;
+    margin: 0 auto;
+    animation: fadeIn 0.6s ease-out forwards;
+  }
+  
+  .hero__badge {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(to right, #3b82f6, #ec4899);
+    color: white;
+    padding: 0.5rem 1.2rem;
+    border-radius: 999px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+  
+  .hero__icon {
+    margin-right: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  .hero__title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #111827, #3b82f6, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+  }
+  
+  .hero__subtitle {
+    font-size: 1.1rem;
+    color: #475569;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+  }
+  
+  .hero__button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background-color: transparent;
+    border: 2px solid #94a3b8;
+    color: #64748b;
+    border-radius: 999px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    animation: bounce 2s infinite;
+  }
+  
+  .hero__button:hover {
+    color: #1f2937;
+    border-color: #1f2937;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes bounce {
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
+  }
+  

@@ -8,8 +8,8 @@ require("dotenv").config();
 const register = require("./routes/register");
 const login = require("./routes/login");
 const stripe = require("./routes/stripe");
+const profile = require("./routes/profile"); // все эндпоинты пользователя, включая избранное
 const products = require("./products");
-
 
 const app = express();
 
@@ -20,11 +20,10 @@ const corsOptions = {
   credentials: true,
 };
 
-
 // Middleware
-app.use(cors(corsOptions)); // сначала CORS
-app.options("*", cors(corsOptions)); // поддержка preflight-запросов
-app.use(express.json()); // парсер JSON
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
+app.use(express.json());
 
 // Статические файлы (изображения товаров)
 app.use("/images", express.static(path.join(__dirname, "images")));
@@ -33,21 +32,20 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/register", register);
 app.use("/api/login", login);
 app.use("/api/stripe", stripe);
+app.use("/api/user", profile); // все эндпоинты пользователя /api/user/*
 
 // Тестовая главная страница
 app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
 
-// Получение списка товаров (ИСПРАВЛЕННАЯ ВЕРСИЯ)
+// Получение списка товаров
 app.get("/products", (req, res) => {
   try {
     if (!products || products.length === 0) {
       return res.status(404).json({ message: "Товары не найдены" });
     }
-    // Устанавливаем заголовки кэширования
-    res.setHeader('Cache-Control', 'public, max-age=3600'); // Кэш на 1 час
-    // Отправляем данные в формате JSON
+    res.setHeader("Cache-Control", "public, max-age=3600");
     res.status(200).json(products);
   } catch (error) {
     console.error("Ошибка при получении товаров:", error);

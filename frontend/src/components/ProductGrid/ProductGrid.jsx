@@ -1,37 +1,65 @@
 import React, { useState } from 'react';
+// Исправленные импорты - убрали лишние ../ 
 import { useGetAllProductsQuery } from '../../slices/productsApi';
-import { useDispatch } from 'react-redux';
+import { 
+  useGetUserFavoritesQuery, 
+  useAddFavoriteMutation, 
+  useRemoveFavoriteMutation 
+} from '../../slices/userApi';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addToCart } from '../../slices/cartSlice';
+import { logoutUser } from '../../slices/authSlice';
 import "./ProductGrid.css";
 import { PersonalizationModal } from '../PersonalizationModal/PersonalizationModal';
 
 export function ProductGrid() {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [favorites, setFavorites] = useState(new Set());
   const [showModal, setShowModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { token } = useSelector((state) => state.auth);
 
   const { data: products = [], isLoading, error } = useGetAllProductsQuery();
+  const { data: favorites = [], refetch } = useGetUserFavoritesQuery();
+  const [addFavorite] = useAddFavoriteMutation();
+  const [removeFavorite] = useRemoveFavoriteMutation();
 
   const filteredProducts = selectedCategory === 'all'
     ? products
     : products.filter(p => p.category === selectedCategory);
 
-  const toggleFavorite = (productId) => {
-    const newFavorites = new Set(favorites);
-    if (newFavorites.has(productId)) {
-      newFavorites.delete(productId);
-    } else {
-      newFavorites.add(productId);
+  const toggleFavorite = async (productId) => {
+    // Проверяем авторизацию перед действием
+    if (!token) {
+      navigate('/login');
+      return;
     }
-    setFavorites(newFavorites);
+
+    try {
+      if (favorites.find(p => p.id === productId)) {
+        await removeFavorite(productId).unwrap();
+      } else {
+        await addFavorite(productId).unwrap();
+      }
+      refetch();
+    } catch (err) {
+      console.error("Ошибка избранного:", err);
+      // Если ошибка аутентификации - перенаправить на логин
+      if (err?.originalStatus === 401 || err?.originalStatus === 400) {
+        dispatch(logoutUser());
+        navigate('/login');
+      }
+    }
   };
 
   const handleBuyNow = (product) => {
+    if (!token) {
+      navigate('/login');
+      return;
+    }
     setCurrentProduct(product);
     setShowModal(true);
   };
@@ -43,7 +71,7 @@ export function ProductGrid() {
   const handleConfirmPersonalization = (personalizedData) => {
     const productWithPersonalization = {
       ...currentProduct,
-      ...personalizedData, // name, message, и т.д.
+      ...personalizedData,
     };
     dispatch(addToCart(productWithPersonalization));
     setShowModal(false);
@@ -94,7 +122,7 @@ export function ProductGrid() {
                 {product.isPopular && <span className="badge popular">Popular</span>}
               </div>
               <button
-                className={`favorite ${favorites.has(product.id) ? 'favorited' : ''}`}
+                className={`favorite ${favorites.find(p => p.id === product.id) ? 'favorited' : ''}`}
                 onClick={(e) => {
                   e.stopPropagation();
                   toggleFavorite(product.id);

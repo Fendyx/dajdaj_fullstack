@@ -1,0 +1,318 @@
+/* Основной контейнер профиля */
+.up-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  margin-top: 80px;
+  padding: 2rem;
+  min-height: 100vh;
+  background: var(--color-background, #f9f9f9);
+  color: var(--color-foreground, #333);
+  animation: up-fadeInUp 0.6s ease-out;
+}
+
+/* Карточка профиля */
+.up-card {
+  background: var(--color-card, #fff);
+  border: 1px solid var(--color-border, #e5e5e5);
+  border-radius: var(--radius-lg, 12px);
+  padding: 2rem;
+  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05),
+              0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Header с аватаром */
+.up-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+  text-align: center;
+  justify-content: center;
+}
+
+.up-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3B82F6, #1E40AF);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2),
+              0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.up-avatar:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3),
+              0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.up-header h2 {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-foreground, #333);
+}
+
+.up-header p {
+  margin: 0;
+  color: var(--color-muted-foreground, #666);
+  font-size: 0.95rem;
+}
+
+/* Аккордеон */
+.up-accordion {
+  margin-top: 2rem;
+}
+
+.up-accordion-item {
+  border: 1px solid var(--color-border, #e5e5e5);
+  border-radius: 8px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.up-accordion-header {
+  width: 100%;
+  background: var(--color-card, #fff);
+  border: none;
+  padding: 14px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  text-align: left;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.up-accordion-header:hover {
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.up-accordion-count {
+  background: linear-gradient(135deg, #3B82F6, #1E40AF);
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 12px;
+  padding: 2px 8px;
+  margin-left: 8px;
+}
+
+.up-accordion-arrow {
+  font-size: 14px;
+  color: #888;
+  margin-left: 8px;
+  transition: transform 0.3s ease;
+}
+
+.up-accordion-item.open .up-accordion-arrow {
+  transform: rotate(180deg);
+}
+
+.up-accordion-content-wrapper {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.up-accordion-content {
+  padding: 16px;
+  background: #fafafa;
+  color: var(--color-foreground, #333);
+  font-size: 14px;
+}
+
+/* Loading State */
+.up-loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2rem;
+  color: var(--color-muted-foreground, #666);
+}
+
+.up-loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(59, 130, 246, 0.2);
+  border-top: 2px solid #3B82F6;
+  border-radius: 50%;
+  animation: up-spin 1s linear infinite;
+}
+
+@keyframes up-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.up-empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: var(--color-muted-foreground, #666);
+}
+
+.up-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+  filter: grayscale(1);
+  transition: all 0.3s ease;
+}
+
+.up-empty-state:hover .up-empty-icon {
+  filter: grayscale(0);
+  transform: scale(1.1);
+}
+
+.up-empty-state p {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.up-empty-description {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+/* Error / Login */
+.up-error-auth {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}
+
+.up-error-auth h3 {
+  color: #d32f2f;
+  margin-bottom: 1rem;
+}
+
+.up-error-auth p {
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.up-login-btn {
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.up-login-btn:hover {
+  background: #1565c0;
+}
+
+.up-error-message {
+  color: #d32f2f;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Сетка избранного */
+.up-favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 8px 0;
+}
+
+/* Карточка продукта */
+.up-favorite-card {
+  background: #fff;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+
+.up-favorite-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Изображение продукта */
+.up-favorite-card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  border-bottom: 1px solid #e5e5e5;
+  transition: transform 0.3s ease;
+}
+
+.up-favorite-card:hover img {
+  transform: scale(1.05);
+}
+
+/* Информация о продукте */
+.up-favorite-info {
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.up-favorite-name {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #333;
+}
+
+.up-favorite-price {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1976d2;
+}
+
+
+/* Анимация появления */
+@keyframes up-fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Адаптация для мобильных устройств */
+@media (max-width: 768px) {
+  .up-container {
+    padding: 1rem;
+  }
+  .up-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .up-container {
+    padding: 0.75rem;
+  }
+  .up-header h2 {
+    font-size: 1.75rem;
+  }
+}

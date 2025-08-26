@@ -4,6 +4,8 @@ import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { loadUser } from "./slices/authSlice";
+import { UserProfile } from "./components/UserProfile/UserProfile";
+
 
 import Home from "./components/Home";
 import NavBar from "./components/NavBar";
@@ -51,6 +53,7 @@ function App() {
                 <Route path="/checkout-success" element={<CheckoutSuccess />} />
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/profile" element={<UserProfile />} />
                 <Route path="/male-bodybuilder" element={<MaleBodybuilder />} />
                 <Route path="/beer-edition" element={<BeerEdition />} />
                 <Route path="/trust-bulk" element={<TrustBulk />} />

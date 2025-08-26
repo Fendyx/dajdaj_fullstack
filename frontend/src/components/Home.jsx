@@ -1,7 +1,6 @@
-import { useContext, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useState, useRef, useContext } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
 
 import { addToCart } from "../slices/cartSlice";
 import { useGetAllProductsQuery } from "../slices/productsApi";
@@ -16,14 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { HeroSection } from "./HeroSection/HeroSection";
 import { ProductGrid } from "./ProductGrid/ProductGrid";
 
-
-
-
 const Home = () => {
-  const { items: products, status } = useSelector((state) => state.products);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { data, error, isLoading } = useGetAllProductsQuery();
+  const { data: products, error, isLoading } = useGetAllProductsQuery();
 
   const [selectedProduct, setSelectedProduct] = useState(null);
 
@@ -37,11 +32,10 @@ const Home = () => {
   };
 
   const handleConfirm = (productWithCustomText) => {
-    dispatch(addToCart(productWithCustomText)); // только одно уведомление будет из Redux
+    dispatch(addToCart(productWithCustomText));
     closeModal();
-    navigate("/cart"); // редирект
+    navigate("/cart");
   };
-  
 
   const handleCardClick = (link, e) => {
     if (e.target.closest("button") || e.target.closest("a")) return;
@@ -52,39 +46,42 @@ const Home = () => {
 
   const middleProductsRef = useRef(null);
   const scrollToCollection = () => {
-    if (middleProductsRef.current) {
-      middleProductsRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    middleProductsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const finalProductsRef = useRef(null);
   const scrollToFinalCollection = () => {
-    if (finalProductsRef.current) {
-      finalProductsRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    finalProductsRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-  
-  
-  
+
   return (
     <div className="home-container">
-      <SpecialOffer />
-      {status === "success" ? (
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : error ? (
+        <p>Unexpected error occurred...</p>
+      ) : (
         <>
           <HeroSection />
-          <ProductGrid />
-          
+          <ProductGrid
+            products={products}
+            onCardClick={handleCardClick}
+            openModal={openModal}
+          />
+          {/* Модальные компоненты и баннеры можно добавить здесь */}
         </>
-      ) : status === "pending" ? (
-        <p>Loading...</p>
-      ) : (
-        <p>Unexpected error occurred...</p>
+      )}
+
+      {/* Пример модального окна */}
+      {selectedProduct && (
+        <AddCustomName
+          product={selectedProduct}
+          onClose={closeModal}
+          onConfirm={handleConfirm}
+        />
       )}
     </div>
   );
 };
 
 export default Home;
-
-
-

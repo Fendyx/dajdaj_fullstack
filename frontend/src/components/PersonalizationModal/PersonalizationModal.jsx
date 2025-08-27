@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import "./PersonalizationModal.css";
+import { useTranslation } from "react-i18next";
 
 export function PersonalizationModal({ product, onClose, onConfirm }) {
+  const { t } = useTranslation();
   const [selectedPhrase, setSelectedPhrase] = useState("");
   const [customName, setCustomName] = useState("");
 
-  // ✅ Массив фраз берём здесь, когда есть продукт
+  // ✅ Фразы приходят уже локализованные с сервера
   const PRESET_PHRASES = product?.phrases || [];
 
   const handleConfirm = () => {
@@ -19,25 +21,32 @@ export function PersonalizationModal({ product, onClose, onConfirm }) {
         {/* Header with Back Button */}
         <div className="modal-header">
           <button className="back-btn" onClick={onClose}>
-            ← Return
+            ← {t("personalizationModal.buttons.back")}
           </button>
         </div>
 
         <div className="modal-body">
           {/* Left column (Product Image) */}
           <div className="image-section">
-            <img src={product.image} alt={product.name} className="product-preview" />
+            <img
+              src={product.image}
+              alt={product.name}
+              className="product-preview"
+            />
           </div>
 
           {/* Right column (Personalization options) */}
           <div className="content-section">
-            <h2>Personalize Your Product</h2>
+            <h2>{t("personalizationModal.title")}</h2>
 
+            {/* Preset phrases */}
             <div className="preset-phrases">
               {PRESET_PHRASES.map((phrase, index) => (
                 <div
                   key={index}
-                  className={`phrase-block ${selectedPhrase === phrase ? "selected" : ""}`}
+                  className={`phrase-block ${
+                    selectedPhrase === phrase ? "selected" : ""
+                  }`}
                   onClick={() => setSelectedPhrase(phrase)}
                 >
                   {phrase}
@@ -45,13 +54,14 @@ export function PersonalizationModal({ product, onClose, onConfirm }) {
               ))}
             </div>
 
+            {/* Custom name input */}
             <div className="custom-name">
-              <label>Enter a name for personalization</label>
+              <label>{t("personalizationModal.labels.customName")}</label>
               <input
                 type="text"
                 value={customName}
                 onChange={(e) => setCustomName(e.target.value)}
-                placeholder="Type name here..."
+                placeholder={t("personalizationModal.placeholders.customName")}
               />
             </div>
 
@@ -60,7 +70,7 @@ export function PersonalizationModal({ product, onClose, onConfirm }) {
               onClick={handleConfirm}
               disabled={!selectedPhrase || !customName}
             >
-              Personalize & Add to Cart
+              {t("personalizationModal.buttons.confirm")}
             </button>
           </div>
         </div>

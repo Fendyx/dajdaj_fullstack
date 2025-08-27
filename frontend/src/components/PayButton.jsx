@@ -1,29 +1,31 @@
 import axios from "axios";
-import {useSelector} from "react-redux";
-import { url} from "../slices/api"
+import { useSelector } from "react-redux";
+import { url } from "../slices/api";
+import { useTranslation } from "react-i18next";
 
+const PayButton = ({ cartItems }) => {
+  const { t } = useTranslation();
+  const user = useSelector((state) => state.auth);
 
-const PayButton = ({cartItems}) => {
+  const handleCheckout = () => {
+    axios
+      .post(`${url}/stripe/create-checkout-session`, {
+        cartItems,
+        userId: user._id,
+      })
+      .then((res) => {
+        if (res.data.url) {
+          window.location.href = res.data.url;
+        }
+      })
+      .catch((err) => console.log(err.message));
+  };
 
-    const user = useSelector((state) => state.auth)
-
-    const handleCheckout = () => {
-        axios.post(`${url}/stripe/create-checkout-session` , {
-            cartItems,
-            userId: user._id
-        }).then((res) => {
-            if(res.data.url){
-                window.location.href = res.data.url
-            }
-        })
-        .catch((err) => console.log(err.message));
-    };
-    return(
-        <>
-        <button onClick={() => handleCheckout()}>Przejdź do płatności</button>
-        </>
-
-    );
-}
+  return (
+    <button onClick={handleCheckout}>
+      {t("payButton.checkout")}
+    </button>
+  );
+};
 
 export default PayButton;

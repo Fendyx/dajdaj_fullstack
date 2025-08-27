@@ -1,0 +1,131 @@
+{
+    "navbar": {
+      "signIn": "Zaloguj się",
+      "joinUs": "Dołącz",
+      "cart": "Koszyk",
+      "favorites": "Ulubione",
+      "profile": "Profil"
+    },
+    "hero": {
+      "badge": "Znaczące Prezenty",
+      "title": "Prezent, który wygląda dokładnie jak ich duch",
+      "subtitle": "Wybierz gotową figurkę kulturystyczną i dodaj imię oraz osobistą wiadomość — wyjątkowy sposób, aby uhonorować czyjąś siłę.",
+      "button": "↓ Przeglądaj naszą kolekcję"
+    },
+    "userProfile": {
+      "authError": "Błąd uwierzytelniania",
+      "status": "Status",
+      "error": "Błąd",
+      "loginAgain": "Proszę zalogować się ponownie",
+      "loginBtn": "Zaloguj się ponownie",
+      "clearToken": "Wyczyść token i przeładuj",
+      "orders": "Moje zamówienia",
+      "loadingOrders": "Ładowanie zamówień...",
+      "failedOrders": "Nie udało się załadować zamówień",
+      "noOrders": "Brak zamówień",
+      "ordersDesc": "Twoja historia zamówień pojawi się tutaj",
+      "discounts": "Moje rabaty",
+      "loadingDiscounts": "Ładowanie rabatów...",
+      "failedDiscounts": "Nie udało się załadować rabatów",
+      "noDiscounts": "Brak dostępnych rabatów",
+      "discountsDesc": "Aktywne rabaty pojawią się tutaj",
+      "favorites": "Ulubione",
+      "loadingFavorites": "Ładowanie ulubionych...",
+      "failedFavorites": "Nie udało się załadować ulubionych",
+      "noFavorites": "Brak ulubionych",
+      "favoritesDesc": "Dodaj produkty do ulubionych, aby je tutaj zobaczyć",
+      "order": "Zamówienie",
+      "expires": "Wygasa"
+    },
+    "productGrid": {
+        "loading": "Ładowanie produktów...",
+        "error": "Błąd podczas ładowania produktów: {{message}}",
+        "headerTitle": "Wybierz idealną figurkę",
+        "headerDescription": "Każda gotowa figurka oddaje inny duch siły. Wybierz tę, która przypomina Ci o nich, a następnie spersonalizuj, dodając imię i wiadomość.",
+        "categories": {
+          "all": "Wszystkie figurki",
+          "male": "Dla Niego",
+          "female": "Dla Niej"
+        },
+        "badges": {
+          "new": "Nowość",
+          "popular": "Popularne"
+        },
+        "actions": {
+          "buyNow": "Kup teraz"
+        },
+        "tags": {
+          "male": "Dla Niego",
+          "female": "Dla Niej"
+        },
+        "engraving": "🎁 Gotowy projekt • Grawerowanie imienia i wiadomości w cenie"
+      },
+      "personalizationModal": {
+        "title": "Spersonalizuj swój produkt",
+        "labels": {
+          "customName": "Wpisz imię do personalizacji"
+        },
+        "placeholders": {
+          "customName": "Wpisz imię tutaj..."
+        },
+        "buttons": {
+          "back": "Powrót",
+          "confirm": "Spersonalizuj i dodaj do koszyka"
+        }
+      },
+      "cart": {
+        "title": "Koszyk zakupowy",
+        "emptyMessage": "Twój koszyk jest obecnie pusty",
+        "startShopping": "Rozpocznij zakupy",
+        "columns": {
+          "product": "Produkt",
+          "price": "Cena",
+          "quantity": "Ilość",
+          "total": "Razem"
+        },
+        "buttons": {
+          "remove": "Usuń",
+          "clearCart": "Wyczyść koszyk",
+          "continueShopping": "Kontynuuj zakupy"
+        },
+        "summary": {
+          "total": "Razem",
+          "taxesShipping": "Podatki i wysyłka zostaną obliczone przy kasie",
+          "loginToCheckout": "Zaloguj się, aby sfinalizować zakup"
+        }
+      },
+      "payButton": {
+        "checkout": "Przejdź do płatności"
+      },
+
+      "footer": {
+        "brand": {
+          "title": "DajDaj",
+          "subtitle": "Znaczące Prezenty",
+          "description": "Tworzymy znaczące prezenty, które celebrują siłę, zaangażowanie i wyjątkowe osoby w Twoim życiu."
+        },
+        "giftGuidance": {
+          "title": "🎁 Poradnik Prezentowy",
+          "browse": "Przeglądaj Figurki",
+          "personalize": "Jak działa personalizacja",
+          "ideas": "Pomysły na prezent"
+        },
+        "customerCare": {
+          "title": "💗 Obsługa Klienta",
+          "shipping": "Informacje o wysyłce",
+          "returns": "Zwroty i wymiany",
+          "faq": "FAQ",
+          "contact": "Kontakt",
+          "care": "Instrukcje pielęgnacji"
+        },
+        "contact": {
+          "title": "Napisz do nas"
+        },
+        "bottom": {
+          "copy": "© 2024 FigureCraft. Stworzone z ❤️ dla wyjątkowych połączeń.",
+          "privacy": "Polityka prywatności",
+          "terms": "Regulamin"
+        }
+      }
+  }
+  

@@ -1,23 +1,21 @@
-import React from 'react';
-import './HeroSection.css';
+import React from "react";
+import { useTranslation } from "react-i18next";
+import "./HeroSection.css";
 
 export function HeroSection() {
+  const { t } = useTranslation();
+
   return (
     <section className="hero">
       <div className="hero__inner">
         <span className="hero__badge">
           <span className="hero__icon">❤️</span>
-          Meaningful Gifts
+          {t("hero.badge")}
         </span>
-        <h1 className="hero__title">
-          A Gift That Looks Just Like Their Spirit
-        </h1>
-        <p className="hero__subtitle">
-          Choose a ready-made bodybuilding figurine and add a name and personal message — 
-          a unique way to honor someone's strength.
-        </p>
+        <h1 className="hero__title">{t("hero.title")}</h1>
+        <p className="hero__subtitle">{t("hero.subtitle")}</p>
         <a href="#collection" className="hero__button">
-          ↓ Explore Our Collection
+          {t("hero.button")}
         </a>
       </div>
     </section>

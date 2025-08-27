@@ -142,7 +142,6 @@
   border: 2px solid white;
 }
 
-/* Новый стиль для кнопки профиля */
 .profile-button {
   display: flex;
   align-items: center;
@@ -153,7 +152,7 @@
   padding: 0.6rem 1rem;
   border-radius: 24px;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   position: relative;
   overflow: hidden;
   font-weight: 500;
@@ -162,32 +161,25 @@
 }
 
 .profile-button .profile-text {
-  display: inline-block;
-  transition: transform 0.4s ease, opacity 0.4s ease;
-  order: 1;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .profile-button i {
   font-size: 18px;
-  color: #4b70e2; /* цвет фиксируем */
-  transition: transform 0.4s ease;
-  order: 2;
+  color: #4b70e2;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Наведение — плавный обмен местами */
+/* Анимация при наведении - оба элемента смещаются */
 .profile-button:hover .profile-text {
-  transform: translateX(10px); /* меньше смещение */
-  opacity: 0.9;
-  order: 2;
+  transform: translateX(8px);
 }
 
 .profile-button:hover i {
-  transform: translateX(-10px); /* меньше смещение */
-  /* цвет не меняется */
-  order: 1;
+  transform: translateX(-8px);
 }
 
-/* Псевдоэлемент для свечения */
+/* Свечение при наведении */
 .profile-button::before {
   content: '';
   position: absolute;
@@ -204,33 +196,35 @@
 }
 
 
-
 /* ========== FULLSCREEN MOBILE MENU - ОБНОВЛЕННЫЙ СТИЛЬ ========== */
 
+/* Полный фон, блокирует всё содержимое */
 .mobile-menu {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 30%, #fff0f5 100%);
-  z-index: 1000;
+  width: 100vw;      /* обязательно vw/vh */
+  height: 100vh;
+  background: #ffffff; /* полностью непрозрачный */
+  z-index: 2000;      /* выше nav-bar */
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 5rem 2rem 3rem;
   justify-content: flex-start;
-  opacity: 0;
+  padding: 5rem 2rem 3rem;
+  overflow-y: auto;
   transform: translateY(-100%);
   pointer-events: none;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  opacity: 1;          /* не используем прозрачность */
 }
 
+/* Открытое меню */
 .mobile-menu.open {
-  opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
+
 
 .mobile-links {
   display: flex;
@@ -357,8 +351,14 @@
 .nav-icon.favorites-link i {
   font-size: 18px;
   color: #e74c3c;
-  transition: transform 0.4s ease;
+  transition: transform 0.3s ease;
 }
+
+.nav-icon.favorites-link:hover i {
+  transform: scale(1.05) translateY(-2px); /* немного увеличиваем и поднимаем */
+}
+
+
 
 /* Эффект свечения на hover */
 .nav-icon.favorites-link::before {

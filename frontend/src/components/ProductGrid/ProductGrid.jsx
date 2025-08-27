@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// Исправленные импорты - убрали лишние ../ 
 import { useGetAllProductsQuery } from '../../slices/productsApi';
 import { 
   useGetUserFavoritesQuery, 
@@ -12,8 +11,11 @@ import { addToCart } from '../../slices/cartSlice';
 import { logoutUser } from '../../slices/authSlice';
 import "./ProductGrid.css";
 import { PersonalizationModal } from '../PersonalizationModal/PersonalizationModal';
+import { useTranslation } from 'react-i18next';
 
 export function ProductGrid() {
+  const { t, i18n } = useTranslation();
+
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [showModal, setShowModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
@@ -22,7 +24,8 @@ export function ProductGrid() {
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
 
-  const { data: products = [], isLoading, error } = useGetAllProductsQuery();
+  // ✅ Передаем язык в API-запрос
+  const { data: products = [], isLoading, error } = useGetAllProductsQuery(i18n.language);
   const { data: favorites = [], refetch } = useGetUserFavoritesQuery();
   const [addFavorite] = useAddFavoriteMutation();
   const [removeFavorite] = useRemoveFavoriteMutation();
@@ -32,7 +35,6 @@ export function ProductGrid() {
     : products.filter(p => p.category === selectedCategory);
 
   const toggleFavorite = async (productId) => {
-    // Проверяем авторизацию перед действием
     if (!token) {
       navigate('/login');
       return;
@@ -47,7 +49,6 @@ export function ProductGrid() {
       refetch();
     } catch (err) {
       console.error("Ошибка избранного:", err);
-      // Если ошибка аутентификации - перенаправить на логин
       if (err?.originalStatus === 401 || err?.originalStatus === 400) {
         dispatch(logoutUser());
         navigate('/login');
@@ -78,17 +79,14 @@ export function ProductGrid() {
     navigate("/cart");
   };
 
-  if (isLoading) return <p>Loading products...</p>;
-  if (error) return <p>Error loading products: {error.message}</p>;
+  if (isLoading) return <p>{t("productGrid.loading")}</p>;
+  if (error) return <p>{t("productGrid.error", { message: error.message })}</p>;
 
   return (
     <section className="product-grid">
       <div className="section-header">
-        <h2>Choose Their Perfect Figurine</h2>
-        <p>
-          Each pre-designed figurine captures a different spirit of strength.
-          Pick the one that reminds you of them, then make it personal with their name and your message.
-        </p>
+        <h2>{t("productGrid.headerTitle")}</h2>
+        <p>{t("productGrid.headerDescription")}</p>
       </div>
 
       <div className="category-filter">
@@ -96,19 +94,19 @@ export function ProductGrid() {
           onClick={() => setSelectedCategory('all')} 
           className={`category-btn ${selectedCategory === 'all' ? 'active' : ''}`}
         >
-          All Figurines
+          {t("productGrid.categories.all")}
         </button>
         <button 
           onClick={() => setSelectedCategory('male')} 
           className={`category-btn ${selectedCategory === 'male' ? 'active' : ''}`}
         >
-          For Him
+          {t("productGrid.categories.male")}
         </button>
         <button 
           onClick={() => setSelectedCategory('female')} 
           className={`category-btn ${selectedCategory === 'female' ? 'active' : ''}`}
         >
-          For Her
+          {t("productGrid.categories.female")}
         </button>
       </div>
 
@@ -118,8 +116,8 @@ export function ProductGrid() {
             <div className="product-image">
               <img src={product.image} alt={product.name} />
               <div className="badges">
-                {product.isNew && <span className="badge new">New</span>}
-                {product.isPopular && <span className="badge popular">Popular</span>}
+                {product.isNew && <span className="badge new">{t("productGrid.badges.new")}</span>}
+                {product.isPopular && <span className="badge popular">{t("productGrid.badges.popular")}</span>}
               </div>
               <button
                 className={`favorite ${favorites.find(p => p.id === product.id) ? 'favorited' : ''}`}
@@ -132,7 +130,7 @@ export function ProductGrid() {
               </button>
               <div className="actions">
                 <button onClick={() => handleBuyNow(product)} className="buy-now">
-                  Buy now
+                  {t("productGrid.actions.buyNow")}
                 </button>
                 <button onClick={() => handleView3D(product.id)} className="view3d">
                   👁
@@ -145,11 +143,11 @@ export function ProductGrid() {
               <div className="product-footer">
                 <span className="price">${product.price}</span>
                 <span className={`tag ${product.category}`}>
-                  {product.category === 'female' ? '💗 For Her' : '💪 For Him'}
+                  {product.category === 'female' ? `💗 ${t("productGrid.tags.female")}` : `💪 ${t("productGrid.tags.male")}`}
                 </span>
               </div>
               <div className="engraving">
-                🎁 Pre-designed • Name & message engraving included
+                {t("productGrid.engraving")}
               </div>
             </div>
           </div>

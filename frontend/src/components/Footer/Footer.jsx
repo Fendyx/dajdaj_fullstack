@@ -1,7 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './Footer.css';
+import logo from "../../assets/img/dajdaj_180.png";
 
 export default function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className="footer">
       <div className="footer-container">
@@ -10,14 +14,14 @@ export default function Footer() {
             {/* Brand Section */}
             <div className="footer-brand">
               <div className="brand-header">
-                <div className="brand-icon">❤️</div>
+                <img className="brand-icon" src={logo} alt="DajDaj Logo" />
                 <div>
-                  <h3 className="brand-title">FigureCraft</h3>
-                  <p className="brand-subtitle">Meaningful Gifts</p>
+                  <h3 className="brand-title">{t("footer.brand.title")}</h3>
+                  <p className="brand-subtitle">{t("footer.brand.subtitle")}</p>
                 </div>
               </div>
               <p className="footer-description">
-                Creating meaningful gifts that celebrate strength, dedication, and the special people in your life.
+                {t("footer.brand.description")}
               </p>
               <div className="social-icons">
                 <button className="icon-button">📷</button>
@@ -29,25 +33,23 @@ export default function Footer() {
 
             {/* Gift Guidance */}
             <div className="footer-section">
-              <h4 className="footer-title">🎁 Gift Guidance</h4>
+              <h4 className="footer-title">{t("footer.giftGuidance.title")}</h4>
               <ul className="footer-links">
-                <li><a href="#collections">Browse Figurines</a></li>
-                <li><a href="#personalize">How Personalization Works</a></li>
-                <li><a href="/gift-ideas">Gift Ideas</a></li>
-                <li><a href="/occasions">Perfect Occasions</a></li>
-                <li><a href="/size-guide">Size Guide</a></li>
+                <li><a href="#collections">{t("footer.giftGuidance.browse")}</a></li>
+                <li><a href="#personalize">{t("footer.giftGuidance.personalize")}</a></li>
+                <li><a href="/gift-ideas">{t("footer.giftGuidance.ideas")}</a></li>
               </ul>
             </div>
 
             {/* Customer Care */}
             <div className="footer-section">
-              <h4 className="footer-title">💗 Customer Care</h4>
+              <h4 className="footer-title">{t("footer.customerCare.title")}</h4>
               <ul className="footer-links">
-                <li><a href="/shipping">Shipping Info</a></li>
-                <li><a href="/returns">Returns & Exchanges</a></li>
-                <li><a href="/faq">FAQ</a></li>
-                <li><a href="/contact">Contact Us</a></li>
-                <li><a href="/care-instructions">Care Instructions</a></li>
+                <li><a href="/shipping">{t("footer.customerCare.shipping")}</a></li>
+                <li><a href="/returns">{t("footer.customerCare.returns")}</a></li>
+                <li><a href="/faq">{t("footer.customerCare.faq")}</a></li>
+                <li><a href="/contact">{t("footer.customerCare.contact")}</a></li>
+                <li><a href="/care-instructions">{t("footer.customerCare.care")}</a></li>
               </ul>
             </div>
           </div>
@@ -59,8 +61,8 @@ export default function Footer() {
           <div className="contact-box">
             <div className="contact-icon">📧</div>
             <div>
-              <div className="contact-title">Email Us</div>
-              <div className="contact-email">hello@figurecraft.com</div>
+              <div className="contact-title">{t("footer.contact.title")}</div>
+              <div className="contact-email">info@dajdaj.pl</div>
             </div>
           </div>
         </div>
@@ -69,12 +71,11 @@ export default function Footer() {
 
         <div className="footer-bottom">
           <div className="footer-copy">
-            © 2024 FigureCraft. Made with ❤️ for meaningful connections.
+            {t("footer.bottom.copy")}
           </div>
           <div className="footer-legal">
-            <a href="/privacy">Privacy Policy</a>
-            <a href="/terms">Terms of Service</a>
-            <a href="/accessibility">Accessibility</a>
+            <a href="/privacy">{t("footer.bottom.privacy")}</a>
+            <a href="/terms">{t("footer.bottom.terms")}</a>
           </div>
         </div>
       </div>

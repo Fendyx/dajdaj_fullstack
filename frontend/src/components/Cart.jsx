@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToCart,
@@ -8,11 +8,12 @@ import {
   getTotals,
   removeFromCart,
 } from "../slices/cartSlice";
-
-import { Link } from "react-router-dom";
 import PayButton from "./PayButton";
+import { useTranslation } from "react-i18next";
 
 const Cart = () => {
+  const { t } = useTranslation();
+
   const cart = useSelector((state) => state.cart);
   const auth = useSelector((state) => state.auth);
 
@@ -35,12 +36,14 @@ const Cart = () => {
   const handleClearCart = () => {
     dispatch(clearCart());
   };
+
   return (
     <div className="cart-container">
-      <h2>Koszyk zakupowy</h2>
+      <h2>{t("cart.title")}</h2>
+
       {cart.cartItems.length === 0 ? (
         <div className="cart-empty">
-          <p>Twój koszyk jest obecnie pusty</p>
+          <p>{t("cart.emptyMessage")}</p>
           <div className="start-shopping">
             <Link to="/">
               <svg
@@ -56,56 +59,63 @@ const Cart = () => {
                   d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
                 />
               </svg>
-              <span>Rozpocznij zakupy</span>
+              <span>{t("cart.startShopping")}</span>
             </Link>
           </div>
         </div>
       ) : (
         <div>
           <div className="titles">
-            <h3 className="product-title">Produkt</h3>
-            <h3 className="price">Cena</h3>
-            <h3 className="quantity">Ilość</h3>
-            <h3 className="total">Razem</h3>
+            <h3 className="product-title">{t("cart.columns.product")}</h3>
+            <h3 className="price">{t("cart.columns.price")}</h3>
+            <h3 className="quantity">{t("cart.columns.quantity")}</h3>
+            <h3 className="total">{t("cart.columns.total")}</h3>
           </div>
+
           <div className="cart-items">
-            {cart.cartItems &&
-              cart.cartItems.map((cartItem) => (
-                <div className="cart-item" key={cartItem.id}>
-                  <div className="cart-product">
-                    <img src={cartItem.image} alt={cartItem.name} />
-                    <div>
-                      <h3>{cartItem.name}</h3>
-                      <p>{cartItem.desc}</p>
-                      <button onClick={() => handleRemoveFromCart(cartItem)}>
-                        Usuń
-                      </button>
-                    </div>
-                  </div>
-                  <div className="cart-product-price">PLN{cartItem.price}</div>
-                  <div className="cart-product-quantity">
-                    <button onClick={() => handleDecreaseCart(cartItem)}>
-                      -
+            {cart.cartItems.map((cartItem) => (
+              <div className="cart-item" key={cartItem.id}>
+                <div className="cart-product">
+                  <img src={cartItem.image} alt={cartItem.name} />
+                  <div>
+                    <h3>{cartItem.name}</h3>
+                    <p>{cartItem.desc}</p>
+                    <button onClick={() => handleRemoveFromCart(cartItem)}>
+                      {t("cart.buttons.remove")}
                     </button>
-                    <div className="count">{cartItem.cartQuantity}</div>
-                    <button onClick={() => handleAddToCart(cartItem)}>+</button>
-                  </div>
-                  <div className="cart-product-total-price">
-                    PLN{cartItem.price * cartItem.cartQuantity}
                   </div>
                 </div>
-              ))}
+
+                <div className="cart-product-price">
+                  PLN{cartItem.price}
+                </div>
+
+                <div className="cart-product-quantity">
+                  <button onClick={() => handleDecreaseCart(cartItem)}>-</button>
+                  <div className="count">{cartItem.cartQuantity}</div>
+                  <button onClick={() => handleAddToCart(cartItem)}>+</button>
+                </div>
+
+                <div className="cart-product-total-price">
+                  PLN{cartItem.price * cartItem.cartQuantity}
+                </div>
+              </div>
+            ))}
           </div>
+
           <div className="cart-summary">
-            <button className="clear-btn" onClick={() => handleClearCart()}>
-              Wyczyść koszyk
+            <button className="clear-btn" onClick={handleClearCart}>
+              {t("cart.buttons.clearCart")}
             </button>
+
             <div className="cart-checkout">
               <div className="subtotal">
-                <span>Razem</span>
+                <span>{t("cart.summary.total")}</span>
                 <span className="amount">PLN{cart.cartTotalAmount}</span>
               </div>
-              <p>Podatki i wysyłka zostaną obliczone przy kasie</p>
+
+              <p>{t("cart.summary.taxesShipping")}</p>
+
               {auth._id ? (
                 <PayButton cartItems={cart.cartItems} />
               ) : (
@@ -113,7 +123,7 @@ const Cart = () => {
                   className="cart-login"
                   onClick={() => navigate("/login")}
                 >
-                  Zaloguj się, aby sfinalizować zakup
+                  {t("cart.summary.loginToCheckout")}
                 </button>
               )}
 
@@ -132,7 +142,7 @@ const Cart = () => {
                       d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"
                     />
                   </svg>
-                  <span>Kontynuuj zakupy</span>
+                  <span>{t("cart.buttons.continueShopping")}</span>
                 </Link>
               </div>
             </div>
@@ -144,6 +154,3 @@ const Cart = () => {
 };
 
 export default Cart;
-
-
-

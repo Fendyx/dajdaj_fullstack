@@ -361,14 +361,10 @@
 /* Responsive */
 
 @media (max-width: 665px) {
-  /* NavBar */
-  .nav-bar {
-    padding: 0 1rem;
-  }
-  .nav-bar h2 {
-    font-size: 30px;
-  }
 
+  .home-container {
+    padding-top: 70px;
+  }
   /* Cart */
   .cart-container {
     padding: 2rem;

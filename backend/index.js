@@ -8,8 +8,8 @@ require("dotenv").config();
 const register = require("./routes/register");
 const login = require("./routes/login");
 const stripe = require("./routes/stripe");
-const profile = require("./routes/profile"); // все эндпоинты пользователя, включая избранное
-const products = require("./products");
+const profile = require("./routes/profile");
+const products = require("./products"); // массив с объектами товаров с мультиязычными полями
 
 const app = express();
 
@@ -32,21 +32,36 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 app.use("/api/register", register);
 app.use("/api/login", login);
 app.use("/api/stripe", stripe);
-app.use("/api/user", profile); // все эндпоинты пользователя /api/user/*
+app.use("/api/user", profile);
 
 // Тестовая главная страница
 app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
 
-// Получение списка товаров
+// ✅ Получение списка товаров с мультиязычностью
 app.get("/products", (req, res) => {
   try {
     if (!products || products.length === 0) {
       return res.status(404).json({ message: "Товары не найдены" });
     }
+
+    const lang = req.query.lang === "pl" ? "pl" : "en";
+
+    const localizedProducts = products.map(product => ({
+      id: product.id,
+      name: product.name[lang],
+      description: product.description[lang],
+      price: product.price,
+      image: product.image,
+      category: product.category,
+      isNew: product.isNew,
+      isPopular: product.isPopular,
+      phrases: product.phrases[lang]
+    }));
+
     res.setHeader("Cache-Control", "public, max-age=3600");
-    res.status(200).json(products);
+    res.status(200).json(localizedProducts);
   } catch (error) {
     console.error("Ошибка при получении товаров:", error);
     res.status(500).json({ message: "Ошибка сервера при загрузке товаров" });

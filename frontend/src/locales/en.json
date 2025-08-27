@@ -1,0 +1,129 @@
+{
+    "navbar": {
+      "signIn": "Sign in",
+      "joinUs": "Join us",
+      "cart": "Cart",
+      "favorites": "Favorites",
+      "profile": "Profile"
+    },
+    "hero": {
+      "badge": "Meaningful Gifts",
+      "title": "A Gift That Looks Just Like Their Spirit",
+      "subtitle": "Choose a ready-made bodybuilding figurine and add a name and personal message — a unique way to honor someone's strength.",
+      "button": "↓ Explore Our Collection"
+    },
+    "userProfile": {
+        "authError": "Authentication Error",
+        "status": "Status",
+        "error": "Error",
+        "loginAgain": "Please log in again.",
+        "loginBtn": "Login Again",
+        "clearToken": "Clear Token & Reload",
+        "orders": "My Orders",
+        "loadingOrders": "Loading orders...",
+        "failedOrders": "Failed to load orders",
+        "noOrders": "No orders yet",
+        "ordersDesc": "Your order history will appear here",
+        "discounts": "My Discounts",
+        "loadingDiscounts": "Loading discounts...",
+        "failedDiscounts": "Failed to load discounts",
+        "noDiscounts": "No discounts available",
+        "discountsDesc": "Active discounts will appear here",
+        "favorites": "My Favorites",
+        "loadingFavorites": "Loading favorites...",
+        "failedFavorites": "Failed to load favorites",
+        "noFavorites": "No favorites yet",
+        "favoritesDesc": "Add products to favorites to see them here",
+        "order": "Order",
+        "expires": "Expires"
+      },
+      "productGrid": {
+        "loading": "Loading products...",
+        "error": "Error loading products: {{message}}",
+        "headerTitle": "Choose Their Perfect Figurine",
+        "headerDescription": "Each pre-designed figurine captures a different spirit of strength. Pick the one that reminds you of them, then make it personal with their name and your message.",
+        "categories": {
+          "all": "All Figurines",
+          "male": "For Him",
+          "female": "For Her"
+        },
+        "badges": {
+          "new": "New",
+          "popular": "Popular"
+        },
+        "actions": {
+          "buyNow": "Buy now"
+        },
+        "tags": {
+          "male": "For Him",
+          "female": "For Her"
+        },
+        "engraving": "🎁 Pre-designed • Name & message engraving included"
+      },
+      "personalizationModal": {
+        "title": "Personalize Your Product",
+        "labels": {
+          "customName": "Enter a name for personalization"
+        },
+        "placeholders": {
+          "customName": "Type name here..."
+        },
+        "buttons": {
+          "back": "Return",
+          "confirm": "Personalize & Add to Cart"
+        }
+      },
+      "cart": {
+        "title": "Shopping Cart",
+        "emptyMessage": "Your cart is currently empty",
+        "startShopping": "Start Shopping",
+        "columns": {
+          "product": "Product",
+          "price": "Price",
+          "quantity": "Quantity",
+          "total": "Total"
+        },
+        "buttons": {
+          "remove": "Remove",
+          "clearCart": "Clear Cart",
+          "continueShopping": "Continue Shopping"
+        },
+        "summary": {
+          "total": "Subtotal",
+          "taxesShipping": "Taxes and shipping will be calculated at checkout",
+          "loginToCheckout": "Log in to complete your purchase"
+        }
+      },
+      "payButton": {
+        "checkout": "Proceed to Payment"
+      },
+      "footer": {
+        "brand": {
+          "title": "DajDaj",
+          "subtitle": "Meaningful Gifts",
+          "description": "Creating meaningful gifts that celebrate strength, dedication, and the special people in your life."
+        },
+        "giftGuidance": {
+          "title": "🎁 Gift Guidance",
+          "browse": "Browse Figurines",
+          "personalize": "How Personalization Works",
+          "ideas": "Gift Ideas"
+        },
+        "customerCare": {
+          "title": "💗 Customer Care",
+          "shipping": "Shipping Info",
+          "returns": "Returns & Exchanges",
+          "faq": "FAQ",
+          "contact": "Contact Us",
+          "care": "Care Instructions"
+        },
+        "contact": {
+          "title": "Email Us"
+        },
+        "bottom": {
+          "copy": "© 2024 FigureCraft. Made with ❤️ for meaningful connections.",
+          "privacy": "Privacy Policy",
+          "terms": "Terms of Service"
+        }
+      }
+  }

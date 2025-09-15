@@ -5,6 +5,18 @@ const Order = require("../models/order");
 const User = require("../models/user");
 const products = require("../products");
 
+// ✅ Получить полный профиль пользователя
+router.get("/profile", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) return res.status(404).json({ message: "Пользователь не найден" });
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Ошибка сервера при получении профиля" });
+  }
+});
+
 // ✅ Получить историю заказов пользователя
 router.get("/orders", auth, async (req, res) => {
   try {

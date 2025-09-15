@@ -6,6 +6,12 @@
       "favorites": "Ulubione",
       "profile": "Profil"
     },
+    "bottomNav": {
+      "home": "Strona główna",
+      "profile": "Profil",
+      "cart": "Koszyk",
+      "buyNow": "Kup to!"
+    },
     "hero": {
       "badge": "Znaczące Prezenty",
       "title": "Prezent, który wygląda dokładnie jak ich duch",
@@ -19,6 +25,11 @@
       "loginAgain": "Proszę zalogować się ponownie",
       "loginBtn": "Zaloguj się ponownie",
       "clearToken": "Wyczyść token i przeładuj",
+
+      "greetingTitle": "Cieszymy się, że Cię widzimy!",
+      "greetingSubtitle": "Witamy w swoim profilu, {{name}}.",
+      "user": "Użytkownik",
+
       "orders": "Moje zamówienia",
       "loadingOrders": "Ładowanie zamówień...",
       "failedOrders": "Nie udało się załadować zamówień",
@@ -83,6 +94,11 @@
           "quantity": "Ilość",
           "total": "Razem"
         },
+        "personalization": {
+          "title": "Personalization",
+          "phrase": "Selected phrase",
+          "customName": "Custom name"
+        },
         "buttons": {
           "remove": "Usuń",
           "clearCart": "Wyczyść koszyk",
@@ -126,6 +142,19 @@
           "privacy": "Polityka prywatności",
           "terms": "Regulamin"
         }
+      },
+      "cartToasts": {
+        "personalizedUpdated": "Zaktualizowano produkt z personalizacją",
+        "quantityIncreased": "Zwiększono ilość produktu",
+        "personalizedAdded": "Produkt z personalizacją dodany do koszyka",
+        "added": "Produkt dodany do koszyka",
+        "quantityDecreased": "Zmniejszono ilość produktu",
+        "removed": "Produkt został usunięty z koszyka",
+        "cleared": "Koszyk został wyczyszczony"
+      },
+      "productDetails": {
+        "addToCart": "Dodaj do koszyka"
       }
+      
   }
   

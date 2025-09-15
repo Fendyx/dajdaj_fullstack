@@ -1,11 +1,10 @@
-export const url = "http://localhost:5000/api";
+export const url = "https://dajdaj-fullstack-backend.onrender.com/api";
 
 export const setHeaders = () => {
-  const headers = {
+  const token = localStorage.getItem("token");
+  return {
     headers: {
-      "x-auth-token": localStorage.getItem("token"),
+      Authorization: `Bearer ${token}`,
     },
   };
-
-  return headers;
 };

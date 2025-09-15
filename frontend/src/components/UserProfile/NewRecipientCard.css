@@ -1,0 +1,155 @@
+/* Карточка нового получателя */
+.uc-new-recipient-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #2c3e50, #34495e);
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    padding: 2rem;
+    transition: all 0.3s ease;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+    width: 450px; /* Standard bank card width */
+    height: 258px; /* Standard bank card height */
+    margin: 20px auto;
+    perspective: 1000px;           
+  }
+  
+  .uc-new-recipient-card:hover {
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4),
+                inset 0 0 30px rgba(255, 255, 255, 0.08);
+  }
+  
+  .uc-new-card-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    transition: opacity 0.3s;
+  }
+  
+  .uc-new-recipient-card:hover .uc-new-card-pattern {
+    opacity: 0.1;
+  }
+  
+  .uc-new-pattern-element-1 {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 4rem;
+    height: 3rem;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    border-radius: 6px;
+  }
+  
+  .uc-new-pattern-element-2 {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+    border-radius: 50%;
+  }
+  
+  .uc-new-pattern-element-3 {
+    position: absolute;
+    top: 50%;
+    right: 33.33%;
+    width: 6rem;
+    height: 6rem;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.03));
+    border-radius: 50%;
+  }
+  
+  .uc-new-card-content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1.2rem;
+  }
+  
+  .uc-new-card-icon {
+    width: 4rem;
+    height: 4rem;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.06));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .uc-new-recipient-card:hover .uc-new-card-icon {
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    transform: scale(1.05);
+  }
+  
+  .uc-new-icon-svg {
+    width: 2rem;
+    height: 2rem;
+    color: rgba(255, 255, 255, 0.9);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+  
+  .uc-new-card-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  
+  .uc-new-card-title {
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .uc-new-card-description {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.8);
+    max-width: 20rem;
+    line-height: 1.4;
+  }
+  
+  .uc-new-card-button {
+    margin-top: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    color: rgba(255, 255, 255, 0.9);
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+  }
+  
+  .uc-new-recipient-card:hover .uc-new-card-button {
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+  
+  .uc-new-button-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-right: 0.5rem;
+    filter: brightness(1.2);
+  }
+
+  @media (max-width: 480px) {
+    .uc-new-recipient-card {
+        width: 90%;
+        height: 240px;      
+      }
+  }

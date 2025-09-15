@@ -4,11 +4,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { getTotals } from "../slices/cartSlice";
 import { useTranslation } from "react-i18next";
 import logo from "../assets/img/dajdaj_180.png";
-import { useMenu } from "../context/MenuContext";
-import "./Header.css";
+import { useUI } from "../context/UIContext";
+import "./NavBar.css";
 
 const NavBar = () => {
-  const { isMenuOpen, setIsMenuOpen } = useMenu();
+  const { isMenuOpen, setIsMenuOpen } = useUI();
   const dispatch = useDispatch();
   const cart = useSelector((state) => state.cart);
   const auth = useSelector((state) => state.auth);
@@ -82,20 +82,15 @@ const NavBar = () => {
         <div className="nav-right">
           {/* ✅ Блок выбора языка */}
           <div className="lang-selector" ref={langMenuRef} onClick={toggleLangMenu}>
-            <img
-              src={`https://flagcdn.com/24x18/${i18n.language === "pl" ? "pl" : "gb"}.png`}
-              alt={i18n.language}
-            />
+            <i className="fa-solid fa-globe"></i>
             <span>{i18n.language.toUpperCase()}</span>
             <i className={`fa-solid fa-chevron-${isLangMenuOpen ? "up" : "down"}`}></i>
             {isLangMenuOpen && (
               <ul className="lang-dropdown">
-                <li onClick={() => changeLanguage("en")}>
-                  <img src="https://flagcdn.com/24x18/gb.png" alt="English" /> EN
-                </li>
-                <li onClick={() => changeLanguage("pl")}>
-                  <img src="https://flagcdn.com/24x18/pl.png" alt="Polski" /> PL
-                </li>
+                <li onClick={() => changeLanguage("en")}>EN</li>
+                <li onClick={() => changeLanguage("pl")}>PL</li>
+                <li onClick={() => changeLanguage("uk")}>UA</li>
+                <li onClick={() => changeLanguage("ru")}>RU</li>
               </ul>
             )}
           </div>
@@ -112,7 +107,7 @@ const NavBar = () => {
           )}
           {auth._id && (
             <Link to="/profile" className="nav-icon favorites-link">
-              <i className="fa-solid fa-heart"></i> {t("navbar.favorites")}
+              <i className="fa-regular fa-heart"></i> {t("navbar.favorites")}
             </Link>
           )}
           {auth._id && (
@@ -137,32 +132,48 @@ const NavBar = () => {
             <div className="close-btn" onClick={closeMenu}>
               <i className="fa-solid fa-xmark"></i>
             </div>
-
+            <div class="menu-header">DajDaj</div>
             <div className="mobile-links">
               <Link to="/" onClick={closeMenu}>
-                <i className="fa-solid fa-house"></i> Home
+                <span className="left-part">
+                  <i className="fa-solid fa-house"></i>
+                  <span>Home</span>
+                </span>
               </Link>
+
               <Link to="/about" onClick={closeMenu}>
-                <i className="fa-solid fa-circle-info"></i> About
+                <span className="left-part">
+                  <i className="fa-solid fa-circle-info"></i>
+                  <span>About</span>
+                </span>
               </Link>
-              <Link to="/shop" onClick={closeMenu}>
-                <i className="fa-solid fa-store"></i> Shop
-              </Link>
+
               <Link to="/contact" onClick={closeMenu}>
-                <i className="fa-solid fa-envelope"></i> Contact
+                <span className="left-part">
+                  <i className="fa-solid fa-envelope"></i>
+                  <span>Contact</span>
+                </span>
               </Link>
 
               {auth._id && (
                 <>
                   <Link to="/favorites" onClick={closeMenu}>
-                    <i className="fa-solid fa-heart"></i> Favorites
+                    <span className="left-part">
+                      <i className="fa-solid fa-heart"></i>
+                      <span>Favorites</span>
+                    </span>
                   </Link>
-                  <Link to="/profile" onClick={closeMenu}>
-                    <i className="fa-solid fa-user-circle"></i> Profile
+
+                  <Link to="/profile" onClick={closeMenu} className="mobile-profile-btn">
+                    <span className="left-part">
+                      <i className="fa-solid fa-user-circle"></i>
+                      <span>Profile</span>
+                    </span>
                   </Link>
                 </>
               )}
             </div>
+            <div class="menu-footer">This world would be empty without you</div>
           </div>
         </div>
       </nav>

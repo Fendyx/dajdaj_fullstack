@@ -10,7 +10,9 @@ import {
 } from "../../slices/userApi";
 import { logoutUser } from "../../slices/authSlice";
 import AccordionItem from "./AccordionItem";
+import { CardGallery } from "./CardGallery";
 import "./UserProfile.css";
+import "./UserCard.css";
 
 function ImageWithFallback({ src, alt }) {
   const [error, setError] = useState(false);
@@ -25,20 +27,29 @@ function ImageWithFallback({ src, alt }) {
 
 export function UserProfile() {
   const { t, i18n } = useTranslation();
-  const currentLang = i18n.language || "en"; // текущий язык
+  const currentLang = i18n.language || "en";
   const { token, name, email } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  const { data: orders, isLoading: loadingOrders, error: errorOrders } = useGetUserOrdersQuery();
-  const { data: discounts, isLoading: loadingDiscounts, error: errorDiscounts } = useGetUserDiscountsQuery();
-  const { data: favorites, isLoading: loadingFavorites, error: errorFavorites } = useGetUserFavoritesQuery();
-
   const location = useLocation();
+
+  // Если токена нет → сразу редиректим на логин
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
+  const { data: orders, isLoading: loadingOrders, error: errorOrders } = useGetUserOrdersQuery(undefined, { skip: !token });
+  const { data: discounts, isLoading: loadingDiscounts, error: errorDiscounts } = useGetUserDiscountsQuery(undefined, { skip: !token });
+  const { data: favorites, isLoading: loadingFavorites, error: errorFavorites } = useGetUserFavoritesQuery(undefined, { skip: !token });
+
   const [expandedSection, setExpandedSection] = useState(null);
+  const [showGallery, setShowGallery] = useState(false);
 
   useEffect(() => {
     if (location.state?.openSection === "favorites") setExpandedSection("favorites");
+    if (location.state?.showGallery) setShowGallery(true);
   }, [location.state]);
 
   const hasAuthError =
@@ -60,13 +71,28 @@ export function UserProfile() {
         <div className="up-card">
           <div className="up-error-auth">
             <h3>🔐 {t("userProfile.authError")}</h3>
-            <p>{t("userProfile.status")}: {errorOrders?.originalStatus || errorDiscounts?.originalStatus || errorFavorites?.originalStatus}</p>
-            <p>{t("userProfile.error")}: {errorOrders?.data || errorDiscounts?.data || errorFavorites?.data}</p>
+            <p>
+              {t("userProfile.status")}:{" "}
+              {errorOrders?.originalStatus ||
+                errorDiscounts?.originalStatus ||
+                errorFavorites?.originalStatus}
+            </p>
+            <p>
+              {t("userProfile.error")}:{" "}
+              {errorOrders?.data?.message ||
+                errorDiscounts?.data?.message ||
+                errorFavorites?.data?.message}
+            </p>
             <p>{t("userProfile.loginAgain")}</p>
-            <button className="up-login-btn" onClick={handleReLogin}>{t("userProfile.loginBtn")}</button>
+            <button className="up-login-btn" onClick={handleReLogin}>
+              {t("userProfile.loginBtn")}
+            </button>
             <button
               className="up-login-btn"
-              onClick={() => { localStorage.removeItem("token"); window.location.reload(); }}
+              onClick={() => {
+                localStorage.removeItem("token");
+                window.location.reload();
+              }}
               style={{ marginTop: "10px", backgroundColor: "#666" }}
             >
               {t("userProfile.clearToken")}
@@ -77,8 +103,57 @@ export function UserProfile() {
     );
   }
 
+  // Mock profiles for gallery
+  const mockProfiles = [
+    {
+      id: "1",
+      fullName: name || "User Name",
+      email: email || "user@example.com",
+      cardNumber: "4532 1234 5678 0001",
+      registrationDate: new Date().toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      }),
+      address: {
+        street: "123 Main Street",
+        city: "New York, NY",
+        postalCode: "10001",
+        country: "United States",
+      },
+      phoneNumber: "+1 (555) 123-4567",
+    },
+  ];
+
+  const handleEditProfile = (profileId) => {
+    console.log(`Editing profile: ${profileId}`);
+  };
+
+  const handleLogOutProfile = () => {
+    dispatch(logoutUser());
+    navigate("/login");
+  };
+
+  const handleAddNewProfile = () => {
+    console.log("Adding new profile");
+  };
+
   return (
     <div className="up-container">
+       <div className="up-greeting-text">
+        <h1>
+          <span className="wave-hand">👋</span> {t("userProfile.greetingTitle")}
+        </h1>
+        <p>{t("userProfile.greetingSubtitle", { name: name || t("userProfile.user") })}</p>
+      </div>
+
+      <CardGallery
+        profiles={mockProfiles}
+        onEditProfile={handleEditProfile}
+        onLogOut={handleLogOutProfile}
+        onAddNewProfile={handleAddNewProfile}
+      />
+
       <div className="up-card">
         <div className="up-header">
           <div className="up-avatar">
@@ -92,7 +167,10 @@ export function UserProfile() {
 
         <div className="up-accordion">
           {/* Orders */}
-          <AccordionItem title={t("userProfile.orders")} count={loadingOrders ? "..." : orders?.length || 0}>
+          <AccordionItem
+            title={t("userProfile.orders")}
+            count={loadingOrders ? "..." : orders?.length || 0}
+          >
             {loadingOrders ? (
               <div className="up-loading-state">
                 <div className="up-loading-spinner"></div>
@@ -102,9 +180,9 @@ export function UserProfile() {
               <div>
                 <p className="up-error-message">{t("userProfile.failedOrders")}</p>
                 <p style={{ color: "#666", fontSize: "12px" }}>
-                  {t("userProfile.status")}: {errorOrders.originalStatus}
+                  {t("userProfile.status")}: {errorOrders?.originalStatus}
                   <br />
-                  {t("userProfile.error")}: {errorOrders.data}
+                  {t("userProfile.error")}: {errorOrders?.data?.message}
                 </p>
               </div>
             ) : orders && orders.length > 0 ? (
@@ -112,8 +190,14 @@ export function UserProfile() {
                 {orders.map((order) => (
                   <div key={order._id} className="up-order-card">
                     <div className="up-order-header">
-                      <span className="up-order-id">{t("userProfile.order")} #{order._id}</span>
-                      <span className={`up-order-status ${order.status.toLowerCase()}`}>{order.status}</span>
+                      <span className="up-order-id">
+                        {t("userProfile.order")} #{order._id}
+                      </span>
+                      <span
+                        className={`up-order-status ${order.status.toLowerCase()}`}
+                      >
+                        {order.status}
+                      </span>
                     </div>
                     <div className="up-order-details">
                       <span>{new Date(order.createdAt).toLocaleDateString()}</span>
@@ -132,7 +216,10 @@ export function UserProfile() {
           </AccordionItem>
 
           {/* Discounts */}
-          <AccordionItem title={t("userProfile.discounts")} count={loadingDiscounts ? "..." : discounts?.length || 0}>
+          <AccordionItem
+            title={t("userProfile.discounts")}
+            count={loadingDiscounts ? "..." : discounts?.length || 0}
+          >
             {loadingDiscounts ? (
               <div className="up-loading-state">
                 <div className="up-loading-spinner"></div>
@@ -142,9 +229,9 @@ export function UserProfile() {
               <div>
                 <p className="up-error-message">{t("userProfile.failedDiscounts")}</p>
                 <p style={{ color: "#666", fontSize: "12px" }}>
-                  {t("userProfile.status")}: {errorDiscounts.originalStatus}
+                  {t("userProfile.status")}: {errorDiscounts?.originalStatus}
                   <br />
-                  {t("userProfile.error")}: {errorDiscounts.data}
+                  {t("userProfile.error")}: {errorDiscounts?.data?.message}
                 </p>
               </div>
             ) : discounts && discounts.length > 0 ? (
@@ -156,7 +243,10 @@ export function UserProfile() {
                       <span className="up-discount-value">{discount.value}% OFF</span>
                     </div>
                     <div className="up-discount-details">
-                      <span>{t("userProfile.expires")}: {new Date(discount.expiresAt).toLocaleDateString()}</span>
+                      <span>
+                        {t("userProfile.expires")}:{" "}
+                        {new Date(discount.expiresAt).toLocaleDateString()}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -165,13 +255,19 @@ export function UserProfile() {
               <div className="up-empty-state">
                 <div className="up-empty-icon">🎁</div>
                 <p>{t("userProfile.noDiscounts")}</p>
-                <p className="up-empty-description">{t("userProfile.discountsDesc")}</p>
+                <p className="up-empty-description">
+                  {t("userProfile.discountsDesc")}
+                </p>
               </div>
             )}
           </AccordionItem>
 
           {/* Favorites */}
-          <AccordionItem title={t("userProfile.favorites")} count={loadingFavorites ? "..." : favorites?.length || 0} isOpen={expandedSection === "favorites"}>
+          <AccordionItem
+            title={t("userProfile.favorites")}
+            count={loadingFavorites ? "..." : favorites?.length || 0}
+            isOpen={expandedSection === "favorites"}
+          >
             {loadingFavorites ? (
               <div className="up-loading-state">
                 <div className="up-loading-spinner"></div>
@@ -181,18 +277,23 @@ export function UserProfile() {
               <div>
                 <p className="up-error-message">{t("userProfile.failedFavorites")}</p>
                 <p style={{ color: "#666", fontSize: "12px" }}>
-                  {t("userProfile.status")}: {errorFavorites.originalStatus}
+                  {t("userProfile.status")}: {errorFavorites?.originalStatus}
                   <br />
-                  {t("userProfile.error")}: {errorFavorites.data}
+                  {t("userProfile.error")}: {errorFavorites?.data?.message}
                 </p>
               </div>
             ) : favorites && favorites.length > 0 ? (
               <div className="up-favorites-grid">
                 {favorites.map((product) => (
                   <div key={product.id} className="up-favorite-card">
-                    <ImageWithFallback src={product.image} alt={product.name[currentLang]} />
+                    <ImageWithFallback
+                      src={product.image}
+                      alt={product.name[currentLang]}
+                    />
                     <div className="up-favorite-info">
-                      <span className="up-favorite-name">{product.name[currentLang]}</span>
+                      <span className="up-favorite-name">
+                        {product.name[currentLang]}
+                      </span>
                       <span className="up-favorite-price">${product.price}</span>
                     </div>
                   </div>
@@ -202,7 +303,9 @@ export function UserProfile() {
               <div className="up-empty-state">
                 <div className="up-empty-icon">❤️</div>
                 <p>{t("userProfile.noFavorites")}</p>
-                <p className="up-empty-description">{t("userProfile.favoritesDesc")}</p>
+                <p className="up-empty-description">
+                  {t("userProfile.favoritesDesc")}
+                </p>
               </div>
             )}
           </AccordionItem>

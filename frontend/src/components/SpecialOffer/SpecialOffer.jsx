@@ -1,11 +1,11 @@
 import "./SpecialOffer.css";
 import { useContext } from "react";
 import { ScrollContext } from "../ScrollContext";
-import { useMenu } from "../../context/MenuContext"; // Изменили путь
+import { useUI } from "../../context/UIContext"; // ✅ правильный импорт
 
 const SpecialOffer = () => {
   const { specialOfferRef } = useContext(ScrollContext);
-  const { isMenuOpen } = useMenu();
+  const { isMenuOpen } = useUI(); // ✅ используем useUI
 
   const handleClick = () => {
     if (specialOfferRef.current) {

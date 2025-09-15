@@ -11,6 +11,7 @@ const products = [
     },
     isNew: true,
     isPopular: true,
+    link: '/products/male-bodybuilder',
     phrases: {
       en: [
         "Power is in your hands",
@@ -33,12 +34,13 @@ const products = [
     name: { en: 'Beer Edition', pl: 'Edycja \"Piwko\"' },
     price: 45,
     image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/NewPiwoEdycja_withBox.png',
-    category: 'female',
+    category: 'male',
     description: {
       en: 'Bench press lying, drink sitting',
       pl: 'Wyciskam na leżąco, piję na siedząco'
     },
     isNew: true,
+    link: '/products/beer-edition',
     phrases: {
       en: [
         "Cheers to strength",
@@ -67,6 +69,7 @@ const products = [
       pl: 'Dla tych, którzy inspirują swoją determinacją'
     },
     isPopular: true,
+    link: '/products/trust-bulk',
     phrases: {
       en: [
         "Bulk mode on",
@@ -89,11 +92,12 @@ const products = [
     name: { en: 'Never Skip Leg Day', pl: 'Nigdy nie pomijaj dnia nóg' },
     price: 47,
     image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/NewNeverSkipLegDay.png',
-    category: 'female',
+    category: 'male',
     description: {
       en: 'Celebrating comeback stories and resilience',
       pl: 'Świętując powroty i wytrwałość'
     },
+    link: '/products/never-skip-legs',
     phrases: {
       en: [
         "Legs never lie",
@@ -115,12 +119,13 @@ const products = [
     id: '5',
     name: { en: 'Pink Female', pl: 'Różowa Figuryna' },
     price: 50,
-    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/FemalePink.png',
-    category: 'male',
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/pinkHair_web.png',
+    category: 'female',
     description: {
       en: 'For protectors and role models',
       pl: 'Dla opiekunów i wzorów do naśladowania'
     },
+    link: '/products/female-pink',
     phrases: {
       en: [
         "Stay bold, stay pink",
@@ -142,12 +147,13 @@ const products = [
     id: '6',
     name: { en: 'The Empress', pl: 'Cesarzowa' },
     price: 48,
-    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=400&h=400&fit=crop',
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/brunetteHair_web.png',
     category: 'female',
     description: {
       en: 'Celebrating leadership and grace under pressure',
       pl: 'Świętując przywództwo i grację pod presją'
     },
+    link: '/products/female-brunette',
     phrases: {
       en: [
         "Rule your world",
@@ -169,13 +175,14 @@ const products = [
     id: '7',
     name: { en: 'The Legend', pl: 'Legenda' },
     price: 55,
-    image: 'https://images.unsplash.com/photo-1605296867304-46d5465a13f1?w=400&h=400&fit=crop',
-    category: 'male',
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/blondHair_web.jpg',
+    category: 'female',
     description: {
       en: 'For those who leave lasting impressions',
       pl: 'Dla tych, którzy zostawiają trwałe wrażenia'
     },
     isPopular: true,
+    link: '/products/female-blond',
     phrases: {
       en: [
         "Legends never die",
@@ -203,6 +210,7 @@ const products = [
       en: 'Perfect for motivators and dream chasers',
       pl: 'Idealna dla motywatorów i marzycieli'
     },
+    link: '/products/special-girl',
     phrases: {
       en: [
         "Inspire greatness daily",

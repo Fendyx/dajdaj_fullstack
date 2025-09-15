@@ -6,6 +6,12 @@
       "favorites": "Favorites",
       "profile": "Profile"
     },
+    "bottomNav": {
+      "home": "Home",
+      "profile": "Profile",
+      "cart": "Cart",
+      "buyNow": "Buy it!"
+    },
     "hero": {
       "badge": "Meaningful Gifts",
       "title": "A Gift That Looks Just Like Their Spirit",
@@ -19,6 +25,11 @@
         "loginAgain": "Please log in again.",
         "loginBtn": "Login Again",
         "clearToken": "Clear Token & Reload",
+
+        "greetingTitle": "We are happy to see you!",
+        "greetingSubtitle": "Welcome to your profile, {{name}}.",
+        "user": "User",
+
         "orders": "My Orders",
         "loadingOrders": "Loading orders...",
         "failedOrders": "Failed to load orders",
@@ -83,6 +94,11 @@
           "quantity": "Quantity",
           "total": "Total"
         },
+        "personalization": {
+          "title": "Personalizacja",
+          "phrase": "Wybrane hasło",
+          "customName": "Imię"
+        },
         "buttons": {
           "remove": "Remove",
           "clearCart": "Clear Cart",
@@ -125,5 +141,18 @@
           "privacy": "Privacy Policy",
           "terms": "Terms of Service"
         }
+      },
+      "cartToasts": {
+        "personalizedUpdated": "Product with personalization updated",
+        "quantityIncreased": "Product quantity increased",
+        "personalizedAdded": "Product with personalization added to cart",
+        "added": "Product added to cart",
+        "quantityDecreased": "Product quantity decreased",
+        "removed": "Product removed from cart",
+        "cleared": "Cart cleared"
+      },
+      "productDetails": {
+        "addToCart": "Add to Cart"
       }
+      
   }

@@ -1,0 +1,200 @@
+/* Контейнер галереи */
+.uc-gallery-container {
+    position: relative;
+    width: 100%;
+    max-width: 896px;
+    margin: 0 auto;
+  }
+  
+  /* Стек карточек */
+  .uc-card-stack {
+    position: relative;
+    height: 22rem;
+    width: 100%;
+    margin: 0 auto 1.5rem auto;
+    overflow: hidden;
+  }
+  
+  /* Карточки профиля и новая карточка */
+  .uc-profile-card-wrapper,
+  .uc-new-card-wrapper {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  /* Новая навигация снизу */
+  .uc-bottom-navigation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+    padding: 0 1rem;
+  }
+  
+  /* Кнопки навигации - черно-белый стиль */
+  .uc-nav-button {
+    background: #000000;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .uc-nav-button:hover {
+    background: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  .uc-nav-button:hover .uc-nav-icon {
+    color: #000000;
+  }
+  
+  .uc-nav-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .uc-nav-button:disabled {
+    background: #cccccc;
+    border-color: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .uc-nav-button:disabled .uc-nav-icon {
+    color: #666666;
+  }
+  
+  .uc-nav-icon {
+    width: 1.8rem;
+    height: 1.8rem;
+    color: #ffffff;
+    transition: color 0.3s ease;
+  }
+  
+  /* Индикаторы - пузырики */
+  .uc-card-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .uc-indicator {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .uc-indicator.uc-active {
+    background: #000000;
+    transform: scale(1.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .uc-indicator:hover:not(.uc-active) {
+    background: rgba(0, 0, 0, 0.4);
+    transform: scale(1.1);
+  }
+  
+  /* Счётчик и подсказка */
+  .uc-card-counter,
+  .uc-nav-hint {
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  .uc-counter-text {
+    font-size: 0.95rem;
+    color: rgba(0, 0, 0, 0.8);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .uc-hint-text {
+    font-size: 0.85rem;
+    color: rgba(0, 0, 0, 0.6);
+    font-style: italic;
+  }
+  
+  /* Адаптивность */
+  @media (max-width: 640px) {
+    .uc-bottom-navigation {
+      gap: 1rem;
+    }
+    
+    .uc-nav-button {
+      width: 3rem;
+      height: 3rem;
+    }
+    
+    .uc-nav-icon {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    
+    .uc-card-indicators {
+      gap: 0.6rem;
+      padding: 0.6rem 1rem;
+    }
+    
+    .uc-indicator {
+      width: 0.6rem;
+      height: 0.6rem;
+    }
+    
+    .uc-indicator.uc-active {
+      transform: scale(1.15);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .uc-bottom-navigation {
+      gap: 0.8rem;
+    }
+    
+    .uc-nav-button {
+      width: 2.8rem;
+      height: 2.8rem;
+    }
+    
+    .uc-nav-icon {
+      width: 1.3rem;
+      height: 1.3rem;
+    }
+    
+    .uc-card-indicators {
+      gap: 0.5rem;
+      padding: 0.5rem 0.8rem;
+    }
+    
+    .uc-indicator {
+      width: 0.5rem;
+      height: 0.5rem;
+    }
+  }

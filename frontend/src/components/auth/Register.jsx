@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { registerUser } from "../../slices/authSlice";
 import { StyledForm } from "./StyledForm";
@@ -8,8 +8,13 @@ import registerImage from "../../assets/img/greece_1.png";
 
 const Register = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
   const auth = useSelector((state) => state.auth);
+
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get("redirect");
+
 
   const [user, setUser] = useState({
     name: "",
@@ -27,9 +32,9 @@ const Register = () => {
         });
       }
 
-      navigate("/cart");
+      navigate(redirect || "/");
     }
-  }, [auth._id, navigate]);
+  }, [auth._id, navigate, redirect]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

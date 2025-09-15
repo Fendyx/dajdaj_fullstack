@@ -6,9 +6,6 @@ import { addToCart } from "../slices/cartSlice";
 import { useGetAllProductsQuery } from "../slices/productsApi";
 
 import AddCustomName from "./AddCustomName/AddCustomName";
-import WomenBanner from "./WomenBanner/WomenBanner";
-import SpecialOffer from "./SpecialOffer/SpecialOffer";
-import SpecialOfferBanner from "./SpecialOffer/SpecialOfferBanner";
 import { ScrollContext } from "./ScrollContext";
 
 import "react-toastify/dist/ReactToastify.css";

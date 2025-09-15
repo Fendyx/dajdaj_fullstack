@@ -57,8 +57,10 @@ app.get("/products", (req, res) => {
       category: product.category,
       isNew: product.isNew,
       isPopular: product.isPopular,
-      phrases: product.phrases[lang]
+      phrases: product.phrases[lang],
+      link: product.link // ✅ добавляем ссылку
     }));
+    
 
     res.setHeader("Cache-Control", "public, max-age=3600");
     res.status(200).json(localizedProducts);

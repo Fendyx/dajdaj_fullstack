@@ -1,0 +1,103 @@
+/* Контейнер фиксируем снизу */
+.bottom-nav-container {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row; /* кнопка под навбаром */
+  gap: 8px; /* расстояние между навбаром и кнопкой */
+  align-items: center;
+  z-index: 1000;
+  width: 40%;
+}
+
+/* Навбар теперь НЕ фиксированный */
+.bottom-nav {
+  background: white;
+  border-radius: 20px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 10px 0;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+  width: 100%;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: #333;
+  font-size: 12px;
+  transition: color 0.2s ease;
+}
+
+.nav-icon {
+  font-size: 20px;
+  margin-bottom: 4px;
+}
+
+/* активный элемент */
+.nav-item.active {
+  color: #007bff;
+}
+
+.nav-item:hover {
+  color: #007bff;
+}
+
+.cart-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cart-badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  background: #007bff;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 50%;
+  line-height: 1;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Кнопка под навбаром */
+.buy-button-bottom-nav {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  width: 25%;
+  text-align: center;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+  transition: background 0.2s ease;
+}
+
+/* Адаптив */
+@media (min-width: 768px) {
+  .bottom-nav-container {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .bottom-nav-container {
+    width: 70%;
+  }
+  .bottom-nav {
+    border-radius: 50px;
+  }
+}

@@ -57,17 +57,27 @@ export function ProductGrid() {
   };
 
   const handleBuyNow = (product) => {
-    if (!token) {
-      navigate('/login');
-      return;
-    }
     setCurrentProduct(product);
     setShowModal(true);
   };
+  
 
-  const handleView3D = (productId) => {
-    window.open(`/product/${productId}`, '_blank');
+  const handleViewProduct = (product) => {
+    try {
+      if (!product.link) {
+        console.error("Product link is missing!", product);
+        return;
+      }
+  
+      console.log("Navigating to product link:", product.link);
+  
+      // Используем navigate
+      navigate(product.link);
+    } catch (err) {
+      console.error("Error during navigation:", err);
+    }
   };
+  
 
   const handleConfirmPersonalization = (personalizedData) => {
     const productWithPersonalization = {
@@ -114,29 +124,38 @@ export function ProductGrid() {
         {filteredProducts.map((product) => (
           <div key={product.id} className="product-card">
             <div className="product-image">
-              <img src={product.image} alt={product.name} />
-              <div className="badges">
-                {product.isNew && <span className="badge new">{t("productGrid.badges.new")}</span>}
-                {product.isPopular && <span className="badge popular">{t("productGrid.badges.popular")}</span>}
-              </div>
-              <button
-                className={`favorite ${favorites.find(p => p.id === product.id) ? 'favorited' : ''}`}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFavorite(product.id);
-                }}
-              >
-                ♥
-              </button>
-              <div className="actions">
-                <button onClick={() => handleBuyNow(product)} className="buy-now">
-                  {t("productGrid.actions.buyNow")}
-                </button>
-                <button onClick={() => handleView3D(product.id)} className="view3d">
-                  👁
-                </button>
-              </div>
+            <img 
+              src={product.image} 
+              alt={product.name} 
+              onClick={() => handleViewProduct(product)} 
+              style={{ cursor: "pointer" }}
+            />
+            <div className="badges">
+              {product.isNew && <span className="badge new">{t("productGrid.badges.new")}</span>}
+              {product.isPopular && <span className="badge popular">{t("productGrid.badges.popular")}</span>}
             </div>
+            <button
+              className={`favorite ${favorites.find(p => p.id === product.id) ? 'favorited' : ''}`}
+              onClick={(e) => {
+                e.stopPropagation(); // чтобы "♥" не открывал карточку
+                toggleFavorite(product.id);
+              }}
+            >
+              ♥
+            </button>
+            <div className="actions">
+              <button onClick={() => handleBuyNow(product)} className="buy-now">
+                {t("productGrid.actions.buyNow")}
+              </button>
+              <button
+                type="button"
+                onClick={() => handleViewProduct(product)}
+                className="view3d"
+              >
+                👁
+              </button>
+            </div>
+          </div>
             <div className="product-info">
               <h3>{product.name}</h3>
               <p>{product.description}</p>

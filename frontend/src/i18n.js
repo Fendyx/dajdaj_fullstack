@@ -4,6 +4,8 @@ import LanguageDetector from "i18next-browser-languagedetector";
 
 import en from "./locales/en.json";
 import pl from "./locales/pl.json";
+import ru from "./locales/ru.json";
+import uk from "./locales/uk.json"; // <-- именно uk, не ua
 
 i18n
   .use(LanguageDetector) // определяет язык автоматически
@@ -12,8 +14,10 @@ i18n
     resources: {
       en: { translation: en },
       pl: { translation: pl },
+      uk: { translation: uk },
+      ru: { translation: ru }
     },
-    fallbackLng: "en", // язык по умолчанию
+    fallbackLng: "pl", // язык по умолчанию
     interpolation: {
       escapeValue: false, // React сам экранирует
     },

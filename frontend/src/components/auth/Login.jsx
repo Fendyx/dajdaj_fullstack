@@ -1,15 +1,20 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "../../slices/authSlice";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { StyledForm } from "./StyledForm";
 import AuthLayout from "./AuthLayout";
 import loginImage from "../../assets/img/greece_1.png";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const auth = useSelector((state) => state.auth);
+
+  // читаем ?redirect=/cart
+  const params = new URLSearchParams(location.search);
+  const redirect = params.get("redirect");
 
   const [user, setUser] = useState({
     email: "",
@@ -18,9 +23,9 @@ const Login = () => {
 
   useEffect(() => {
     if (auth._id) {
-      navigate("/cart");
+      navigate(redirect || "/"); // если есть redirect → туда, иначе на главную
     }
-  }, [auth._id, navigate]);
+  }, [auth._id, navigate, redirect]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

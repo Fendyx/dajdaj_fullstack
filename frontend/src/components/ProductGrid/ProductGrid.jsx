@@ -160,7 +160,7 @@ export function ProductGrid() {
               <h3>{product.name}</h3>
               <p>{product.description}</p>
               <div className="product-footer">
-                <span className="price">${product.price}</span>
+                <span className="price">{product.price}pln</span>
                 <span className={`tag ${product.category}`}>
                   {product.category === 'female' ? `💗 ${t("productGrid.tags.female")}` : `💪 ${t("productGrid.tags.male")}`}
                 </span>

@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserProfile } from "./slices/authSlice";
+import { fetchUserProfile, setToken } from "./slices/authSlice";
 import { UserProfile } from "./components/UserProfile/UserProfile";
 
 import Checkout from "./Pages/Checkout/Checkout";
@@ -35,11 +35,9 @@ import { UIProvider } from "./context/UIContext";
 function AppContent() {
   const location = useLocation();
 
-  // футер отображается только на этих страницах
   const footerPages = ["/", "/about", "/contacts"];
   const showFooter = footerPages.includes(location.pathname);
 
-  // для нижней навигации оставил твою логику
   const noLayoutPages = ["/cart", "/checkout", "/login", "/register"];
   const hideLayout = noLayoutPages.includes(location.pathname);
 
@@ -84,10 +82,19 @@ function App() {
   const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
-    if (token) {
+    const params = new URLSearchParams(window.location.search);
+    const oauthToken = params.get("token");
+
+    if (oauthToken) {
+      localStorage.setItem("token", oauthToken);
+      dispatch(setToken(oauthToken)); // ⚠️ добавь setToken в authSlice
+      dispatch(fetchUserProfile());
+      window.history.replaceState({}, document.title, window.location.pathname);
+    } else if (localStorage.getItem("token") && !token) {
+      dispatch(setToken(localStorage.getItem("token")));
       dispatch(fetchUserProfile());
     }
-  }, [token, dispatch]);
+  }, [dispatch, token]);
 
   return (
     <div className="App">

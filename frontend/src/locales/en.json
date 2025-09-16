@@ -120,13 +120,13 @@
           "description": "Creating meaningful gifts that celebrate strength, dedication, and the special people in your life."
         },
         "giftGuidance": {
-          "title": "🎁 Gift Guidance",
+          "title": "Gift Guidance",
           "browse": "Browse Figurines",
           "personalize": "How Personalization Works",
           "ideas": "Gift Ideas"
         },
         "customerCare": {
-          "title": "💗 Customer Care",
+          "title": "Customer Care",
           "shipping": "Shipping Info",
           "returns": "Returns & Exchanges",
           "faq": "FAQ",
@@ -153,6 +153,32 @@
       },
       "productDetails": {
         "addToCart": "Add to Cart"
+      },
+
+      "login": {
+        "title": "Login",
+        "email": "Email",
+        "password": "Password",
+        "submit": "Login",
+        "submitting": "Submitting...",
+        "google": "Login with Google",
+        "facebook": "Login with Facebook",
+        "noAccount": "Don't have an account?",
+        "register": "Register"
+      },
+      "register": {
+        "title": "Register",
+        "name": "Name",
+        "email": "Email",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "submit": "Register",
+        "submitting": "Submitting...",
+        "google": "Register with Google",
+        "facebook": "Register with Facebook",
+        "alreadyHaveAccount": "Already have an account?",
+        "login": "Login",
+        "passwordMismatch": "Passwords do not match!"
       }
       
   }

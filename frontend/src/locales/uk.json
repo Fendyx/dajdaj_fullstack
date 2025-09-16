@@ -153,6 +153,31 @@
     },
     "productDetails": {
       "addToCart": "Додати до кошика"
+    },
+    "login": {
+      "title": "Вхід",
+      "email": "Email",
+      "password": "Пароль",
+      "submit": "Увійти",
+      "submitting": "Виконується...",
+      "google": "Увійти через Google",
+      "facebook": "Увійти через Facebook",
+      "noAccount": "Немає акаунта?",
+      "register": "Реєстрація"
+    },
+    "register": {
+      "title": "Реєстрація",
+      "name": "Ім'я",
+      "email": "Email",
+      "password": "Пароль",
+      "confirmPassword": "Підтвердіть пароль",
+      "submit": "Зареєструватися",
+      "submitting": "Виконується...",
+      "google": "Зареєструватися через Google",
+      "facebook": "Зареєструватися через Facebook",
+      "alreadyHaveAccount": "Вже маєте акаунт?",
+      "login": "Вхід",
+      "passwordMismatch": "Паролі не співпадають!"
     }
     
   }

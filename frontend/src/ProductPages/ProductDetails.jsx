@@ -17,14 +17,21 @@ export function ProductDetails() {
 
   // Определяем slug из URL
   const slug = location.pathname.split("/products/")[1];
-  const product = products.find((p) => p.link?.endsWith(slug));
+
+  // Ищем продукт только после загрузки
+  const product = !isLoading ? products.find((p) => p.link?.endsWith(slug)) : null;
 
   const [showModal, setShowModal] = useState(false);
 
-  if (isLoading) return <div>{t("loading") || "Loading..."}</div>;
-  if (!product) return <div>{t("notFound") || "Product not found"}</div>;
+  // Логи для дебага
+  console.log("URL slug:", slug);
+  console.log("All product links:", products.map(p => p.link));
+  console.log("Found product:", product);
 
-  // Открыть модалку
+  if (isLoading) return <div className="loading">{t("loading") || "Loading..."}</div>;
+  if (!product) return <div className="not-found">{t("notFound") || "Product not found"}</div>;
+
+  // Открыть модалку персонализации
   const handleAddToCartClick = () => {
     setShowModal(true);
   };
@@ -41,10 +48,9 @@ export function ProductDetails() {
 
   return (
     <div className="product-details">
-
       {/* Product Info */}
       <h1 className="product-title">{product.name}</h1>
-      <p className="product-description">{product.description}</p>
+      <p className="product-description">{product.descriptionProductPage}</p>
       {product.price && <div className="product-price">{product.price} pln</div>}
 
       {/* Add to Cart Button */}

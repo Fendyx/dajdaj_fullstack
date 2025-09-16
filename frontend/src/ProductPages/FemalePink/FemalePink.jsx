@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ImageCarousel } from '../ImageCarousel';
 import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
+import FemaleModelPoster from "../../assets/img/arnold_wooden_stand_2.png";
 
 export default function FemalePink() {
     const productImages = [
@@ -11,39 +12,52 @@ export default function FemalePink() {
         'https://images.unsplash.com/photo-1731401737053-313b3b8a447c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlbGVzcyUyMGhlYWRwaG9uZXMlMjBkZXRhaWwlMjBjbG9zZSUyMHVwfGVufDF8fHx8MTc1NTgxNzQ0MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
         ];
     
-      const [currentImage, setCurrentImage] = useState(productImages[0]);
-    
-      return (
-        <div className="page">
-          <div className="page-container">
-            <div className="layout">
-              {/* Left Side - Image Gallery */}
-              <div className="left-side">
-                <ImageCarousel
-                  images={productImages}
-                  mainImage={currentImage}
-                  onImageChange={setCurrentImage}
-                />
-                
-                {/* 3D View Button */}
-                <div className="three-d-container">
-                  <ThreeDViewButton />
+        const [currentImage, setCurrentImage] = useState(productImages[0]);
+        const [show3D, setShow3D] = useState(false);
+      
+        const handle3DToggle = () => {
+          setShow3D((prev) => !prev);
+        };
+      
+        return (
+          <div className="page">
+            <div className="page-container">
+              <div className="layout">
+                {/* Left Side - Gallery / 3D */}
+                <div className="left-side">
+                  {show3D ? (
+                    <model-viewer
+                      id="femaleViewer"
+                      src="/3dObj/FemaleBlond/blond.gltf"  // замени на свой путь
+                      shadow-intensity="1"
+                      autoplay
+                      camera-orbit="-90deg 75deg"
+                      camera-controls
+                      disable-zoom
+                      poster={FemaleModelPoster}
+                      style={{ width: "100%", height: "500px" }}
+                    >
+                    </model-viewer>
+                  ) : (
+                    <ImageCarousel
+                      images={productImages}
+                      mainImage={currentImage}
+                      onImageChange={setCurrentImage}
+                    />
+                  )}
+      
+                  {/* 3D View Button */}
+                  <div className="three-d-container">
+                    <ThreeDViewButton onClick={handle3DToggle} is3DMode={show3D} />
+                  </div>
                 </div>
-              </div>
-    
-              {/* Right Side - Product Details */}
-              <div className="right-side">
-              <ProductDetails
-                product={{
-                  name: "Figurine Brunette",
-                  description: "Experience crystal-clear sound...",
-                  price: "$299.99",
-                  image: currentImage,
-                }}
-              />
+      
+                {/* Right Side - Product Details */}
+                <div className="right-side">
+                  <ProductDetails />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      );
-    }
+        );
+      }

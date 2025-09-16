@@ -9,6 +9,10 @@ const products = [
       en: 'Perfect for celebrating victories and achievements',
       pl: 'Idealny do świętowania zwycięstw i osiągnięć'
     },
+    descriptionProductPage: {
+      en: 'Detailed info: this male bodybuilder figurine is perfect for fitness enthusiasts and collectors.',
+      pl: 'Szczegółowe info: ta figuryna kulturysty jest idealna dla miłośników fitness i kolekcjonerów.'
+    },
     isNew: true,
     isPopular: true,
     link: '/products/male-bodybuilder',
@@ -31,13 +35,17 @@ const products = [
   },
   {
     id: '2',
-    name: { en: 'Beer Edition', pl: 'Edycja \"Piwko\"' },
+    name: { en: 'Beer Edition', pl: 'Edycja "Piwko"' },
     price: 45,
     image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/NewPiwoEdycja_withBox.png',
     category: 'male',
     description: {
       en: 'Bench press lying, drink sitting',
       pl: 'Wyciskam na leżąco, piję na siedząco'
+    },
+    descriptionProductPage: {
+      en: 'This special Beer Edition figurine is fun and quirky, perfect for beer lovers and gym enthusiasts alike.',
+      pl: 'Ta specjalna figuryna Edycja Piwko jest zabawna i nietypowa, idealna dla miłośników piwa i fitness.'
     },
     isNew: true,
     link: '/products/beer-edition',
@@ -68,6 +76,10 @@ const products = [
       en: 'For those who inspire with their dedication',
       pl: 'Dla tych, którzy inspirują swoją determinacją'
     },
+    descriptionProductPage: {
+      en: 'Ideal figurine for bodybuilders who love progress and dedication, showcasing the bulk mode spirit.',
+      pl: 'Idealna figuryna dla kulturystów kochających progres i determinację, pokazująca ducha trybu masy.'
+    },
     isPopular: true,
     link: '/products/trust-bulk',
     phrases: {
@@ -97,6 +109,10 @@ const products = [
       en: 'Celebrating comeback stories and resilience',
       pl: 'Świętując powroty i wytrwałość'
     },
+    descriptionProductPage: {
+      en: 'This figurine celebrates leg day dedication and perseverance, perfect for gym warriors.',
+      pl: 'Ta figuryna celebruje poświęcenie na dzień nóg i wytrwałość, idealna dla wojowników siłowni.'
+    },
     link: '/products/never-skip-legs',
     phrases: {
       en: [
@@ -124,6 +140,10 @@ const products = [
     description: {
       en: 'For protectors and role models',
       pl: 'Dla opiekunów i wzorów do naśladowania'
+    },
+    descriptionProductPage: {
+      en: 'A stylish pink female figurine, symbolizing courage, grace, and empowerment for everyone.',
+      pl: 'Stylowa różowa figuryna kobieca, symbolizująca odwagę, grację i wzmocnienie dla wszystkich.'
     },
     link: '/products/female-pink',
     phrases: {
@@ -153,6 +173,10 @@ const products = [
       en: 'Celebrating leadership and grace under pressure',
       pl: 'Świętując przywództwo i grację pod presją'
     },
+    descriptionProductPage: {
+      en: 'Elegant brunette figurine representing leadership, power, and poise for ambitious collectors.',
+      pl: 'Elegancka figuryna brunetki reprezentująca przywództwo, siłę i spokój dla ambitnych kolekcjonerów.'
+    },
     link: '/products/female-brunette',
     phrases: {
       en: [
@@ -180,6 +204,10 @@ const products = [
     description: {
       en: 'For those who leave lasting impressions',
       pl: 'Dla tych, którzy zostawiają trwałe wrażenia'
+    },
+    descriptionProductPage: {
+      en: 'Blonde figurine for legends who inspire and leave a lasting mark, perfect for collectors.',
+      pl: 'Blond figuryna dla legend, które inspirują i zostawiają trwały ślad, idealna dla kolekcjonerów.'
     },
     isPopular: true,
     link: '/products/female-blond',
@@ -209,6 +237,10 @@ const products = [
     description: {
       en: 'Perfect for motivators and dream chasers',
       pl: 'Idealna dla motywatorów i marzycieli'
+    },
+    descriptionProductPage: {
+      en: 'A figurine for dreamers and motivators, inspiring greatness and ambition every day.',
+      pl: 'Figuryna dla marzycieli i motywatorów, inspirująca wielkość i ambicję każdego dnia.'
     },
     link: '/products/special-girl',
     phrases: {

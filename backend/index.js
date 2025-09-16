@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const path = require("path");
+const passport = require("passport");
 require("dotenv").config();
 
 // Импорт маршрутов
@@ -10,6 +11,7 @@ const login = require("./routes/login");
 const stripe = require("./routes/stripe");
 const profile = require("./routes/profile");
 const products = require("./products"); // массив с объектами товаров с мультиязычными полями
+const oauth = require("./routes/oauth");
 
 const app = express();
 
@@ -34,6 +36,9 @@ app.use("/api/login", login);
 app.use("/api/stripe", stripe);
 app.use("/api/user", profile);
 
+app.use(passport.initialize());
+app.use("/api/oauth", oauth);
+
 // Тестовая главная страница
 app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
@@ -52,6 +57,7 @@ app.get("/products", (req, res) => {
       id: product.id,
       name: product.name[lang],
       description: product.description[lang],
+      descriptionProductPage: product.descriptionProductPage[lang], // ✅ новое поле
       price: product.price,
       image: product.image,
       category: product.category,

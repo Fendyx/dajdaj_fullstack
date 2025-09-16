@@ -1,9 +1,7 @@
-// src/slices/authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { url, setHeaders } from "./api";
 
-// Начальное состояние
 const initialState = {
   token: localStorage.getItem("token") || "",
   _id: "",
@@ -31,7 +29,7 @@ export const fetchUserProfile = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get(`${url}/user/profile`, setHeaders());
-      return res.data; // объект пользователя
+      return res.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
     }
@@ -49,12 +47,10 @@ export const registerUser = createAsyncThunk(
         password: values.password,
       });
 
-      const token = res.data; // backend возвращает просто токен
+      const token = res.data;
       localStorage.setItem("token", token);
 
-      // Сразу грузим профиль
       await dispatch(fetchUserProfile());
-
       return token;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -75,9 +71,7 @@ export const loginUser = createAsyncThunk(
       const token = res.data;
       localStorage.setItem("token", token);
 
-      // Сразу грузим профиль
       await dispatch(fetchUserProfile());
-
       return token;
     } catch (error) {
       return rejectWithValue(error.response?.data || error.message);
@@ -93,50 +87,56 @@ const authSlice = createSlice({
       localStorage.removeItem("token");
       return { ...initialState, token: "" };
     },
+    // ✅ Новый редьюсер для установки токена (например, после OAuth)
+    setToken(state, action) {
+      state.token = action.payload;
+      localStorage.setItem("token", action.payload);
+    },
   },
   extraReducers: (builder) => {
-    // Регистрация
-    builder.addCase(registerUser.pending, (state) => {
-      state.registerStatus = "pending";
-    });
-    builder.addCase(registerUser.fulfilled, (state, action) => {
-      state.registerStatus = "success";
-      state.token = action.payload;
-    });
-    builder.addCase(registerUser.rejected, (state, action) => {
-      state.registerStatus = "rejected";
-      state.registerError = action.payload;
-    });
+    builder
+      // Регистрация
+      .addCase(registerUser.pending, (state) => {
+        state.registerStatus = "pending";
+      })
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.registerStatus = "success";
+        state.token = action.payload;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.registerStatus = "rejected";
+        state.registerError = action.payload;
+      })
 
-    // Логин
-    builder.addCase(loginUser.pending, (state) => {
-      state.loginStatus = "pending";
-    });
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      state.loginStatus = "success";
-      state.token = action.payload;
-    });
-    builder.addCase(loginUser.rejected, (state, action) => {
-      state.loginStatus = "rejected";
-      state.loginError = action.payload;
-    });
+      // Логин
+      .addCase(loginUser.pending, (state) => {
+        state.loginStatus = "pending";
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loginStatus = "success";
+        state.token = action.payload;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loginStatus = "rejected";
+        state.loginError = action.payload;
+      })
 
-    // Профиль
-    builder.addCase(fetchUserProfile.pending, (state) => {
-      state.getUserStatus = "pending";
-    });
-    builder.addCase(fetchUserProfile.fulfilled, (state, action) => {
-      state.getUserStatus = "success";
-      Object.assign(state, action.payload);
-      state.userLoaded = true;
-    });
-    builder.addCase(fetchUserProfile.rejected, (state, action) => {
-      state.getUserStatus = "rejected";
-      state.getUserError = action.payload;
-      state.userLoaded = true;
-    });
+      // Профиль
+      .addCase(fetchUserProfile.pending, (state) => {
+        state.getUserStatus = "pending";
+      })
+      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+        state.getUserStatus = "success";
+        Object.assign(state, action.payload);
+        state.userLoaded = true;
+      })
+      .addCase(fetchUserProfile.rejected, (state, action) => {
+        state.getUserStatus = "rejected";
+        state.getUserError = action.payload;
+        state.userLoaded = true;
+      });
   },
 });
 
-export const { logoutUser } = authSlice.actions;
+export const { logoutUser, setToken } = authSlice.actions; // ✅ экспортируем setToken
 export default authSlice.reducer;

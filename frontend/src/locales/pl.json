@@ -154,7 +154,32 @@
       },
       "productDetails": {
         "addToCart": "Dodaj do koszyka"
-      }
+      },
+        "login": {
+          "title": "Logowanie",
+          "email": "Email",
+          "password": "Hasło",
+          "submit": "Zaloguj się",
+          "submitting": "Trwa logowanie...",
+          "google": "Zaloguj przez Google",
+          "facebook": "Zaloguj przez Facebook",
+          "noAccount": "Nie masz konta?",
+          "register": "Rejestracja"
+        },
+        "register": {
+          "title": "Rejestracja",
+          "name": "Imię",
+          "email": "Email",
+          "password": "Hasło",
+          "confirmPassword": "Potwierdź hasło",
+          "submit": "Zarejestruj się",
+          "submitting": "Trwa rejestracja...",
+          "google": "Zarejestruj przez Google",
+          "facebook": "Zarejestruj przez Facebook",
+          "alreadyHaveAccount": "Masz już konto?",
+          "login": "Logowanie",
+          "passwordMismatch": "Hasła nie są zgodne!"
+        }
       
   }
   

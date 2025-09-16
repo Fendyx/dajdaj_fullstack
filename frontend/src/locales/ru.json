@@ -153,5 +153,30 @@
       },
       "productDetails": {
         "addToCart": "Добавить в корзину"
-      }   
+      },
+      "login": {
+        "title": "Вход",
+        "email": "Email",
+        "password": "Пароль",
+        "submit": "Войти",
+        "submitting": "Отправка...",
+        "google": "Войти через Google",
+        "facebook": "Войти через Facebook",
+        "noAccount": "Нет аккаунта?",
+        "register": "Регистрация"
+      },
+      "register": {
+        "title": "Регистрация",
+        "name": "Имя",
+        "email": "Email",
+        "password": "Пароль",
+        "confirmPassword": "Подтвердите пароль",
+        "submit": "Зарегистрироваться",
+        "submitting": "Отправка...",
+        "google": "Зарегистрироваться через Google",
+        "facebook": "Зарегистрироваться через Facebook",
+        "alreadyHaveAccount": "Уже есть аккаунт?",
+        "login": "Вход",
+        "passwordMismatch": "Пароли не совпадают!"
+      }
   }

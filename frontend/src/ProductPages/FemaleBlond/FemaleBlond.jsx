@@ -3,38 +3,59 @@ import { ImageCarousel } from '../ImageCarousel';
 import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
 import './FemaleBlond.css';
+import FemaleModelPoster from "../../assets/img/arnold_wooden_stand_2.png";
 
 export default function FemaleBlond() {
-const productImages = [
+  const productImages = [
     'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/brunetteHair_web.png',
     'https://images.unsplash.com/photo-1704440278730-b420f5892700?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoZWFkcGhvbmVzJTIwc2lkZSUyMHZpZXclMjBwcm9kdWN0JTIwcGhvdG9ncmFwaHl8ZW58MXx8fHwxNzU1ODE3NDI5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     'https://images.unsplash.com/photo-1648316316198-5f15553e55df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoZWFkcGhvbmVzJTIwdG9wJTIwdmlldyUyMHN0dWRpbyUyMHBob3RvZ3JhcGh5fGVufDF8fHx8MTc1NTgxNzQzNnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     'https://images.unsplash.com/photo-1731401737053-313b3b8a447c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aXJlbGVzcyUyMGhlYWRwaG9uZXMlMjBkZXRhaWwlMjBjbG9zZSUyMHVwfGVufDF8fHx8MTc1NTgxNzQ0MHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral'
-    ];
+  ];
 
   const [currentImage, setCurrentImage] = useState(productImages[0]);
+  const [show3D, setShow3D] = useState(false);
+
+  const handle3DToggle = () => {
+    setShow3D((prev) => !prev);
+  };
 
   return (
     <div className="page">
       <div className="page-container">
         <div className="layout">
-          {/* Left Side - Image Gallery */}
+          {/* Left Side - Gallery / 3D */}
           <div className="left-side">
-            <ImageCarousel
-              images={productImages}
-              mainImage={currentImage}
-              onImageChange={setCurrentImage}
-            />
-            
+            {show3D ? (
+              <model-viewer
+                id="femaleViewer"
+                src="/3dObj/FemaleBlond/blond.gltf"  // замени на свой путь
+                shadow-intensity="1"
+                autoplay
+                camera-orbit="-90deg 75deg"
+                camera-controls
+                disable-zoom
+                poster={FemaleModelPoster}
+                style={{ width: "100%", height: "500px" }}
+              >
+              </model-viewer>
+            ) : (
+              <ImageCarousel
+                images={productImages}
+                mainImage={currentImage}
+                onImageChange={setCurrentImage}
+              />
+            )}
+
             {/* 3D View Button */}
             <div className="three-d-container">
-              <ThreeDViewButton />
+              <ThreeDViewButton onClick={handle3DToggle} is3DMode={show3D} />
             </div>
           </div>
 
           {/* Right Side - Product Details */}
           <div className="right-side">
-          <ProductDetails />
+            <ProductDetails />
           </div>
         </div>
       </div>

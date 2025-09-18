@@ -1,100 +1,103 @@
-import React, { useState } from 'react';
+// frontend/src/Pages/Checkout/components/InteractiveMap.jsx
+import React, { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import { useDispatch } from "react-redux";
+import { setPickupPoint } from "../../../slices/cartSlice";
 
-export function InteractiveMap({ locations, selectedLocation, onLocationSelect, mapTitle }) {
-  const [hoveredLocation, setHoveredLocation] = useState(null);
+// фиксим иконку Leaflet (по умолчанию не отображается)
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
 
-  // Простая SVG иконка пина
-  const PinIcon = ({ className }) => (
-    <svg className={className} viewBox="0 0 24 24" width="24" height="24">
-      <path
-        fill="currentColor"
-        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zM12 11.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"
-      />
-    </svg>
-  );
+const InteractiveMap = ({ carrier = "all" }) => {
+  const dispatch = useDispatch();
+  const [points, setPoints] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
+
+  useEffect(() => {
+    const fetchPoints = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `/furgonetka/pickup-points?carrier=${carrier}`
+        );
+        const data = await res.json();
+        if (data.success) {
+          setPoints(data.points);
+        }
+      } catch (err) {
+        console.error("Ошибка загрузки пунктов:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPoints();
+  }, [carrier]);
+
+  const handleSelect = (point) => {
+    setSelected(point);
+    dispatch(setPickupPoint(point));
+  };
+
+  if (loading) return <p>Загрузка пунктов...</p>;
 
   return (
-    <div className="map-container">
-      <div className="map-header">
-        <h4>{mapTitle}</h4>
-        <button className="btn-outline">
-          {/* Простая иконка навигации */}
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 2L15 11H9L12 2ZM12 13L5 21H19L12 13Z" />
-          </svg>
-          <span style={{ marginLeft: '6px' }}>Znajdź najbliższy</span>
-        </button>
-      </div>
+    <div style={{ height: "500px", width: "100%" }}>
+      <MapContainer
+        center={[52.2297, 21.0122]} // Варшава по умолчанию
+        zoom={12}
+        style={{ height: "100%", width: "100%" }}
+      >
+        <TileLayer
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-      <div className="map-area">
-        <div className="map-background">
-          <svg className="map-grid">
-            <defs>
-              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" strokeWidth="0.5"/>
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-
-        {locations.map((location) => (
-          <button
-            key={location.id}
-            className={`location-pin ${
-              selectedLocation === location.id
-                ? 'selected'
-                : hoveredLocation === location.id
-                ? 'hovered'
-                : 'default'
-            }`}
-            style={{
-              left: `${location.x}%`,
-              top: `${location.y}%`
+        {points.map((point) => (
+          <Marker
+            key={point.id}
+            position={[point.latitude, point.longitude]}
+            eventHandlers={{
+              click: () => handleSelect(point),
             }}
-            onClick={() => onLocationSelect(location.id)}
-            onMouseEnter={() => setHoveredLocation(location.id)}
-            onMouseLeave={() => setHoveredLocation(null)}
           >
-            <PinIcon className="location-pin-icon" />
-          </button>
+            <Popup>
+              <strong>{point.name}</strong> <br />
+              {point.address} <br />
+              <em>{point.carrier}</em> <br />
+              <button
+                style={{
+                  marginTop: "5px",
+                  padding: "4px 8px",
+                  cursor: "pointer",
+                }}
+                onClick={() => handleSelect(point)}
+              >
+                Выбрать
+              </button>
+            </Popup>
+          </Marker>
         ))}
+      </MapContainer>
 
-        {selectedLocation && (
-          <div className="location-popup">
-            {(() => {
-              const selected = locations.find(loc => loc.id === selectedLocation);
-              return selected ? (
-                <div>
-                  <h5>{selected.name}</h5>
-                  <p className="address">{selected.address}</p>
-                  <p className="distance">{selected.distance} od Ciebie</p>
-                </div>
-              ) : null;
-            })()}
-          </div>
-        )}
-      </div>
-
-      <div className="location-list">
-        {locations.map((location) => (
-          <button
-            key={location.id}
-            className={`location-item ${
-              selectedLocation === location.id ? 'selected' : ''
-            }`}
-            onClick={() => onLocationSelect(location.id)}
-          >
-            <div className="location-item-content">
-              <div>
-                <h5>{location.name}</h5>
-                <p className="address">{location.address}</p>
-              </div>
-              <span className="distance">{location.distance}</span>
-            </div>
-          </button>
-        ))}
-      </div>
+      {selected && (
+        <div style={{ marginTop: "10px", padding: "10px", border: "1px solid #ccc" }}>
+          ✅ Выбран пункт: <b>{selected.name}</b> ({selected.carrier})<br />
+          {selected.address}
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default InteractiveMap;

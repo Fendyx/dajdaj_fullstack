@@ -1,3 +1,4 @@
+// src/slices/cartSlice.js
 import { createSlice } from "@reduxjs/toolkit";
 import notify from "../utils/notify";
 import i18n from "../i18n"; // импортируем i18n прямо сюда
@@ -8,6 +9,12 @@ const initialState = {
     : [],
   cartTotalQuantity: 0,
   cartTotalAmount: 0,
+
+  // 🔹 новый блок для доставки
+  delivery: {
+    method: null, // "inpost" | "orlen" | "dpd" | "courier"
+    pickupPoint: null, // объект { id, code, name, address, carrier, latitude, longitude }
+  },
 };
 
 const cartSlice = createSlice({
@@ -124,10 +131,27 @@ const cartSlice = createSlice({
         autoClose: 2000,
       });
     },
+
+    // 🔹 новые экшены
+    setDeliveryMethod(state, action) {
+      state.delivery.method = action.payload;
+      state.delivery.pickupPoint = null; // сбрасываем, если поменяли перевозчика
+    },
+
+    setPickupPoint(state, action) {
+      state.delivery.pickupPoint = action.payload;
+    },
   },
 });
 
-export const { addToCart, decreaseCart, removeFromCart, getTotals, clearCart } =
-  cartSlice.actions;
+export const {
+  addToCart,
+  decreaseCart,
+  removeFromCart,
+  getTotals,
+  clearCart,
+  setDeliveryMethod,
+  setPickupPoint,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;

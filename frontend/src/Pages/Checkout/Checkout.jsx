@@ -1,32 +1,24 @@
-import React, { useState } from 'react';
-import { ProgressBar } from './components/ProgressBar';
-import { PersonalInfoForm } from './components/PersonalInfoForm';
-import  DeliveryMethods  from './components/DeliveryMethods';
-import { Summary } from './components/Summary';
-import './Checkout.css';
+import React, { useState } from "react";
+import { useSelector } from "react-redux";
+import { ProgressBar } from "./components/ProgressBar";
+import { PersonalInfoForm } from "./components/PersonalInfoForm";
+import DeliveryMethods from "./components/DeliveryMethods";
+import { Summary } from "./components/Summary";
+import "./Checkout.css";
 
 export default function Checkout() {
-  const steps = ['Dane', 'Dostawa', 'Podsumowanie'];
+  const steps = ["Dane", "Dostawa", "Podsumowanie"];
   const [currentStep, setCurrentStep] = useState(1);
 
   const [formData, setFormData] = useState({
-    defaultDelivery: { name: '', surname: '', email: '', phone: '' },
-    deliveryMethod: '',
-    deliveryDetails: {}
+    defaultDelivery: { name: "", surname: "", email: "", phone: "" },
   });
 
-  const token = localStorage.getItem('token'); // adjust if you store auth differently
+  const token = localStorage.getItem("token");
+  const pickupPoint = useSelector((state) => state.cart.pickupPoint); // ✅ читаем выбранный пункт
 
   const handlePersonalInfoChange = (data) => {
-    setFormData(prev => ({ ...prev, defaultDelivery: data }));
-  };
-
-  const handleDeliveryChange = (method, details) => {
-    setFormData(prev => ({
-      ...prev,
-      deliveryMethod: method,
-      deliveryDetails: details
-    }));
+    setFormData((prev) => ({ ...prev, defaultDelivery: data }));
   };
 
   const validateStep = () => {
@@ -35,39 +27,39 @@ export default function Checkout() {
       return name && surname && email && phone;
     }
     if (currentStep === 2) {
-      return formData.deliveryMethod && Object.keys(formData.deliveryDetails).length > 0;
+      return !!pickupPoint; // ✅ проверяем, что выбран пункт
     }
     return true;
   };
 
   const saveStep1ToBackend = async () => {
     try {
-      await fetch('/api/profile/delivery', {
-        method: 'PUT',
+      await fetch("/api/profile/delivery", {
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(formData.defaultDelivery)
+        body: JSON.stringify(formData.defaultDelivery),
       });
     } catch (err) {
-      console.error('Error saving delivery info:', err);
+      console.error("Error saving delivery info:", err);
     }
   };
 
   const nextStep = async () => {
     if (!validateStep()) {
-      alert('Uzupełnij wszystkie wymagane pola');
+      alert("Uzupełnij wszystkie wymagane pola");
       return;
     }
     if (currentStep === 1) {
       await saveStep1ToBackend();
     }
-    setCurrentStep(prev => prev + 1);
+    setCurrentStep((prev) => prev + 1);
   };
 
   const prevStep = () => {
-    if (currentStep > 1) setCurrentStep(prev => prev - 1);
+    if (currentStep > 1) setCurrentStep((prev) => prev - 1);
   };
 
   return (
@@ -81,16 +73,17 @@ export default function Checkout() {
             onChange={handlePersonalInfoChange}
           />
         )}
-        {currentStep === 2 && (
-          <DeliveryMethods
+
+        {currentStep === 2 && <DeliveryMethods />}
+
+        {currentStep === 3 && (
+          <Summary
             data={{
-              method: formData.deliveryMethod,
-              details: formData.deliveryDetails
+              ...formData,
+              pickupPoint, // ✅ добавляем пункт в итоговый обзор
             }}
-            onChange={handleDeliveryChange}
           />
         )}
-        {currentStep === 3 && <Summary data={formData} />}
       </div>
 
       <div className="checkout-actions">
@@ -107,7 +100,11 @@ export default function Checkout() {
         {currentStep === steps.length && (
           <button
             className="btn btn-success"
-            onClick={() => alert('Zamówienie złożone!')}
+            onClick={() => {
+              // Здесь уже можно делать POST заказа на бэкенд
+              console.log("Заказ:", { ...formData, pickupPoint });
+              alert("Zamówienie złożone!");
+            }}
           >
             Złóż zamówienie
           </button>

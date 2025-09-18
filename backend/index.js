@@ -44,6 +44,39 @@ app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
 
+// Маршрут для теста соединения от Furgonetka.pl
+// Furgonetka.pl может использовать POST-запросы для проверки
+app.post("/", (req, res) => {
+  res.status(200).send("OK");
+});
+
+// ✅ Добавь сюда код для API Furgonetka.pl
+// Этот маршрут будет обрабатывать вебхуки (уведомления) от Furgonetka.pl
+app.post("/api/furgonetka/webhook", (req, res) => {
+  // Проверка токена
+  const receivedToken = req.headers['authorization']; // Или другой способ, согласно документации
+  const expectedToken = process.env.FURGONETKA_WEBHOOK_TOKEN; // Тот, что ты сгенерировал
+
+  if (receivedToken !== `Bearer ${expectedToken}`) {
+    return res.status(403).json({ error: 'Unauthorized: Invalid token' });
+  }
+
+  // Обработка данных
+  console.log("Получено уведомление от Furgonetka.pl:", req.body);
+  
+  res.status(200).send("OK");
+});
+
+// ✅ И, возможно, тебе потребуется настроить CORS для Furgonetka.pl
+// Если Furgonetka.pl будет отправлять запросы с другого домена
+// тебе нужно добавить его в список разрешенных
+// const corsOptions = {
+//   origin: [process.env.CLIENT_URL, 'https://www.furgonetka.pl'],
+//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//   credentials: true,
+// };
+// app.use(cors(corsOptions));
+
 // ✅ Получение списка товаров с мультиязычностью
 app.get("/products", (req, res) => {
   try {

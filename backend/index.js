@@ -12,12 +12,13 @@ const stripe = require("./routes/stripe");
 const profile = require("./routes/profile");
 const products = require("./products"); // массив с объектами товаров с мультиязычными полями
 const oauth = require("./routes/oauth");
+const furgonetkaRoutes = require('./routes/furgonetka');
 
 const app = express();
 
 // Настройки CORS
 const corsOptions = {
-  origin: [process.env.CLIENT_URL, 'https://www.furgonetka.pl'],
+  origin: process.env.CLIENT_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 };
@@ -35,6 +36,7 @@ app.use("/api/register", register);
 app.use("/api/login", login);
 app.use("/api/stripe", stripe);
 app.use("/api/user", profile);
+app.use('/furgonetka', furgonetkaRoutes);
 
 app.use(passport.initialize());
 app.use("/api/oauth", oauth);
@@ -44,57 +46,6 @@ app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
 
-// ✅ Добавляем маршрут для POST-запросов на корневой адрес
-app.post("/", (req, res) => {
-  res.status(200).send("OK");
-});
-
-// Маршрут для синхронизации заказов Furgonetka.pl
-// Этот маршрут должен быть доступен по адресу, который вы введёте
-// в поле "Adres URL" в Furgonetka.pl
-app.post("/api/furgonetka/orders", async (req, res) => {
-  // Добавьте сюда проверку токена для безопасности
-  const receivedToken = req.headers['authorization'];
-  const expectedToken = process.env.FURGONETKA_WEBHOOK_TOKEN;
-
-  if (receivedToken !== `Bearer ${expectedToken}`) {
-    console.log("Ошибка: неверный токен от Furgonetka.pl");
-    return res.status(403).json({ error: 'Unauthorized' });
-  }
-
-  // Здесь вы должны получить список заказов из вашей базы данных
-  const orders = [
-    {
-      "id": "1234",
-      "status": "new",
-      "creationDate": "2023-10-27T10:00:00Z",
-      "customer": {
-        "firstName": "Jan",
-        "lastName": "Kowalski",
-        "email": "jan.kowalski@example.com",
-        "phone": "500123456",
-        "address": {
-          "street": "Kwiatowa 1",
-          "city": "Warszawa",
-          "postalCode": "00-001",
-          "countryCode": "PL"
-        }
-      },
-      "items": [
-        {
-          "name": "Książka",
-          "quantity": 1,
-          "price": 50,
-          "sku": "SKU001"
-        }
-      ]
-    }
-  ];
-
-  res.status(200).json({
-    orders: orders
-  });
-});
 
 // ✅ Получение списка товаров с мультиязычностью
 app.get("/products", (req, res) => {
@@ -109,15 +60,16 @@ app.get("/products", (req, res) => {
       id: product.id,
       name: product.name[lang],
       description: product.description[lang],
-      descriptionProductPage: product.descriptionProductPage[lang],
+      descriptionProductPage: product.descriptionProductPage[lang], // ✅ новое поле
       price: product.price,
       image: product.image,
       category: product.category,
       isNew: product.isNew,
       isPopular: product.isPopular,
       phrases: product.phrases[lang],
-      link: product.link
+      link: product.link // ✅ добавляем ссылку
     }));
+    
 
     res.setHeader("Cache-Control", "public, max-age=3600");
     res.status(200).json(localizedProducts);

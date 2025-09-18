@@ -17,7 +17,7 @@ const app = express();
 
 // Настройки CORS
 const corsOptions = {
-  origin: process.env.CLIENT_URL,
+  origin: [process.env.CLIENT_URL, 'https://www.furgonetka.pl'],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 };
@@ -44,38 +44,57 @@ app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
 
-// Маршрут для теста соединения от Furgonetka.pl
-// Furgonetka.pl может использовать POST-запросы для проверки
+// ✅ Добавляем маршрут для POST-запросов на корневой адрес
 app.post("/", (req, res) => {
   res.status(200).send("OK");
 });
 
-// ✅ Добавь сюда код для API Furgonetka.pl
-// Этот маршрут будет обрабатывать вебхуки (уведомления) от Furgonetka.pl
-app.post("/api/furgonetka/webhook", (req, res) => {
-  // Проверка токена
-  const receivedToken = req.headers['authorization']; // Или другой способ, согласно документации
-  const expectedToken = process.env.FURGONETKA_WEBHOOK_TOKEN; // Тот, что ты сгенерировал
+// Маршрут для синхронизации заказов Furgonetka.pl
+// Этот маршрут должен быть доступен по адресу, который вы введёте
+// в поле "Adres URL" в Furgonetka.pl
+app.post("/api/furgonetka/orders", async (req, res) => {
+  // Добавьте сюда проверку токена для безопасности
+  const receivedToken = req.headers['authorization'];
+  const expectedToken = process.env.FURGONETKA_WEBHOOK_TOKEN;
 
   if (receivedToken !== `Bearer ${expectedToken}`) {
-    return res.status(403).json({ error: 'Unauthorized: Invalid token' });
+    console.log("Ошибка: неверный токен от Furgonetka.pl");
+    return res.status(403).json({ error: 'Unauthorized' });
   }
 
-  // Обработка данных
-  console.log("Получено уведомление от Furgonetka.pl:", req.body);
-  
-  res.status(200).send("OK");
-});
+  // Здесь вы должны получить список заказов из вашей базы данных
+  const orders = [
+    {
+      "id": "1234",
+      "status": "new",
+      "creationDate": "2023-10-27T10:00:00Z",
+      "customer": {
+        "firstName": "Jan",
+        "lastName": "Kowalski",
+        "email": "jan.kowalski@example.com",
+        "phone": "500123456",
+        "address": {
+          "street": "Kwiatowa 1",
+          "city": "Warszawa",
+          "postalCode": "00-001",
+          "countryCode": "PL"
+        }
+      },
+      "items": [
+        {
+          "name": "Książka",
+          "quantity": 1,
+          "price": 50,
+          "sku": "SKU001"
+        }
+      ]
+    }
+  ];
 
-// ✅ И, возможно, тебе потребуется настроить CORS для Furgonetka.pl
-// Если Furgonetka.pl будет отправлять запросы с другого домена
-// тебе нужно добавить его в список разрешенных
-// const corsOptions = {
-//   origin: [process.env.CLIENT_URL, 'https://www.furgonetka.pl'],
-//   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-//   credentials: true,
-// };
-// app.use(cors(corsOptions));
+  res.status(200).json({
+    orders: orders
+  });
+});
 
 // ✅ Получение списка товаров с мультиязычностью
 app.get("/products", (req, res) => {
@@ -90,16 +109,15 @@ app.get("/products", (req, res) => {
       id: product.id,
       name: product.name[lang],
       description: product.description[lang],
-      descriptionProductPage: product.descriptionProductPage[lang], // ✅ новое поле
+      descriptionProductPage: product.descriptionProductPage[lang],
       price: product.price,
       image: product.image,
       category: product.category,
       isNew: product.isNew,
       isPopular: product.isPopular,
       phrases: product.phrases[lang],
-      link: product.link // ✅ добавляем ссылку
+      link: product.link
     }));
-    
 
     res.setHeader("Cache-Control", "public, max-age=3600");
     res.status(200).json(localizedProducts);

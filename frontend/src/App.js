@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile, setToken } from "./slices/authSlice";
 import { UserProfile } from "./components/UserProfile/UserProfile";
 
-import Checkout from "./Pages/Checkout/Checkout";
+// import Checkout from "./Pages/Checkout/Checkout";
 import Home from "./components/Home";
 import NavBar from "./components/NavBar";
 import BottomNav from "./components/BottomNav/BottomNav";
@@ -65,7 +65,7 @@ function AppContent() {
           <Route path="/payment-methodes" element={<PaymentMethods />} />
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/checkout" element={<Checkout />} />
+          {/* <Route path="/checkout" element={<Checkout />} /> */}
           <Route path="/about" element={<div>About Page</div>} />
           <Route path="/contacts" element={<div>Contacts Page</div>} />
           <Route path="*" element={<NotFound />} />

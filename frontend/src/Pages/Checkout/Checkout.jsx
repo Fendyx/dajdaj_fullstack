@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { ProgressBar } from "./components/ProgressBar";
 import { PersonalInfoForm } from "./components/PersonalInfoForm";
-import DeliveryMethods from "./components/DeliveryMethods";
+import { DeliveryMethods } from "./components/DeliveryMethods";
 import { Summary } from "./components/Summary";
 import "./Checkout.css";
 

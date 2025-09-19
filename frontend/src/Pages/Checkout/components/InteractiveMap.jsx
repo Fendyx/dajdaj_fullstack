@@ -6,7 +6,6 @@ import "leaflet/dist/leaflet.css";
 import { useDispatch } from "react-redux";
 import { setPickupPoint } from "../../../slices/cartSlice";
 
-// фиксим иконку Leaflet (по умолчанию не отображается)
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -22,20 +21,43 @@ const InteractiveMap = ({ carrier = "all" }) => {
   const [points, setPoints] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPoints = async () => {
       try {
         setLoading(true);
-        const res = await fetch(
-          `/furgonetka/pickup-points?carrier=${carrier}`
-        );
-        const data = await res.json();
+        setError(null);
+
+        const url = `/furgonetka/pickup-points?carrier=${carrier}`;
+        console.log("[DEBUG] Запрос:", url);
+        const res = await fetch(url);
+
+        console.log("[DEBUG] Статус ответа:", res.status, res.statusText);
+        const text = await res.text();
+        console.log("[DEBUG] Сырые данные:", text.slice(0, 200));
+
+        if (!res.ok) {
+          throw new Error(`API вернул ${res.status}: ${text}`);
+        }
+
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (parseErr) {
+          throw new Error(`Ответ не JSON: ${parseErr.message}`);
+        }
+
+        console.log("[DEBUG] Распарсенный JSON:", data);
+
         if (data.success) {
           setPoints(data.points);
+        } else {
+          throw new Error(data.error || "Неизвестная ошибка API");
         }
       } catch (err) {
-        console.error("Ошибка загрузки пунктов:", err);
+        console.error("[DEBUG] Ошибка загрузки пунктов:", err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
@@ -50,11 +72,12 @@ const InteractiveMap = ({ carrier = "all" }) => {
   };
 
   if (loading) return <p>Загрузка пунктов...</p>;
+  if (error) return <p style={{ color: "red" }}>Ошибка: {error}</p>;
 
   return (
     <div style={{ height: "500px", width: "100%" }}>
       <MapContainer
-        center={[52.2297, 21.0122]} // Варшава по умолчанию
+        center={[52.2297, 21.0122]}
         zoom={12}
         style={{ height: "100%", width: "100%" }}
       >
@@ -76,11 +99,7 @@ const InteractiveMap = ({ carrier = "all" }) => {
               {point.address} <br />
               <em>{point.carrier}</em> <br />
               <button
-                style={{
-                  marginTop: "5px",
-                  padding: "4px 8px",
-                  cursor: "pointer",
-                }}
+                style={{ marginTop: "5px", padding: "4px 8px", cursor: "pointer" }}
                 onClick={() => handleSelect(point)}
               >
                 Выбрать

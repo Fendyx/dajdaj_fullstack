@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import InteractiveMap from "./InteractiveMap";
 
-export default function DeliveryMethods() {
+export function DeliveryMethods() {
   const [carrier, setCarrier] = useState("inpost");
 
   return (

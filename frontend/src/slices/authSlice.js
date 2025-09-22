@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { url, setHeaders } from "./api";
 
+// Initial state. We’ll flip `userLoaded` once we’ve tried loading.
 const initialState = {
   token: localStorage.getItem("token") || "",
   _id: "",
@@ -14,67 +15,61 @@ const initialState = {
   registrationDate: "",
   address: { street: "", city: "", postalCode: "" },
   phoneNumber: "",
-  registerStatus: "",
-  registerError: "",
-  loginStatus: "",
-  loginError: "",
-  getUserStatus: "",
-  getUserError: "",
-  userLoaded: false,
+
+  registerStatus: "idle",
+  registerError: null,
+
+  loginStatus: "idle",
+  loginError: null,
+
+  getUserStatus: "idle",
+  getUserError: null,
+
+  userLoaded: false,      // only true after fetchUserProfile settles
+  isAuthenticated: false, // only true if profile fetch succeeded
 };
 
-// Получение профиля
+// Thunk to fetch profile, using the token from state
 export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
-  async (_, { rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
     try {
       const res = await axios.get(`${url}/user/profile`, setHeaders());
       return res.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
 
-// Регистрация
+// Thunk to register. On success we store token + load profile
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (values, { dispatch, rejectWithValue }) => {
     try {
-      const res = await axios.post(`${url}/register`, {
-        name: values.name,
-        email: values.email,
-        password: values.password,
-      });
-
+      const res = await axios.post(`${url}/register`, values);
       const token = res.data;
-      localStorage.setItem("token", token);
-
+      dispatch(setToken(token));
       await dispatch(fetchUserProfile());
       return token;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
 
-// Логин
+// Thunk to login. On success we store token + load profile
 export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (values, { dispatch, rejectWithValue }) => {
     try {
-      const res = await axios.post(`${url}/login`, {
-        email: values.email,
-        password: values.password,
-      });
-
+      const res = await axios.post(`${url}/login`, values);
       const token = res.data;
-      localStorage.setItem("token", token);
-
+      dispatch(setToken(token));
       await dispatch(fetchUserProfile());
       return token;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || error.message);
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
@@ -83,60 +78,62 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logoutUser(state) {
-      localStorage.removeItem("token");
-      return { ...initialState, token: "" };
-    },
-    // ✅ Новый редьюсер для установки токена (например, после OAuth)
     setToken(state, action) {
       state.token = action.payload;
       localStorage.setItem("token", action.payload);
     },
+    logoutUser(state) {
+      localStorage.removeItem("token");
+      return { ...initialState, token: "" };
+    },
   },
   extraReducers: (builder) => {
     builder
-      // Регистрация
+      // REGISTER
       .addCase(registerUser.pending, (state) => {
         state.registerStatus = "pending";
+        state.registerError = null;
       })
       .addCase(registerUser.fulfilled, (state, action) => {
-        state.registerStatus = "success";
-        state.token = action.payload;
+        state.registerStatus = "succeeded";
       })
       .addCase(registerUser.rejected, (state, action) => {
-        state.registerStatus = "rejected";
+        state.registerStatus = "failed";
         state.registerError = action.payload;
       })
 
-      // Логин
+      // LOGIN
       .addCase(loginUser.pending, (state) => {
         state.loginStatus = "pending";
+        state.loginError = null;
       })
-      .addCase(loginUser.fulfilled, (state, action) => {
-        state.loginStatus = "success";
-        state.token = action.payload;
+      .addCase(loginUser.fulfilled, (state) => {
+        state.loginStatus = "succeeded";
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.loginStatus = "rejected";
+        state.loginStatus = "failed";
         state.loginError = action.payload;
       })
 
-      // Профиль
+      // PROFILE
       .addCase(fetchUserProfile.pending, (state) => {
         state.getUserStatus = "pending";
+        state.getUserError = null;
       })
-      .addCase(fetchUserProfile.fulfilled, (state, action) => {
-        state.getUserStatus = "success";
-        Object.assign(state, action.payload);
+      .addCase(fetchUserProfile.fulfilled, (state, { payload }) => {
+        Object.assign(state, payload);
+        state.isAuthenticated = true;
         state.userLoaded = true;
+        state.getUserStatus = "succeeded";
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
-        state.getUserStatus = "rejected";
         state.getUserError = action.payload;
+        state.isAuthenticated = false;
         state.userLoaded = true;
+        state.getUserStatus = "failed";
       });
   },
 });
 
-export const { logoutUser, setToken } = authSlice.actions; // ✅ экспортируем setToken
+export const { setToken, logoutUser } = authSlice.actions;
 export default authSlice.reducer;

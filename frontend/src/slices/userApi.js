@@ -41,6 +41,13 @@ export const userApi = createApi({
     getUserProfile: builder.query({
       query: () => "/user/profile",
     }),
+    addDeliveryData: builder.mutation({
+      query: (data) => ({
+        url: "/user/delivery",
+        method: "POST",
+        body: data,
+      }),
+    }),    
   }),
 });
 
@@ -50,5 +57,6 @@ export const {
   useGetUserFavoritesQuery,
   useAddFavoriteMutation,
   useRemoveFavoriteMutation,
-  useGetUserProfileQuery, // ← экспортируем новый хук
+  useGetUserProfileQuery,
+  useAddDeliveryDataMutation, 
 } = userApi;

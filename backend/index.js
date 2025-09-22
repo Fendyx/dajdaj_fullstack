@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const axios = require("axios");
 const mongoose = require("mongoose");
 const path = require("path");
 const passport = require("passport");
@@ -12,7 +13,6 @@ const stripe = require("./routes/stripe");
 const profile = require("./routes/profile");
 const products = require("./products"); // массив с объектами товаров с мультиязычными полями
 const oauth = require("./routes/oauth");
-const furgonetkaRoutes = require('./routes/furgonetka');
 
 const app = express();
 
@@ -36,7 +36,6 @@ app.use("/api/register", register);
 app.use("/api/login", login);
 app.use("/api/stripe", stripe);
 app.use("/api/user", profile);
-app.use('/furgonetka', furgonetkaRoutes);
 
 app.use(passport.initialize());
 app.use("/api/oauth", oauth);
@@ -45,6 +44,91 @@ app.use("/api/oauth", oauth);
 app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
+
+app.get("/api/inpost-points", async (req, res) => {
+  try {
+    const { lat, lng, radius } = req.query;
+
+    console.log("Запрос InPost Points с координатами:", lat, lng, "радиус:", radius);
+
+    if (!lat || !lng) {
+      return res.status(400).json({ message: "Не указаны координаты" });
+    }
+
+    const searchRadius = radius || 5000; // по умолчанию 1 км
+    console.log("Используем радиус:", searchRadius);
+
+    const response = await axios.get("https://api-shipx-pl.easypack24.net/v1/points", {
+      params: {
+        type: "parcel_locker",
+        status: "Operating",
+        limit: 100,
+        lat,
+        lng,
+        radius: searchRadius,
+      },
+    });
+
+    console.log("Ответ от InPost API:", response.data?.items?.length, "точек");
+
+    if (!response.data || !response.data.items || response.data.items.length === 0) {
+      console.warn("InPost API вернул пустой список точек");
+      return res.json({ items: [] });
+    }
+
+    // Фильтрация по реальному расстоянию
+    const filtered = response.data.items.filter(p => {
+      if (!p.location?.latitude || !p.location?.longitude) return false;
+
+      const R = 6371e3;
+      const φ1 = (parseFloat(lat) * Math.PI) / 180;
+      const φ2 = (parseFloat(p.location.latitude) * Math.PI) / 180;
+      const Δφ = ((parseFloat(p.location.latitude) - parseFloat(lat)) * Math.PI) / 180;
+      const Δλ = ((parseFloat(p.location.longitude) - parseFloat(lng)) * Math.PI) / 180;
+
+      const a = Math.sin(Δφ / 2) ** 2 +
+                Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+      const distance = R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+
+      console.log(`Проверяем точку ${p.name}: расстояние = ${Math.round(distance)} м`);
+      return distance <= searchRadius;
+    });
+
+    console.log("После фильтрации осталось точек:", filtered.length);
+    res.json({ items: filtered });
+  } catch (error) {
+    console.error("Ошибка получения InPost точек:", error.response?.data || error.message);
+    res.status(500).json({ message: "Ошибка получения InPost точек" });
+  }
+});
+
+// Прокси к Nominatim
+app.get("/api/geocode", async (req, res) => {
+  const { address } = req.query;
+  if (!address) return res.status(400).json({ message: "Не указан адрес" });
+
+  try {
+    console.log("Геокодируем адрес:", address);
+    const encoded = encodeURIComponent(address);
+    const response = await axios.get(
+      `https://nominatim.openstreetmap.org/search?format=json&q=${encoded}&limit=5&addressdetails=1`,
+      {
+        headers: {
+          "User-Agent": "DajdajApp/1.0 (contact@yourdomain.com)",
+          "Referer": "https://dajdaj-fullstack-frontend.onrender.com/"
+        },
+        timeout: 5000
+      }
+    );
+    console.log("Ответ Nominatim:", response.data);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Ошибка геокодирования:", error.response?.status, error.message);
+    res.status(500).json({ message: "Ошибка геокодирования" });
+  }
+});
+
+
 
 
 // ✅ Получение списка товаров с мультиязычностью

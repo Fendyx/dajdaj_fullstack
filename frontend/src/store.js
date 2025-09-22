@@ -1,4 +1,3 @@
-// src/store.js
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
 import cartReducer from "./slices/cartSlice";
@@ -14,6 +13,5 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(userApi.middleware, productsApi.middleware),
+  middleware: (gDM) => gDM().concat(userApi.middleware, productsApi.middleware),
 });

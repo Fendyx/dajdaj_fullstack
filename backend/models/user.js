@@ -1,14 +1,29 @@
+// backend/models/user.js
 const mongoose = require("mongoose");
 
-// Счётчик для автоинкремента
 const counterSchema = new mongoose.Schema({
   name: { type: String, required: true },
   value: { type: Number, default: 0 },
 });
 const Counter = mongoose.model("Counter", counterSchema);
 
+// 👇 схема для данных доставки
+const deliveryDataSchema = new mongoose.Schema({
+  deliveryId: { type: Number, required: true },
+  personalData: {
+    name: String,
+    surname: String,
+    email: String,
+    phone: String,
+  },
+  delivery: {
+    address: String,
+    method: String,
+  },
+});
+
 const userSchema = new mongoose.Schema({
-  clientId: { type: Number, unique: true }, // 👈 наш порядковый id
+  clientId: { type: Number, unique: true },
 
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
@@ -30,40 +45,32 @@ const userSchema = new mongoose.Schema({
   cardNumber: { type: String, unique: true },
   registrationDate: { type: Date, default: Date.now },
 
-  address: {
-    street: { type: String, default: "" },
-    city: { type: String, default: "" },
-    postalCode: { type: String, default: "" },
+  // 👇 новый массив
+  deliveryDatas: {
+    type: [deliveryDataSchema],
+    default: [],
   },
-  phoneNumber: { type: String, default: "" },
 });
 
-// Функция генерации случайных 4 цифр
 function randomFourDigits() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-// Перед сохранением генерируем clientId и cardNumber
 userSchema.pre("save", async function (next) {
   if (this.isNew) {
-    // --- генерируем clientId ---
     const counter = await Counter.findOneAndUpdate(
       { name: "users" },
       { $inc: { value: 1 } },
       { new: true, upsert: true }
     );
-
     this.clientId = counter.value;
 
-    // --- генерируем cardNumber ---
     const prefix = "3333";
     const mid1 = randomFourDigits();
     const mid2 = randomFourDigits();
     const userIdPart = this.clientId.toString().padStart(4, "0");
-
     this.cardNumber = `${prefix} ${mid1} ${mid2} ${userIdPart}`;
   }
-
   next();
 });
 

@@ -3,14 +3,9 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { Provider } from "react-redux";
 import { store } from "./store";
-import "./i18n"; // подключаем конфиг i18next
-
+import "./i18n";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-
-// store.dispatch(productsFetch());
-// store.dispatch(getTotals());
-
 root.render(
   <React.StrictMode>
     <Provider store={store}>

@@ -17,6 +17,39 @@ router.get("/profile", auth, async (req, res) => {
   }
 });
 
+// ✅ Добавить новые данные доставки
+router.post("/delivery", auth, async (req, res) => {
+  try {
+    const { personalData, delivery } = req.body;
+    if (!personalData || !delivery) {
+      return res.status(400).json({ message: "Не переданы personalData или delivery" });
+    }
+
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "Пользователь не найден" });
+
+    // автоинкремент deliveryId
+    const nextId = (user.deliveryDatas?.length || 0) + 1;
+
+    user.deliveryDatas.push({
+      deliveryId: nextId,
+      personalData,
+      delivery,
+    });
+
+    await user.save();
+
+    res.status(201).json({
+      message: "Данные доставки добавлены",
+      deliveryDatas: user.deliveryDatas,
+    });
+  } catch (error) {
+    console.error("Ошибка добавления delivery:", error);
+    res.status(500).json({ message: "Ошибка сервера при добавлении delivery" });
+  }
+});
+
+
 // ✅ Получить историю заказов пользователя
 router.get("/orders", auth, async (req, res) => {
   try {

@@ -2,35 +2,29 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchUserProfile, setToken } from "./slices/authSlice";
-import { UserProfile } from "./components/UserProfile/UserProfile";
 
-// import Checkout from "./Pages/Checkout/Checkout";
-import Home from "./components/Home";
 import NavBar from "./components/NavBar";
-import BottomNav from "./components/BottomNav/BottomNav";
-import Footer from "./components/Footer/Footer";
-import NotFound from "./components/NotFound";
-import Cart from "./components/Cart/Cart";
-import MaleBodybuilder from "./ProductPages/MaleBodybuilder/MaleBodybuilder";
-import BeerEdition from "./ProductPages/BeerEdition/BeerEdition";
-import TrustBulk from "./ProductPages/TrustBulk/TrustBulk";
-import NeverSkipLegs from "./ProductPages/NeverSkipLegs/NeverSkipLegs";
-import FemaleBlond from "./ProductPages/FemaleBlond/FemaleBlond";
-import FemaleBrunette from "./ProductPages/FemaleBrunette/FemaleBrunette";
-import FemalePink from "./ProductPages/FemalePink/FemalePink";
-import SpecialGirl from "./ProductPages/SpecialGirl/SpecialGirl";
-import Register from "./components/auth/Register";
-import Login from "./components/auth/Login";
-import CheckoutSuccess from "./components/CheckoutSuccess/CheckoutSuccess";
-import ReturnPolicy from "./Pages/ReturnPolicy/ReturnPolicy";
-import PaymentMethods from "./Pages/PaymentsMethods/PaymentMethods";
-import Shipping from "./Pages/Shipping/Shipping";
-import Contact from "./Pages/Contact/Contact";
 import ScrollToTop from "./components/ScrollToTop";
 import { ScrollProvider } from "./components/ScrollContext";
 import { UIProvider } from "./context/UIContext";
+
+import Home from "./components/Home";
+import Cart from "./components/Cart/Cart";
+import Checkout from "./Pages/Checkout/Checkout";
+import CheckoutSuccess from "./components/CheckoutSuccess/CheckoutSuccess";
+import Register from "./components/auth/Register";
+import Login from "./components/auth/Login";
+import { UserProfile } from "./components/UserProfile/UserProfile";
+import NotFound from "./components/NotFound";
+import BottomNav from "./components/BottomNav/BottomNav";
+import Footer from "./components/Footer/Footer";
+import PrivateRoute from "./components/PrivateRoute";
+
+import MaleBodybuilder from "./ProductPages/MaleBodybuilder/MaleBodybuilder";
+import BeerEdition from "./ProductPages/BeerEdition/BeerEdition";
+// …other imports…
 
 function AppContent() {
   const location = useLocation();
@@ -48,26 +42,42 @@ function AppContent() {
       <div className="content-container">
         <Routes>
           <Route path="/" element={<Home />} />
+
+          {/* Public */}
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout-success" element={<CheckoutSuccess />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/products/male-bodybuilder" element={<MaleBodybuilder />} />
-          <Route path="/products/beer-edition" element={<BeerEdition />} />
-          <Route path="/products/trust-bulk" element={<TrustBulk />} />
-          <Route path="/products/never-skip-legs" element={<NeverSkipLegs />} />
-          <Route path="/products/female-blond" element={<FemaleBlond />} />
-          <Route path="/products/female-brunette" element={<FemaleBrunette />} />
-          <Route path="/products/female-pink" element={<FemalePink />} />
-          <Route path="/products/special-girl" element={<SpecialGirl />} />
-          <Route path="/return-policy" element={<ReturnPolicy />} />
-          <Route path="/payment-methodes" element={<PaymentMethods />} />
-          <Route path="/shipping" element={<Shipping />} />
-          <Route path="/contact" element={<Contact />} />
-          {/* <Route path="/checkout" element={<Checkout />} /> */}
-          <Route path="/about" element={<div>About Page</div>} />
-          <Route path="/contacts" element={<div>Contacts Page</div>} />
+
+          {/* Protected */}
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <UserProfile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <PrivateRoute>
+                <Checkout />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Other */}
+          <Route
+            path="/products/male-bodybuilder"
+            element={<MaleBodybuilder />}
+          />
+          <Route
+            path="/products/beer-edition"
+            element={<BeerEdition />}
+          />
+          {/* …more routes… */}
+
           <Route path="*" element={<NotFound />} />
         </Routes>
       </div>
@@ -79,22 +89,27 @@ function AppContent() {
 
 function App() {
   const dispatch = useDispatch();
-  const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
+    // On cold start, rehydrate token & fetch profile if present
     const params = new URLSearchParams(window.location.search);
     const oauthToken = params.get("token");
+    const storedToken = oauthToken || localStorage.getItem("token");
 
-    if (oauthToken) {
-      localStorage.setItem("token", oauthToken);
-      dispatch(setToken(oauthToken)); // ⚠️ добавь setToken в authSlice
+    if (storedToken) {
+      dispatch(setToken(storedToken));
       dispatch(fetchUserProfile());
-      window.history.replaceState({}, document.title, window.location.pathname);
-    } else if (localStorage.getItem("token") && !token) {
-      dispatch(setToken(localStorage.getItem("token")));
-      dispatch(fetchUserProfile());
+
+      // clean up OAuth-redirect param
+      if (oauthToken) {
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+      }
     }
-  }, [dispatch, token]);
+  }, [dispatch]);
 
   return (
     <div className="App">

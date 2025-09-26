@@ -9,9 +9,10 @@ require("dotenv").config();
 // Импорт маршрутов
 const register = require("./routes/register");
 const login = require("./routes/login");
-const stripe = require("./routes/stripe");
+const stripeRoutes = require("./routes/stripe");
+const stripeWebhook = require("./routes/webhook");
 const profile = require("./routes/profile");
-const products = require("./products"); // массив с объектами товаров с мультиязычными полями
+const products = require("./products");
 const oauth = require("./routes/oauth");
 
 const app = express();
@@ -23,10 +24,17 @@ const corsOptions = {
   credentials: true,
 };
 
-// Middleware
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+
+// ⚠️ webhook до express.json()
+app.use("/api/stripe", stripeWebhook);
+
+// теперь можно json
 app.use(express.json());
+
+// checkout-session уже после json
+app.use("/api/stripe", stripeRoutes);
 
 // Статические файлы (изображения товаров)
 app.use("/images", express.static(path.join(__dirname, "images")));
@@ -34,7 +42,6 @@ app.use("/images", express.static(path.join(__dirname, "images")));
 // Маршруты API
 app.use("/api/register", register);
 app.use("/api/login", login);
-app.use("/api/stripe", stripe);
 app.use("/api/user", profile);
 
 app.use(passport.initialize());
@@ -45,19 +52,15 @@ app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
 
+// ✅ InPost точки
 app.get("/api/inpost-points", async (req, res) => {
   try {
     const { lat, lng, radius } = req.query;
-
-    console.log("Запрос InPost Points с координатами:", lat, lng, "радиус:", radius);
-
     if (!lat || !lng) {
       return res.status(400).json({ message: "Не указаны координаты" });
     }
 
-    const searchRadius = radius || 5000; // по умолчанию 1 км
-    console.log("Используем радиус:", searchRadius);
-
+    const searchRadius = radius || 5000;
     const response = await axios.get("https://api-shipx-pl.easypack24.net/v1/points", {
       params: {
         type: "parcel_locker",
@@ -69,15 +72,7 @@ app.get("/api/inpost-points", async (req, res) => {
       },
     });
 
-    console.log("Ответ от InPost API:", response.data?.items?.length, "точек");
-
-    if (!response.data || !response.data.items || response.data.items.length === 0) {
-      console.warn("InPost API вернул пустой список точек");
-      return res.json({ items: [] });
-    }
-
-    // Фильтрация по реальному расстоянию
-    const filtered = response.data.items.filter(p => {
+    const filtered = (response.data.items || []).filter((p) => {
       if (!p.location?.latitude || !p.location?.longitude) return false;
 
       const R = 6371e3;
@@ -86,15 +81,14 @@ app.get("/api/inpost-points", async (req, res) => {
       const Δφ = ((parseFloat(p.location.latitude) - parseFloat(lat)) * Math.PI) / 180;
       const Δλ = ((parseFloat(p.location.longitude) - parseFloat(lng)) * Math.PI) / 180;
 
-      const a = Math.sin(Δφ / 2) ** 2 +
-                Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+      const a =
+        Math.sin(Δφ / 2) ** 2 +
+        Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
       const distance = R * (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
 
-      console.log(`Проверяем точку ${p.name}: расстояние = ${Math.round(distance)} м`);
       return distance <= searchRadius;
     });
 
-    console.log("После фильтрации осталось точек:", filtered.length);
     res.json({ items: filtered });
   } catch (error) {
     console.error("Ошибка получения InPost точек:", error.response?.data || error.message);
@@ -102,34 +96,29 @@ app.get("/api/inpost-points", async (req, res) => {
   }
 });
 
-// Прокси к Nominatim
+// ✅ Прокси к Nominatim
 app.get("/api/geocode", async (req, res) => {
   const { address } = req.query;
   if (!address) return res.status(400).json({ message: "Не указан адрес" });
 
   try {
-    console.log("Геокодируем адрес:", address);
     const encoded = encodeURIComponent(address);
     const response = await axios.get(
       `https://nominatim.openstreetmap.org/search?format=json&q=${encoded}&limit=5&addressdetails=1`,
       {
         headers: {
           "User-Agent": "DajdajApp/1.0 (contact@yourdomain.com)",
-          "Referer": "https://dajdaj-fullstack-frontend.onrender.com/"
+          "Referer": "https://dajdaj-fullstack-frontend.onrender.com/",
         },
-        timeout: 5000
+        timeout: 5000,
       }
     );
-    console.log("Ответ Nominatim:", response.data);
     res.json(response.data);
   } catch (error) {
     console.error("Ошибка геокодирования:", error.response?.status, error.message);
     res.status(500).json({ message: "Ошибка геокодирования" });
   }
 });
-
-
-
 
 // ✅ Получение списка товаров с мультиязычностью
 app.get("/products", (req, res) => {
@@ -139,21 +128,19 @@ app.get("/products", (req, res) => {
     }
 
     const lang = req.query.lang === "pl" ? "pl" : "en";
-
-    const localizedProducts = products.map(product => ({
+    const localizedProducts = products.map((product) => ({
       id: product.id,
       name: product.name[lang],
       description: product.description[lang],
-      descriptionProductPage: product.descriptionProductPage[lang], // ✅ новое поле
+      descriptionProductPage: product.descriptionProductPage[lang],
       price: product.price,
       image: product.image,
       category: product.category,
       isNew: product.isNew,
       isPopular: product.isPopular,
       phrases: product.phrases[lang],
-      link: product.link // ✅ добавляем ссылку
+      link: product.link,
     }));
-    
 
     res.setHeader("Cache-Control", "public, max-age=3600");
     res.status(200).json(localizedProducts);
@@ -168,10 +155,7 @@ const uri = process.env.DB_URI;
 const port = process.env.PORT || 5000;
 
 mongoose
-  .connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ Успешное подключение к MongoDB..."))
   .catch((error) => console.error("❌ Ошибка подключения к MongoDB:", error.message));
 

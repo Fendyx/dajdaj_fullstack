@@ -167,53 +167,69 @@ export function UserProfile() {
 
         <div className="up-accordion">
           {/* Orders */}
-          <AccordionItem
-            title={t("userProfile.orders")}
-            count={loadingOrders ? "..." : orders?.length || 0}
-          >
-            {loadingOrders ? (
-              <div className="up-loading-state">
-                <div className="up-loading-spinner"></div>
-                <span>{t("userProfile.loadingOrders")}</span>
+<AccordionItem
+  title={t("userProfile.orders")}
+  count={loadingOrders ? "..." : orders?.length || 0}
+>
+  {loadingOrders ? (
+    <div className="up-loading-state">
+      <div className="up-loading-spinner"></div>
+      <span>{t("userProfile.loadingOrders")}</span>
+    </div>
+  ) : errorOrders ? (
+    <div>
+      <p className="up-error-message">{t("userProfile.failedOrders")}</p>
+      <p style={{ color: "#666", fontSize: "12px" }}>
+        {t("userProfile.status")}: {errorOrders?.originalStatus}
+        <br />
+        {t("userProfile.error")}: {errorOrders?.data?.message}
+      </p>
+    </div>
+  ) : orders && orders.length > 0 ? (
+    <div className="up-orders-list">
+      {orders.map((order) => (
+        <div key={order._id} className="up-order-card">
+          <div className="up-order-header">
+            <span className="up-order-id">
+              {t("userProfile.order")} #{order._id}
+            </span>
+            <span
+              className={`up-order-status ${order.status.toLowerCase()}`}
+            >
+              {order.status}
+            </span>
+          </div>
+
+          <div className="up-order-details">
+            <span>{new Date(order.createdAt).toLocaleDateString()}</span>
+            <span>{order.totalPrice} PLN</span>
+          </div>
+
+          <div className="up-order-products">
+            {order.products.map((p, idx) => (
+              <div key={idx} className="up-order-product">
+                <img src={p.image} alt={p.name} width="50" />
+                <div className="up-order-product-info">
+                  <span>{p.name}</span>
+                  <span>
+                    {p.quantity} × {p.price} PLN
+                  </span>
+                </div>
               </div>
-            ) : errorOrders ? (
-              <div>
-                <p className="up-error-message">{t("userProfile.failedOrders")}</p>
-                <p style={{ color: "#666", fontSize: "12px" }}>
-                  {t("userProfile.status")}: {errorOrders?.originalStatus}
-                  <br />
-                  {t("userProfile.error")}: {errorOrders?.data?.message}
-                </p>
-              </div>
-            ) : orders && orders.length > 0 ? (
-              <div className="up-orders-list">
-                {orders.map((order) => (
-                  <div key={order._id} className="up-order-card">
-                    <div className="up-order-header">
-                      <span className="up-order-id">
-                        {t("userProfile.order")} #{order._id}
-                      </span>
-                      <span
-                        className={`up-order-status ${order.status.toLowerCase()}`}
-                      >
-                        {order.status}
-                      </span>
-                    </div>
-                    <div className="up-order-details">
-                      <span>{new Date(order.createdAt).toLocaleDateString()}</span>
-                      <span>${order.totalAmount.toFixed(2)}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="up-empty-state">
-                <div className="up-empty-icon">📦</div>
-                <p>{t("userProfile.noOrders")}</p>
-                <p className="up-empty-description">{t("userProfile.ordersDesc")}</p>
-              </div>
-            )}
-          </AccordionItem>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="up-empty-state">
+      <div className="up-empty-icon">📦</div>
+      <p>{t("userProfile.noOrders")}</p>
+      <p className="up-empty-description">{t("userProfile.ordersDesc")}</p>
+    </div>
+  )}
+</AccordionItem>
+
 
           {/* Discounts */}
           <AccordionItem

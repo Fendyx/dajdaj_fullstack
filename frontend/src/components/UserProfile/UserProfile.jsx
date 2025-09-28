@@ -10,9 +10,8 @@ import {
 } from "../../slices/userApi";
 import { logoutUser } from "../../slices/authSlice";
 import AccordionItem from "./AccordionItem";
-import { CardGallery } from "./CardGallery";
+import { CardGallery } from "./components/CardGallery/CardGallery";
 import "./UserProfile.css";
-import "./UserCard.css";
 
 function ImageWithFallback({ src, alt }) {
   const [error, setError] = useState(false);
@@ -28,7 +27,9 @@ function ImageWithFallback({ src, alt }) {
 export function UserProfile() {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language || "en";
-  const { token, name, email } = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth);
+  const { token, name, email } = auth;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
@@ -103,28 +104,6 @@ export function UserProfile() {
     );
   }
 
-  // Mock profiles for gallery
-  const mockProfiles = [
-    {
-      id: "1",
-      fullName: name || "User Name",
-      email: email || "user@example.com",
-      cardNumber: "4532 1234 5678 0001",
-      registrationDate: new Date().toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      }),
-      address: {
-        street: "123 Main Street",
-        city: "New York, NY",
-        postalCode: "10001",
-        country: "United States",
-      },
-      phoneNumber: "+1 (555) 123-4567",
-    },
-  ];
-
   const handleEditProfile = (profileId) => {
     console.log(`Editing profile: ${profileId}`);
   };
@@ -148,11 +127,12 @@ export function UserProfile() {
       </div>
 
       <CardGallery
-        profiles={mockProfiles}
-        onEditProfile={handleEditProfile}
-        onLogOut={handleLogOutProfile}
-        onAddNewProfile={handleAddNewProfile}
-      />
+  profiles={[auth]} // оборачиваем в массив, потому что CardGallery ждёт массив
+  onEditProfile={handleEditProfile}
+  onLogOut={handleLogOutProfile}
+  onAddNewProfile={handleAddNewProfile}
+/>
+
 
       <div className="up-card">
         <div className="up-header">

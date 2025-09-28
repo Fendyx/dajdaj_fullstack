@@ -2,7 +2,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile, setToken } from "./slices/authSlice";
 
 import NavBar from "./components/NavBar";
@@ -10,9 +10,14 @@ import ScrollToTop from "./components/ScrollToTop";
 import { ScrollProvider } from "./components/ScrollContext";
 import { UIProvider } from "./context/UIContext";
 
+//test
+import { UserCard } from "./components/UserProfile/components/UserCard/UserCard";
+import { UserProfileCard } from "./components/UserProfile/components/UserProfileCard/UserProfileCard";
+
 import Home from "./components/Home";
 import Cart from "./components/Cart/Cart";
 import Checkout from "./Pages/Checkout/Checkout";
+import SelectDeliveryMethod from "./Pages/Checkout/components/selectDeliveryMethod/SelectDeliveryMethod";
 import CheckoutSuccess from "./components/CheckoutSuccess/CheckoutSuccess";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
@@ -75,6 +80,22 @@ function AppContent() {
           <Route
             path="/products/beer-edition"
             element={<BeerEdition />}
+          />
+           <Route
+            path="/select-delivery-method"
+            element={<SelectDeliveryMethod />}
+          />
+          <Route
+            path="/usercard"
+            element={
+              <UserCard profile={useSelector((state) => state.auth)} />
+            }
+          />
+          <Route
+            path="/user-profile-card"
+            element={
+              <UserProfileCard profile={useSelector((state) => state.auth)} />
+            }
           />
           {/* …more routes… */}
 

@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { url, setHeaders } from "./api";
 
-// Initial state. We’ll flip `userLoaded` once we’ve tried loading.
+// Initial state
 const initialState = {
   token: localStorage.getItem("token") || "",
   _id: "",
@@ -15,6 +15,7 @@ const initialState = {
   registrationDate: "",
   address: { street: "", city: "", postalCode: "" },
   phoneNumber: "",
+  deliveryDatas: [],
 
   registerStatus: "idle",
   registerError: null,
@@ -25,6 +26,9 @@ const initialState = {
   getUserStatus: "idle",
   getUserError: null,
 
+  updateStatus: "idle",
+  updateError: null,
+
   userLoaded: false,      // only true after fetchUserProfile settles
   isAuthenticated: false, // only true if profile fetch succeeded
 };
@@ -32,9 +36,24 @@ const initialState = {
 // Thunk to fetch profile, using the token from state
 export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
       const res = await axios.get(`${url}/user/profile`, setHeaders());
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || err.message);
+    }
+  }
+);
+
+// Thunk to update profile
+export const updateUserProfile = createAsyncThunk(
+  "auth/updateUserProfile",
+  async (values, { dispatch, rejectWithValue }) => {
+    try {
+      const res = await axios.put(`${url}/user/update`, values, setHeaders());
+      // после обновления сразу тянем свежий профиль
+      await dispatch(fetchUserProfile());
       return res.data;
     } catch (err) {
       return rejectWithValue(err.response?.data || err.message);
@@ -94,7 +113,7 @@ const authSlice = createSlice({
         state.registerStatus = "pending";
         state.registerError = null;
       })
-      .addCase(registerUser.fulfilled, (state, action) => {
+      .addCase(registerUser.fulfilled, (state) => {
         state.registerStatus = "succeeded";
       })
       .addCase(registerUser.rejected, (state, action) => {
@@ -115,7 +134,7 @@ const authSlice = createSlice({
         state.loginError = action.payload;
       })
 
-      // PROFILE
+      // PROFILE FETCH
       .addCase(fetchUserProfile.pending, (state) => {
         state.getUserStatus = "pending";
         state.getUserError = null;
@@ -131,6 +150,21 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.userLoaded = true;
         state.getUserStatus = "failed";
+      })
+
+      // PROFILE UPDATE
+      .addCase(updateUserProfile.pending, (state) => {
+        state.updateStatus = "pending";
+        state.updateError = null;
+      })
+      .addCase(updateUserProfile.fulfilled, (state, { payload }) => {
+        state.updateStatus = "succeeded";
+        // локально обновляем, но всё равно fetchUserProfile сделает полное обновление
+        Object.assign(state, payload);
+      })
+      .addCase(updateUserProfile.rejected, (state, action) => {
+        state.updateStatus = "failed";
+        state.updateError = action.payload;
       });
   },
 });

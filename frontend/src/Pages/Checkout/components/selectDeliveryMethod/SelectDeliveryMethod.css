@@ -1,0 +1,79 @@
+.shipping-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 100px;
+}
+
+.radio-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.radio-button {
+  width: 24px;
+  height: 24px;
+  border: 2px solid #007bff;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #007bff;
+  cursor: pointer;
+}
+
+.radio-dot {
+  width: 12px;
+  height: 12px;
+  background: white;
+  border-radius: 50%;
+}
+
+.shipping-card {
+  border: 1px solid #007bff;
+  border-radius: 8px;
+  padding: 16px;
+  background: #eaf3ff;
+  box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
+}
+
+.shipping-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.shipping-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.shipping-card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #666;
+  letter-spacing: 0.05em;
+}
+
+.shipping-card-name {
+  margin-top: 4px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.shipping-card-address {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.shipping-card-phone {
+  border-top: 1px solid #ddd;
+  padding-top: 8px;
+}
+
+.shipping-card-phone-value {
+  margin-top: 4px;
+  font-size: 14px;
+}

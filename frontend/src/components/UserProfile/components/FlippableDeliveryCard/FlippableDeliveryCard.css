@@ -70,7 +70,11 @@
   
   .uc-card-button {
     padding: 0.35rem 0.7rem;
-    font-size: 0.8rem;
+    display: flex;
+    flex-direction: row; /* явно указываем горизонтальное расположение */
+    align-items: center; /* вертикальное выравнивание текста и иконки */
+    gap: 0.5rem; /* расстояние между иконкой и текстом */
+    font-size: 1rem;
     background: rgba(255, 255, 255, 0.1);
     border: none;
     color: white;
@@ -79,6 +83,13 @@
     cursor: pointer;
     transition: background 0.3s;
   }
+  
+  .uc-button-icon {
+    width: 1em;   /* можно задать размер */
+    height: 1em;  /* чтобы иконка не растягивалась */
+    flex-shrink: 0; /* чтобы иконка не сжималась */
+  }
+  
   
   .uc-card-button:hover {
     background: rgba(255, 255, 255, 0.25);

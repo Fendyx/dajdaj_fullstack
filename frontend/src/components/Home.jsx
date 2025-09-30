@@ -10,6 +10,7 @@ import { ScrollContext } from "./ScrollContext";
 
 import "react-toastify/dist/ReactToastify.css";
 import { HeroSection } from "./HeroSection/HeroSection";
+import LottieTestHero from "./LottieTestHero/LottieTestHero";
 import { ProductGrid } from "./ProductGrid/ProductGrid";
 
 const Home = () => {
@@ -59,7 +60,7 @@ const Home = () => {
         <p>Unexpected error occurred...</p>
       ) : (
         <>
-          <HeroSection />
+          <LottieTestHero />
           <ProductGrid
             products={products}
             onCardClick={handleCardClick}

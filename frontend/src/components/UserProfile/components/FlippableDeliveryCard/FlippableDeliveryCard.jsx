@@ -1,17 +1,15 @@
-import { useState } from "react";
 import "./FlippableDeliveryCard.css";
 import { useSelector } from "react-redux";
 import EditProfileModal from "../../../EditProfileModal/EditProfileModal";
 
-export function FlippableDeliveryCard({ profile, onEdit, onLogOut, isActive = true, style }) {
-  const [isFlipped, setIsFlipped] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const handleFlip = () => {
-    if (isActive) setIsFlipped(!isFlipped);
-  };
-
-  // Источник данных: либо пропс, либо Redux
+export function FlippableDeliveryCard({
+  profile,
+  onEdit,
+  onLogOut,
+  isFlipped = false,
+  style,
+  onClick
+}) {
   const auth = useSelector((state) => state.auth);
   const data = profile || auth;
 
@@ -38,7 +36,7 @@ export function FlippableDeliveryCard({ profile, onEdit, onLogOut, isActive = tr
       <div className="uc-card-container" style={style}>
         <div
           className={`uc-flippable-card ${isFlipped ? "uc-flipped" : ""}`}
-          onClick={handleFlip}
+          onClick={onClick}
         >
           {/* Front Side */}
           <div className="uc-card-front">
@@ -110,11 +108,11 @@ export function FlippableDeliveryCard({ profile, onEdit, onLogOut, isActive = tr
         </div>
       </div>
 
-      {/* Модалка редактирования */}
+      {/* Edit modal fallback */}
       {!onEdit && (
         <EditProfileModal
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          isOpen={false}
+          onClose={() => {}}
         />
       )}
     </>

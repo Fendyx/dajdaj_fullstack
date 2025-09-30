@@ -1,0 +1,69 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    }
+    
+    .modal-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 0;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    box-shadow: none;
+    color: #333;
+    position: relative;
+    }
+    
+    .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: #eee;
+    border: none;
+    font-size: 1.5rem;
+    color: #333;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    }
+    
+    .modal-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.4rem;
+    }
+    
+    .modal-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    }
+    
+    .delivery-card {
+    position: relative;
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 0.5rem;
+    }
+    
+    .delivery-card.selected {
+    border-color: #007bff;
+    background-color: #c3e0ff;
+    }
+    
+    .delivery-radio {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    transform: scale(1.5);
+    cursor: pointer;
+    }
+    

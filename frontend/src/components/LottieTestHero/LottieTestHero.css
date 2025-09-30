@@ -1,0 +1,126 @@
+.appp-container {
+  position: relative;
+  margin-top: 80px;
+  height: 50vh;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+  overflow: hidden;
+}
+
+.glass-block {
+  position: absolute;
+  display: flex;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  width: 20vw;
+  height: 75px;
+  top: 50px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-weight: bold;
+  color: #000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 50px;
+  width: 50%;
+  z-index: 1;
+  height: 100%;
+}
+
+.center-content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+.center-content p {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.glass-button {
+  background: rgba(255, 255, 255, 0.2);
+  width: 30%;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #111;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.glass-button:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.right-lottie {
+  width: 40%;
+  z-index: 0;
+  height: 100%;
+}
+
+
+@media(max-width: 1200px){
+    .appp-container {
+        flex-direction: column;
+        height: auto;
+      }
+      .glass-block {
+        position: relative;
+        width: 20vw;
+        height: 10vh;
+        margin-left: 20%;
+      }
+      .center-content {
+        width: 100%;
+        z-index: 1;
+        height: auto;
+        padding: 20px;
+      }
+      .right-lottie {
+        width: 100%;
+        display: flex;
+        z-index: 0;
+        height: 100%;
+      }
+      
+}
+
+
+@media(max-width: 692px){
+    .glass-block {
+        position: relative;
+        width: auto;
+        height: 12vh;
+        margin-left: 10%;
+        width: 100%;
+        padding: 5px;
+      }
+}
+
+@media (max-width: 665px) {
+    .appp-container {
+        margin-top: 70px;
+      }
+}
+
+

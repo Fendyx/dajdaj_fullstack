@@ -6,9 +6,17 @@ import "./CardGallery.css";
 
 export function CardGallery({ profiles, onEditProfile, onLogOut, onAddNewProfile }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [flipStates, setFlipStates] = useState({});
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
   const minSwipeDistance = 50;
+
+  const toggleFlip = (index) => {
+    setFlipStates((prev) => ({
+      ...prev,
+      [index]: !prev[index],
+    }));
+  };
 
   const cards = [];
 
@@ -20,11 +28,8 @@ export function CardGallery({ profiles, onEditProfile, onLogOut, onAddNewProfile
       const mainCardData = {
         ...profile,
         delivery: mainDelivery.delivery,
-        personalData: mainDelivery.personalData
+        personalData: mainDelivery.personalData,
       };
-
-      console.log(mainCardData);
-
 
       cards.push(
         <UserCard
@@ -50,7 +55,6 @@ export function CardGallery({ profiles, onEditProfile, onLogOut, onAddNewProfile
           profile={extraCardData}
           onEdit={() => onEditProfile?.(profile.id)}
           onLogOut={() => onLogOut?.()}
-          isActive={false}
         />
       );
     });
@@ -109,6 +113,7 @@ export function CardGallery({ profiles, onEditProfile, onLogOut, onAddNewProfile
            onTouchEnd={onTouchEnd}>
         {cards.map((card, index) => {
           const isActive = index === activeIndex;
+          const isFlipped = !!flipStates[index];
           const offset = index - activeIndex;
           const xOffset = offset * 40;
           const scaleStep = 0.05;
@@ -126,7 +131,11 @@ export function CardGallery({ profiles, onEditProfile, onLogOut, onAddNewProfile
                   visibility,
                   pointerEvents: isActive ? 'auto' : 'none',
                 }}>
-              {React.cloneElement(card, { isActive })}
+              {React.cloneElement(card, {
+                isActive,
+                isFlipped,
+                onClick: () => toggleFlip(index),
+              })}
             </div>
           );
         })}

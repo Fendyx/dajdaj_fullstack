@@ -13,6 +13,8 @@ import { UIProvider } from "./context/UIContext";
 //test
 import { UserCard } from "./components/UserProfile/components/UserCard/UserCard";
 import { UserProfileCard } from "./components/UserProfile/components/UserProfileCard/UserProfileCard";
+import LottiePlayer from "./components/LottieTestHero/LottiePlayer";
+import LottieTestHero from "./components/LottieTestHero/LottieTestHero";
 
 import Home from "./components/Home";
 import Cart from "./components/Cart/Cart";
@@ -37,7 +39,7 @@ function AppContent() {
   const footerPages = ["/", "/about", "/contacts"];
   const showFooter = footerPages.includes(location.pathname);
 
-  const noLayoutPages = ["/cart", "/checkout", "/login", "/register"];
+  const noLayoutPages = ["/cart", "/checkout", "/login", "/register", "/select-delivery-method"];
   const hideLayout = noLayoutPages.includes(location.pathname);
 
   return (
@@ -96,6 +98,14 @@ function AppContent() {
             element={
               <UserProfileCard profile={useSelector((state) => state.auth)} />
             }
+          />
+          <Route
+            path="/lottie"
+            element={<LottiePlayer />}
+          />
+          <Route
+            path="/lottie-hero"
+            element={<LottieTestHero />}
           />
           {/* …more routes… */}
 

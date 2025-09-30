@@ -1,16 +1,17 @@
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import EditProfileModal from "../../../EditProfileModal/EditProfileModal";
+import { useState } from "react";
 
-export function UserCard({ profile, onEdit, onLogOut, isActive = true, style }) {
-  const [isFlipped, setIsFlipped] = useState(false);
+export function UserCard({
+  profile,
+  onEdit,
+  onLogOut,
+  isFlipped = false,
+  style,
+  onClick
+}) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleFlip = () => {
-    if (isActive) setIsFlipped(!isFlipped);
-  };
-
-  // Источник данных: либо пропс, либо Redux
   const auth = useSelector((state) => state.auth);
   const data = profile || auth;
 
@@ -38,7 +39,7 @@ export function UserCard({ profile, onEdit, onLogOut, isActive = true, style }) 
       <div className="uc-card-container" style={style}>
         <div
           className={`uc-flippable-card ${isFlipped ? "uc-flipped" : ""}`}
-          onClick={handleFlip}
+          onClick={onClick}
         >
           {/* Front Side */}
           <div className="uc-card-front">
@@ -65,8 +66,7 @@ export function UserCard({ profile, onEdit, onLogOut, isActive = true, style }) 
                   className="uc-card-button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    if (onEdit) onEdit();
-                    else setIsModalOpen(true);
+                    setIsModalOpen(true);
                   }}
                 >
                   <svg className="uc-button-icon" viewBox="0 0 24 24" fill="currentColor">
@@ -150,7 +150,6 @@ export function UserCard({ profile, onEdit, onLogOut, isActive = true, style }) 
         </div>
       </div>
 
-      {/* Модалка редактирования */}
       {!onEdit && (
         <EditProfileModal
           isOpen={isModalOpen}

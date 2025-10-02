@@ -128,7 +128,7 @@ const Cart = () => {
               {auth._id ? (
                 <button
                   className="cart-proceed"
-                  onClick={() => navigate("/select-delivery-method")}
+                  onClick={() => navigate("/checkout-stripe")}
                 >
                   {t("cart.summary.proceedToDelivery")}
                 </button>

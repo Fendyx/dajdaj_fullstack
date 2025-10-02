@@ -1,7 +1,7 @@
 const express = require("express");
 const Stripe = require("stripe");
 const Order = require("../models/order");
-const products = require("../products"); // массив всех товаров
+const products = require("../products");
 require("dotenv").config();
 
 const router = express.Router();
@@ -29,9 +29,8 @@ router.post(
       const session = event.data.object;
       try {
         const userId = session.metadata.userId;
-        const cart = JSON.parse(session.metadata.cart); // [{id, qty}]
+        const cart = JSON.parse(session.metadata.cart);
 
-        // Подтягиваем полные данные о товарах из products.js
         const productsFull = cart.map((item) => {
           const product = products.find((p) => p.id === item.id);
           return {
@@ -42,11 +41,23 @@ router.post(
           };
         });
 
+        const deliveryInfo = {
+          method: session.metadata.delivery_method,
+          name: session.metadata.delivery_name,
+          phone: session.metadata.delivery_phone,
+          address: {
+            street: session.metadata.delivery_street,
+            city: session.metadata.delivery_city,
+            postalCode: session.metadata.delivery_postal,
+          },
+        };
+
         const order = new Order({
           userId,
           products: productsFull,
           totalPrice: session.amount_total / 100,
           status: "paid",
+          deliveryInfo,
         });
 
         await order.save();

@@ -87,7 +87,7 @@ const Register = () => {
         <button
           type="button"
           className="google-btn"
-          onClick={() => window.location.href = "https://dajdaj-fullstack-backend.onrender.com/api/oauth/google"}
+          onClick={() => window.location.href = "http://localhost:5000/api/oauth/google"}
         >
           <FcGoogle size={20} style={{ marginRight: "8px" }} />
           {t("register.google")}
@@ -96,7 +96,7 @@ const Register = () => {
         <button
           type="button"
           className="facebook-btn"
-          onClick={() => window.location.href = "https://dajdaj-fullstack-backend.onrender.com/api/oauth/facebook"}
+          onClick={() => window.location.href = "http://localhost:5000/api/oauth/facebook"}
         >
           <FaFacebookF size={20} style={{ marginRight: "8px" }} />
           {t("register.facebook")}

@@ -5,6 +5,9 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile, setToken } from "./slices/authSlice";
 
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
 import NavBar from "./components/NavBar";
 import ScrollToTop from "./components/ScrollToTop";
 import { ScrollProvider } from "./components/ScrollContext";
@@ -15,6 +18,8 @@ import { UserCard } from "./components/UserProfile/components/UserCard/UserCard"
 import { UserProfileCard } from "./components/UserProfile/components/UserProfileCard/UserProfileCard";
 import LottiePlayer from "./components/LottieTestHero/LottiePlayer";
 import LottieTestHero from "./components/LottieTestHero/LottieTestHero";
+import CheckoutStripe from "./components/CheckoutStripe/CheckoutStripe";
+import SelectedCartItem from "./components/SelectedCartItem/SelectedCartItem";
 
 import Home from "./components/Home";
 import Cart from "./components/Cart/Cart";
@@ -33,13 +38,15 @@ import MaleBodybuilder from "./ProductPages/MaleBodybuilder/MaleBodybuilder";
 import BeerEdition from "./ProductPages/BeerEdition/BeerEdition";
 // …other imports…
 
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
+
 function AppContent() {
   const location = useLocation();
 
   const footerPages = ["/", "/about", "/contacts"];
   const showFooter = footerPages.includes(location.pathname);
 
-  const noLayoutPages = ["/cart", "/checkout", "/login", "/register", "/select-delivery-method"];
+  const noLayoutPages = ["/cart", "/checkout", "/login", "/register", "/select-delivery-method", "/checkout-stripe"];
   const hideLayout = noLayoutPages.includes(location.pathname);
 
   return (
@@ -70,6 +77,14 @@ function AppContent() {
             element={
               <PrivateRoute>
                 <Checkout />
+              </PrivateRoute>
+            }
+          />
+           <Route
+            path="/checkout-stripe"
+            element={
+              <PrivateRoute>
+                <CheckoutStripe />
               </PrivateRoute>
             }
           />
@@ -106,6 +121,10 @@ function AppContent() {
           <Route
             path="/lottie-hero"
             element={<LottieTestHero />}
+          />
+          <Route
+            path="/selected-item"
+            element={<SelectedCartItem />}
           />
           {/* …more routes… */}
 
@@ -148,7 +167,9 @@ function App() {
         <ScrollProvider>
           <UIProvider>
             <ToastContainer />
-            <AppContent />
+            <Elements stripe={stripePromise}>
+              <AppContent />
+            </Elements>
           </UIProvider>
         </ScrollProvider>
       </BrowserRouter>

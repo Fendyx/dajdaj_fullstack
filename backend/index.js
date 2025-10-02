@@ -14,6 +14,8 @@ const stripeWebhook = require("./routes/webhook");
 const profile = require("./routes/profile");
 const products = require("./products");
 const oauth = require("./routes/oauth");
+const paymentIntent = require("./routes/paymentIntent");
+
 
 const app = express();
 
@@ -32,6 +34,8 @@ app.use("/api/stripe", stripeWebhook);
 
 // теперь можно json
 app.use(express.json());
+
+app.use("/api/stripe", paymentIntent);
 
 // checkout-session уже после json
 app.use("/api/stripe", stripeRoutes);
@@ -108,7 +112,7 @@ app.get("/api/geocode", async (req, res) => {
       {
         headers: {
           "User-Agent": "DajdajApp/1.0 (contact@yourdomain.com)",
-          "Referer": "https://dajdaj-fullstack-frontend.onrender.com/",
+          "Referer": "http://localhost:3000/",
         },
         timeout: 5000,
       }

@@ -4,7 +4,7 @@ import { url } from "../slices/api";
 import { useTranslation } from "react-i18next";
 import {FaCreditCard} from "react-icons/fa";
 
-const PayButton = ({ cartItems, children }) => {
+const PayButton = ({ cartItems, deliveryInfo, children }) => {
   const user = useSelector((state) => state.auth);
 
   const compactCart = cartItems.map(item => ({
@@ -17,6 +17,7 @@ const PayButton = ({ cartItems, children }) => {
       .post(`${url}/stripe/create-checkout-session`, {
         cartItems: compactCart,
         userId: user._id,
+        deliveryInfo, // 👈 передаём данные доставки
       })
       .then(res => {
         if (res.data.url) {
@@ -33,6 +34,7 @@ const PayButton = ({ cartItems, children }) => {
     </div>
   );
 };
+
 
 
 export default PayButton;

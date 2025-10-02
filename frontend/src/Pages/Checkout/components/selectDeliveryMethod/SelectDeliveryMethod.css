@@ -1,6 +1,6 @@
 .shipping-card-wrapper {
   /* text-align: center; */
-  padding-top: 80px;
+  /* padding-top: 80px; */
   }
   
   .shipping-title {
@@ -116,9 +116,6 @@
     background-color: #3399ff;
     color: #fff;
     border: none;
-  }
-  .proceed-wrapper button:hover{
-    background-color: #3399ff;
   }
   
   .credit-icon {

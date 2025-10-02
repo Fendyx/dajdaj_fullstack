@@ -2,7 +2,7 @@
   "name": "frontend",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://localhost:5000",
+  "proxy": "https://dajdaj-fullstack-backend.onrender.com",
   "dependencies": {
     "@google/model-viewer": "^4.1.0",
     "@react-google-maps/api": "^2.20.7",

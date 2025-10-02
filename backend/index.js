@@ -112,7 +112,7 @@ app.get("/api/geocode", async (req, res) => {
       {
         headers: {
           "User-Agent": "DajdajApp/1.0 (contact@yourdomain.com)",
-          "Referer": "http://localhost:3000/",
+          "Referer": "https://dajdaj-fullstack-frontend.onrender.com/",
         },
         timeout: 5000,
       }

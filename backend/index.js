@@ -6,7 +6,8 @@ const path = require("path");
 const passport = require("passport");
 require("dotenv").config();
 
-// Импорт маршрутов
+console.log("🚀 Starting Dajdaj backend...");
+
 const register = require("./routes/register");
 const login = require("./routes/login");
 const stripeRoutes = require("./routes/stripe");
@@ -16,48 +17,53 @@ const products = require("./products");
 const oauth = require("./routes/oauth");
 const paymentIntent = require("./routes/paymentIntent");
 
-
 const app = express();
 
-// Настройки CORS
+// CORS
 const corsOptions = {
   origin: process.env.CLIENT_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   credentials: true,
 };
-
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
+console.log("🌐 CORS configured for:", process.env.CLIENT_URL);
 
-// ⚠️ webhook до express.json()
+// Webhook BEFORE express.json
 app.use("/api/stripe", stripeWebhook);
+console.log("📡 Stripe webhook route mounted");
 
-// теперь можно json
+// JSON parser
 app.use(express.json());
+console.log("📦 express.json middleware enabled");
 
+// Stripe routes
 app.use("/api/stripe", paymentIntent);
+console.log("💳 Stripe paymentIntent route mounted");
 
-// checkout-session уже после json
 app.use("/api/stripe", stripeRoutes);
+console.log("🧾 Stripe checkout-session route mounted");
 
-// Статические файлы (изображения товаров)
+// Static files
 app.use("/images", express.static(path.join(__dirname, "images")));
+console.log("🖼️ Static image route mounted");
 
-// Маршруты API
+// API routes
 app.use("/api/register", register);
 app.use("/api/login", login);
 app.use("/api/user", profile);
-
-app.use(passport.initialize());
 app.use("/api/oauth", oauth);
+console.log("🔐 Auth routes mounted");
 
-// Тестовая главная страница
+// Root test
 app.get("/", (req, res) => {
+  console.log("📥 GET / hit");
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
 
-// ✅ InPost точки
+// InPost points
 app.get("/api/inpost-points", async (req, res) => {
+  console.log("📥 GET /api/inpost-points", req.query);
   try {
     const { lat, lng, radius } = req.query;
     if (!lat || !lng) {
@@ -95,13 +101,14 @@ app.get("/api/inpost-points", async (req, res) => {
 
     res.json({ items: filtered });
   } catch (error) {
-    console.error("Ошибка получения InPost точек:", error.response?.data || error.message);
+    console.error("❌ Ошибка получения InPost точек:", error.response?.data || error.message);
     res.status(500).json({ message: "Ошибка получения InPost точек" });
   }
 });
 
-// ✅ Прокси к Nominatim
+// Geocode proxy
 app.get("/api/geocode", async (req, res) => {
+  console.log("📥 GET /api/geocode", req.query);
   const { address } = req.query;
   if (!address) return res.status(400).json({ message: "Не указан адрес" });
 
@@ -119,13 +126,14 @@ app.get("/api/geocode", async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
-    console.error("Ошибка геокодирования:", error.response?.status, error.message);
+    console.error("❌ Ошибка геокодирования:", error.response?.status, error.message);
     res.status(500).json({ message: "Ошибка геокодирования" });
   }
 });
 
-// ✅ Получение списка товаров с мультиязычностью
+// Products
 app.get("/products", (req, res) => {
+  console.log("📥 GET /products");
   try {
     if (!products || products.length === 0) {
       return res.status(404).json({ message: "Товары не найдены" });
@@ -149,12 +157,12 @@ app.get("/products", (req, res) => {
     res.setHeader("Cache-Control", "public, max-age=3600");
     res.status(200).json(localizedProducts);
   } catch (error) {
-    console.error("Ошибка при получении товаров:", error);
+    console.error("❌ Ошибка при получении товаров:", error);
     res.status(500).json({ message: "Ошибка сервера при загрузке товаров" });
   }
 });
 
-// Подключение к MongoDB
+// MongoDB
 const uri = process.env.DB_URI;
 const port = process.env.PORT || 5000;
 
@@ -163,7 +171,7 @@ mongoose
   .then(() => console.log("✅ Успешное подключение к MongoDB..."))
   .catch((error) => console.error("❌ Ошибка подключения к MongoDB:", error.message));
 
-// Запуск сервера
+// Start server
 app.listen(port, () => {
   console.log(`🟢 Сервер запущен на порту: ${port}...`);
 });

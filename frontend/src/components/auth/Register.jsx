@@ -87,7 +87,8 @@ const Register = () => {
         <button
           type="button"
           className="google-btn"
-          onClick={() => window.location.href = `${import.meta.env.REACT_APP_API_URL}/api/oauth/google`}
+          onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/api/oauth/google`}
+
         >
           <FcGoogle size={20} style={{ marginRight: "8px" }} />
           {t("register.google")}
@@ -96,7 +97,8 @@ const Register = () => {
         <button
           type="button"
           className="facebook-btn"
-          onClick={() => window.location.href = `${import.meta.env.REACT_APP_API_URL}/api/oauth/facebook`}
+          onClick={() => window.location.href = `${process.env.REACT_APP_API_URL}/api/oauth/facebook`}
+
         >
           <FaFacebookF size={20} style={{ marginRight: "8px" }} />
           {t("register.facebook")}

@@ -85,6 +85,40 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
       pr.canMakePayment().then((result) => {
         if (result) {
           setPaymentRequest(pr);
+          pr.on("paymentmethod", async (ev) => {
+            try {
+              const { data } = await axios.post(
+                `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
+                {
+                  cartItems,
+                  deliveryInfo: formData,
+                },
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+          
+              const clientSecret = data?.clientSecret;
+          
+              const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: ev.paymentMethod.id,
+                return_url: `${window.location.origin}/checkout-success`,
+              });
+          
+              if (error) {
+                console.error("❌ Google Pay failed:", error.message);
+                ev.complete("fail");
+              } else {
+                console.log("✅ Google Pay succeeded:", paymentIntent.id);
+                ev.complete("success");
+              }
+            } catch (err) {
+              console.error("❌ Google Pay error:", err.message);
+              ev.complete("fail");
+            }
+          });          
         }
       });
     }

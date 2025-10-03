@@ -1,0 +1,31 @@
+.page-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .page-header p {
+    margin: 4px 0 12px;
+    color: #666;
+  }
+  
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .table th, .table td {
+    padding: 10px 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .table th {
+    background-color: #f9f9f9;
+    font-weight: 600;
+  }
+  
+  .text-red {
+    color: #d9534f;
+  }
+  

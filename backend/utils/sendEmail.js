@@ -1,30 +1,38 @@
-const nodemailer = require('nodemailer');
+const nodemailer = require("nodemailer");
+require("dotenv").config();
 
-// Транспорт через SMTP Zoho
 const transporter = nodemailer.createTransport({
-  host: 'smtp.zoho.eu',
+  host: "smtp.zoho.com",
   port: 465,
-  secure: true, // SSL
+  secure: true,
   auth: {
-    user: 'info@dajdaj.pl',
-    pass: process.env.ZOHO_APP_PASSWORD, // НЕ обычный пароль!
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
-// Отправка письма
-const mailOptions = {
-  from: '"DAJDAJ" <info@dajdaj.pl>',
-  to: 'customer@example.com',
-  subject: 'Спасибо за заказ!',
-  html: `
-    <h1>Ваш заказ подтвержден</h1>
-    <p>Спасибо за покупку, мы скоро отправим фигурку 🧸</p>
-  `,
+const sendOrderEmail = async (order) => {
+  const mailOptions = {
+    from: `"Dajdaj Shop" <${process.env.EMAIL}>`,
+    to: order.deliveryInfo.email,
+    subject: `✅ Ваш заказ #${order._id} подтверждён`,
+    html: `
+      <h2>Спасибо за заказ, ${order.deliveryInfo.name}!</h2>
+      <p>Метод доставки: ${order.deliveryInfo.method}</p>
+      <p>Сумма: ${order.totalPrice} PLN</p>
+      <ul>
+        ${order.products.map(p => `<li>${p.name} x ${p.quantity}</li>`).join("")}
+      </ul>
+      <p>Телефон для связи: ${order.deliveryInfo.phone}</p>
+    `,
+  };
+
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("📧 Email sent:", info.response);
+  } catch (err) {
+    console.error("❌ Email error:", err.message);
+  }
 };
 
-transporter.sendMail(mailOptions, (error, info) => {
-  if (error) {
-    return console.error('Ошибка отправки:', error);
-  }
-  console.log('Письмо отправлено:', info.response);
-});
+module.exports = sendOrderEmail;

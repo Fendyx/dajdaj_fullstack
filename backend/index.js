@@ -119,7 +119,7 @@ app.get("/api/geocode", async (req, res) => {
       {
         headers: {
           "User-Agent": "DajdajApp/1.0 (contact@yourdomain.com)",
-          "Referer": "https://dajdaj-fullstack-frontend.onrender.com/",
+          "Referer": process.env.CLIENT_URL.replace(/\/$/, "") + "/",
         },
         timeout: 5000,
       }
@@ -170,6 +170,33 @@ mongoose
   .connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("✅ Успешное подключение к MongoDB..."))
   .catch((error) => console.error("❌ Ошибка подключения к MongoDB:", error.message));
+
+  app.get("/test-email", async (req, res) => {
+    const sendOrderEmail = require("./utils/sendEmail");
+  
+    const mockOrder = {
+      _id: "TEST123",
+      deliveryInfo: {
+        name: "Test User",
+        method: "InPost",
+        phone: "+48 123 456 789",
+        email: process.env.EMAIL,
+      },
+      totalPrice: 99,
+      products: [
+        { name: "Test Product", quantity: 1 },
+        { name: "Another Item", quantity: 2 },
+      ],
+    };
+  
+    try {
+      await sendOrderEmail(mockOrder);
+      res.send("✅ Test email sent");
+    } catch (err) {
+      console.error("❌ Test email error:", err.message);
+      res.status(500).send("Email failed");
+    }
+  });  
 
 // Start server
 app.listen(port, () => {

@@ -1,0 +1,21 @@
+.page-header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+  
+  .page-header p {
+    margin: 4px 0 12px;
+    color: #666;
+  }
+  
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .tab-btn {
+    padding: 6px 12px;
+  }
+  

@@ -13,13 +13,13 @@ import ScrollToTop from "./components/ScrollToTop";
 import { ScrollProvider } from "./components/ScrollContext";
 import { UIProvider } from "./context/UIContext";
 
-//test
 import { UserCard } from "./components/UserProfile/components/UserCard/UserCard";
 import { UserProfileCard } from "./components/UserProfile/components/UserProfileCard/UserProfileCard";
 import LottiePlayer from "./components/LottieTestHero/LottiePlayer";
 import LottieTestHero from "./components/LottieTestHero/LottieTestHero";
 import CheckoutStripe from "./components/CheckoutStripe/CheckoutStripe";
 import SelectedCartItem from "./components/SelectedCartItem/SelectedCartItem";
+import AdminLayout from "./layouts/AdminLayout";
 
 import Home from "./components/Home";
 import Cart from "./components/Cart/Cart";
@@ -36,103 +36,97 @@ import PrivateRoute from "./components/PrivateRoute";
 
 import MaleBodybuilder from "./ProductPages/MaleBodybuilder/MaleBodybuilder";
 import BeerEdition from "./ProductPages/BeerEdition/BeerEdition";
-// …other imports…
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 function AppContent() {
   const location = useLocation();
+  const auth = useSelector((state) => state.auth); // ✅ always called
 
   const footerPages = ["/", "/about", "/contacts"];
   const showFooter = footerPages.includes(location.pathname);
 
-  const noLayoutPages = ["/cart", "/checkout", "/login", "/register", "/select-delivery-method", "/checkout-stripe"];
+  const noLayoutPages = [
+    "/cart",
+    "/checkout",
+    "/login",
+    "/register",
+    "/select-delivery-method",
+    "/checkout-stripe",
+  ];
   const hideLayout = noLayoutPages.includes(location.pathname);
+
+  const adminPages = ["/admin"];
+  const isAdminPage = adminPages.includes(location.pathname);
 
   return (
     <>
-      <NavBar />
-      <ScrollToTop />
-      <div className="content-container">
+      {isAdminPage ? (
         <Routes>
-          <Route path="/" element={<Home />} />
-
-          {/* Public */}
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout-success" element={<CheckoutSuccess />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-
-          {/* Protected */}
-          <Route
-            path="/profile"
-            element={
-              <PrivateRoute>
-                <UserProfile />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/checkout"
-            element={
-              <PrivateRoute>
-                <Checkout />
-              </PrivateRoute>
-            }
-          />
-           <Route
-            path="/checkout-stripe"
-            element={
-              <PrivateRoute>
-                <CheckoutStripe />
-              </PrivateRoute>
-            }
-          />
-
-          {/* Other */}
-          <Route
-            path="/products/male-bodybuilder"
-            element={<MaleBodybuilder />}
-          />
-          <Route
-            path="/products/beer-edition"
-            element={<BeerEdition />}
-          />
-           <Route
-            path="/select-delivery-method"
-            element={<SelectDeliveryMethod />}
-          />
-          <Route
-            path="/usercard"
-            element={
-              <UserCard profile={useSelector((state) => state.auth)} />
-            }
-          />
-          <Route
-            path="/user-profile-card"
-            element={
-              <UserProfileCard profile={useSelector((state) => state.auth)} />
-            }
-          />
-          <Route
-            path="/lottie"
-            element={<LottiePlayer />}
-          />
-          <Route
-            path="/lottie-hero"
-            element={<LottieTestHero />}
-          />
-          <Route
-            path="/selected-item"
-            element={<SelectedCartItem />}
-          />
-          {/* …more routes… */}
-
-          <Route path="*" element={<NotFound />} />
+          <Route path="/admin" element={<AdminLayout />} />
         </Routes>
-      </div>
-      {!hideLayout && <BottomNav />}
-      {showFooter && <Footer />}
+      ) : (
+        <>
+          <NavBar />
+          <ScrollToTop />
+          <div className="content-container">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/checkout-success" element={<CheckoutSuccess />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/profile"
+                element={
+                  <PrivateRoute>
+                    <UserProfile />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/checkout"
+                element={
+                  <PrivateRoute>
+                    <Checkout />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/checkout-stripe"
+                element={
+                  <PrivateRoute>
+                    <CheckoutStripe />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/products/male-bodybuilder"
+                element={<MaleBodybuilder />}
+              />
+              <Route
+                path="/products/beer-edition"
+                element={<BeerEdition />}
+              />
+              <Route
+                path="/select-delivery-method"
+                element={<SelectDeliveryMethod />}
+              />
+              <Route path="/usercard" element={<UserCard profile={auth} />} />
+              <Route
+                path="/user-profile-card"
+                element={<UserProfileCard profile={auth} />}
+              />
+              <Route path="/lottie" element={<LottiePlayer />} />
+              <Route path="/lottie-hero" element={<LottieTestHero />} />
+              <Route path="/selected-item" element={<SelectedCartItem />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </div>
+          {!hideLayout && <BottomNav />}
+          {showFooter && <Footer />}
+        </>
+      )}
     </>
   );
 }
@@ -141,7 +135,6 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // On cold start, rehydrate token & fetch profile if present
     const params = new URLSearchParams(window.location.search);
     const oauthToken = params.get("token");
     const storedToken = oauthToken || localStorage.getItem("token");
@@ -150,13 +143,8 @@ function App() {
       dispatch(setToken(storedToken));
       dispatch(fetchUserProfile());
 
-      // clean up OAuth-redirect param
       if (oauthToken) {
-        window.history.replaceState(
-          {},
-          document.title,
-          window.location.pathname
-        );
+        window.history.replaceState({}, document.title, window.location.pathname);
       }
     }
   }, [dispatch]);

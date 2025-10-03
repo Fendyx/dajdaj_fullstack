@@ -1,11 +1,13 @@
 const express = require("express");
 const Stripe = require("stripe");
 const products = require("../products");
+const auth = require("../middleware/auth");
 require("dotenv").config();
 
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_KEY);
 
+// 🔧 Парсинг адреса из строки
 function parseAddress(rawAddress) {
   if (!rawAddress || typeof rawAddress !== "string") return {};
   const parts = rawAddress.split(",").map(p => p.trim()).filter(Boolean);
@@ -15,12 +17,19 @@ function parseAddress(rawAddress) {
   return { street, city, postalCode };
 }
 
-router.post("/create-payment-intent", async (req, res) => {
+// ✅ Создание PaymentIntent с авторизацией
+router.post("/create-payment-intent", auth, async (req, res) => {
   try {
     console.log("📨 Incoming request to /create-payment-intent");
     console.log("🧾 Raw body:", JSON.stringify(req.body, null, 2));
 
-    const { cartItems, userId, deliveryInfo } = req.body;
+    const { cartItems, deliveryInfo } = req.body;
+    const userId = req.user?._id;
+
+    if (!userId || userId.length !== 24) {
+      console.warn("⚠️ Invalid or missing userId from token");
+      return res.status(401).json({ error: "Unauthorized or invalid userId" });
+    }
 
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       console.warn("⚠️ cartItems is missing or empty");
@@ -64,10 +73,10 @@ router.post("/create-payment-intent", async (req, res) => {
   }
 });
 
+// 🔧 Тестовый роут
 router.get("/test", (req, res) => {
   console.log("🧪 /create-payment-intent test route hit");
   res.send("✅ /create-payment-intent route is alive and responding");
 });
-
 
 module.exports = router;

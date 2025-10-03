@@ -1,4 +1,4 @@
-export const url = "https://dajdaj-fullstack-backend.onrender.com/api";
+export const url = `${process.env.REACT_APP_API_URL}/api`;
 
 export const setHeaders = () => {
   const token = localStorage.getItem("token");

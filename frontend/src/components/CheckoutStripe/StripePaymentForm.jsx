@@ -145,57 +145,99 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    const { data } = await axios.post("/api/stripe/create-payment-intent", {
-      cartItems,
-      userId: formData.userId,
-      deliveryInfo: formData,
-    });
+    console.log("🧾 Starting payment submission...");
+    console.log("🛒 Cart items:", cartItems);
+    console.log("📦 Delivery info:", formData);
+    console.log("💳 Selected method:", selected);
+  
+    let clientSecret;
+  
+    try {
+      const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`, {
+        cartItems,
+        userId: formData.userId,
+        deliveryInfo: formData,
+      });
+  
+      clientSecret = data?.clientSecret;
+      console.log("🎯 Received clientSecret:", clientSecret);
+  
+      if (!clientSecret) {
+        console.error("❌ No clientSecret received from backend");
+        return;
+      }
+    } catch (err) {
+      console.error("❌ Error creating payment intent:", err.response?.data || err.message);
+      return;
+    }
   
     if (selected === "blik") {
-      const { error } = await stripe.confirmPayment({
-        clientSecret: data.clientSecret,
-        confirmParams: {
-          payment_method_data: {
-            type: "blik",
+      console.log("⚡ Attempting BLIK payment with code:", blikCode);
+  
+      try {
+        const { error } = await stripe.confirmPayment({
+          clientSecret,
+          confirmParams: {
+            payment_method_data: {
+              type: "blik",
+              billing_details: {
+                name: `${formData.name} ${formData.surname}`,
+                email: formData.email,
+                phone: formData.phone,
+              },
+            },
+            payment_method_options: {
+              blik: { code: blikCode },
+            },
+            return_url: `${window.location.origin}/checkout-success`,
+          },
+        });
+  
+        if (error) {
+          console.error("❌ BLIK payment failed:", error.message);
+        } else {
+          console.log("✅ BLIK payment confirmed");
+        }
+      } catch (err) {
+        console.error("❌ BLIK payment error:", err.message);
+      }
+    }
+  
+    if (selected === "card") {
+      console.log("💳 Attempting card payment...");
+  
+      const cardElement = elements.getElement(CardNumberElement);
+      if (!cardElement) {
+        console.error("❌ CardNumberElement not found");
+        return;
+      }
+  
+      try {
+        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: {
+            card: cardElement,
             billing_details: {
               name: `${formData.name} ${formData.surname}`,
               email: formData.email,
               phone: formData.phone,
             },
           },
-          payment_method_options: {
-            blik: { code: blikCode },
-          },
           return_url: `${window.location.origin}/checkout-success`,
-        },
-      });
+        });
   
-      if (error) {
-        console.error("❌ BLIK payment failed:", error.message);
-      }
-    }
-  
-    if (selected === "card") {
-      const cardElement = elements.getElement(CardNumberElement);
-      const { error, paymentIntent } = await stripe.confirmCardPayment(data.clientSecret, {
-        payment_method: {
-          card: cardElement,
-          billing_details: {
-            name: `${formData.name} ${formData.surname}`,
-            email: formData.email,
-            phone: formData.phone,
-          },
-        },
-        return_url: `${window.location.origin}/checkout-success`,
-      });
-  
-      if (error) {
-        console.error("❌ Card payment failed:", error.message);
-      } else if (paymentIntent?.status === "succeeded") {
-        console.log("✅ Card payment succeeded!");
+        if (error) {
+          console.error("❌ Card payment failed:", error.message);
+        } else if (paymentIntent?.status === "succeeded") {
+          console.log("✅ Card payment succeeded:", paymentIntent.id);
+        } else {
+          console.warn("⚠️ Card payment status:", paymentIntent?.status);
+        }
+      } catch (err) {
+        console.error("❌ Card payment error:", err.message);
       }
     }
   };
+  
   
 
   return (

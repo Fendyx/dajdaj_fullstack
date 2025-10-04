@@ -35,20 +35,22 @@ const PaymentFooter = ({ selected, paymentRequest, blikCode, canMakePaymentResul
           </button>
         )}
 
-        {/* ✅ Stripe кнопка рендерится один раз, независимо от selected */}
-        {(canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay) && paymentRequest && (
-          <PaymentRequestButtonElement
-            key="payment-request-button"
-            options={{ paymentRequest }}
-            style={{
-              paymentRequestButton: {
-                type: "default",
-                theme: "light",
-                height: "44px",
-              },
-            }}
-          />
-        )}
+        {/* ✅ Stripe кнопка рендерится только если выбрано Google/Apple Pay */}
+        {(selected === "googlepay" || selected === "applepay") &&
+          (canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay) &&
+          paymentRequest && (
+            <PaymentRequestButtonElement
+              key="payment-request-button"
+              options={{ paymentRequest }}
+              style={{
+                paymentRequestButton: {
+                  type: "default",
+                  theme: "light",
+                  height: "44px",
+                },
+              }}
+            />
+          )}
       </div>
     </div>
   );

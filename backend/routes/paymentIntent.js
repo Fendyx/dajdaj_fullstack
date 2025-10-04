@@ -52,7 +52,14 @@ router.post("/create-payment-intent", auth, async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(totalAmount * 100),
       currency: "pln",
-      payment_method_types: ["card", "blik"],
+
+      // ❌ СТАРЫЙ ВАРИАНТ:
+      // payment_method_types: ["card", "blik"],
+
+      // ✅ НОВЫЙ ВАРИАНТ:
+      // Apple Pay и Google Pay используют токенизацию карты → оставляем только "card"
+      payment_method_types: ["card"],
+
       metadata: {
         userId,
         delivery_name: `${deliveryInfo?.name} ${deliveryInfo?.surname}`,

@@ -1,18 +1,11 @@
 import {
   useStripe,
   useElements,
-  PaymentRequestButtonElement,
   CardNumberElement,
 } from "@stripe/react-stripe-js";
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import {
-  FaCreditCard,
-  FaGoogle,
-  FaApple,
-  FaBolt,
-} from "react-icons/fa";
 import "./StripePaymentForm.css";
 import SelectDeliveryMethod from "../../Pages/Checkout/components/selectDeliveryMethod/SelectDeliveryMethod";
 import SelectedCartItem from "../SelectedCartItem/SelectedCartItem";
@@ -42,6 +35,16 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   });
 
   const [selectedDelivery, setSelectedDelivery] = useState(deliveryInfo || null);
+  const [paymentRequest, setPaymentRequest] = useState(null);
+  const [canMakePaymentResult, setCanMakePaymentResult] = useState(null);
+  const [blikCode, setBlikCode] = useState("");
+  const [selected, setSelected] = useState("card");
+
+  const [cardFields, setCardFields] = useState({
+    number: { complete: false, focused: false },
+    expiry: { complete: false, focused: false },
+    cvc: { complete: false, focused: false },
+  });
 
   useEffect(() => {
     if (selectedDelivery) {
@@ -59,19 +62,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   useEffect(() => {
     console.log("📦 Stripe loaded:", !!stripe);
     console.log("🧮 Cart total:", cartItems.reduce((sum, item) => sum + item.qty * 1000, 0));
-  }, [stripe, cartItems]);  
-
-
-  const [paymentRequest, setPaymentRequest] = useState(null);
-  const [blikCode, setBlikCode] = useState("");
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [selected, setSelected] = useState("card");
-
-  const [cardFields, setCardFields] = useState({
-    number: { complete: false, focused: false },
-    expiry: { complete: false, focused: false },
-    cvc: { complete: false, focused: false },
-  });
+  }, [stripe, cartItems]);
 
   useEffect(() => {
     if (stripe) {
@@ -89,8 +80,12 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
       });
 
       pr.canMakePayment().then((result) => {
+        console.log("🔍 canMakePayment result:", result);
+        setCanMakePaymentResult(result);
+
         if (result) {
           setPaymentRequest(pr);
+
           pr.on("paymentmethod", async (ev) => {
             console.log("🧾 Received paymentmethod event:", ev.paymentMethod);
             try {
@@ -106,27 +101,27 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
                   },
                 }
               );
-          
+
               const clientSecret = data?.clientSecret;
-          
+
               const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: ev.paymentMethod.id,
                 return_url: `${window.location.origin}/checkout-success`,
               });
-          
+
               if (error) {
-                console.error("❌ Google Pay failed:", error.message);
+                console.error("❌ Google/Apple Pay failed:", error.message);
                 ev.complete("fail");
               } else {
-                console.log("✅ Google Pay succeeded:", paymentIntent.id);
+                console.log("✅ Google/Apple Pay succeeded:", paymentIntent.id);
                 ev.complete("success");
               }
             } catch (err) {
-              console.error("❌ Google Pay error:", err.message);
+              console.error("❌ Google/Apple Pay error:", err.message);
               ev.complete("fail");
             }
-          });          
-        }else {
+          });
+        } else {
           console.warn("⚠️ PaymentRequest not available on this device/browser");
         }
       });
@@ -291,7 +286,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         handleChange={handleChange}
       />
 
-      <PaymentMethods
+<PaymentMethods
         selected={selected}
         setSelected={setSelected}
         paymentRequest={paymentRequest}
@@ -305,6 +300,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         cartItems={cartItems}
         stripe={stripe}
         elements={elements}
+        canMakePaymentResult={canMakePaymentResult} // ✅ добавлено
       />
 
       <PaymentFooter

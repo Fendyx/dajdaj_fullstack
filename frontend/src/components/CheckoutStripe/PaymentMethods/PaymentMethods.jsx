@@ -13,6 +13,7 @@ const PaymentMethods = ({
   handleCardFieldChange,
   handleCardFieldFocus,
   handleCardFieldBlur,
+  canMakePaymentResult,
 }) => {
   return (
     <div className="payment-card">
@@ -24,52 +25,55 @@ const PaymentMethods = ({
         <div className="stripe-radio-group">
 
           {/* Google Pay */}
-          <div
-            className={`stripe-radio-option ${
-              selected === "googlepay" ? "stripe-option-selected" : ""
-            }`}
-            onClick={() => setSelected("googlepay")}
-          >
-            <input
-              type="radio"
-              name="payment"
-              id="googlepay"
-              checked={selected === "googlepay"}
-              readOnly
-            />
-            <label htmlFor="googlepay" className="stripe-label">
-              <div className="stripe-logo-box stripe-google">
-                <FaGoogle className="stripe-payment-icon" />
-              </div>
-              <span>Google Pay</span>
-            </label>
-          </div>
-          {(selected === "googlepay" || selected === "applepay") && (
-            <GoogleApplePayButton paymentRequest={paymentRequest} />
+          {canMakePaymentResult?.googlePay && (
+            <div
+              className={`stripe-radio-option ${
+                selected === "googlepay" ? "stripe-option-selected" : ""
+              }`}
+              onClick={() => setSelected("googlepay")}
+            >
+              <input
+                type="radio"
+                name="payment"
+                id="googlepay"
+                checked={selected === "googlepay"}
+                readOnly
+              />
+              <label htmlFor="googlepay" className="stripe-label">
+                <div className="stripe-logo-box stripe-google">
+                  <FaGoogle className="stripe-payment-icon" />
+                </div>
+                <span>Google Pay</span>
+              </label>
+            </div>
           )}
 
           {/* Apple Pay */}
-          <div
-            className={`stripe-radio-option ${
-              selected === "applepay" ? "stripe-option-selected" : ""
-            }`}
-            onClick={() => setSelected("applepay")}
-          >
-            <input
-              type="radio"
-              name="payment"
-              id="applepay"
-              checked={selected === "applepay"}
-              readOnly
-            />
-            <label htmlFor="applepay" className="stripe-label">
-              <div className="stripe-logo-box stripe-apple">
-                <FaApple className="stripe-payment-icon" />
-              </div>
-              <span>Apple Pay</span>
-            </label>
-          </div>
-          {selected === "applepay" && (
+          {canMakePaymentResult?.applePay && (
+            <div
+              className={`stripe-radio-option ${
+                selected === "applepay" ? "stripe-option-selected" : ""
+              }`}
+              onClick={() => setSelected("applepay")}
+            >
+              <input
+                type="radio"
+                name="payment"
+                id="applepay"
+                checked={selected === "applepay"}
+                readOnly
+              />
+              <label htmlFor="applepay" className="stripe-label">
+                <div className="stripe-logo-box stripe-apple">
+                  <FaApple className="stripe-payment-icon" />
+                </div>
+                <span>Apple Pay</span>
+              </label>
+            </div>
+          )}
+
+          {/* Unified PaymentRequestButton */}
+          {(selected === "googlepay" || selected === "applepay") && (
             <GoogleApplePayButton paymentRequest={paymentRequest} />
           )}
 

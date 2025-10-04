@@ -47,6 +47,12 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   });
 
   useEffect(() => {
+    console.log("🌍 Current URL:", window.location.href);
+    console.log("📦 Stripe loaded:", !!stripe);
+    console.log("🧮 Cart total:", cartItems.reduce((sum, item) => sum + item.qty * 1000, 0));
+  }, [stripe, cartItems]);
+
+  useEffect(() => {
     if (selectedDelivery) {
       setFormData({
         name: selectedDelivery?.personalData?.name || "",
@@ -58,11 +64,6 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
       });
     }
   }, [selectedDelivery]);
-
-  useEffect(() => {
-    console.log("📦 Stripe loaded:", !!stripe);
-    console.log("🧮 Cart total:", cartItems.reduce((sum, item) => sum + item.qty * 1000, 0));
-  }, [stripe, cartItems]);
 
   useEffect(() => {
     if (stripe) {
@@ -88,6 +89,8 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
 
           pr.on("paymentmethod", async (ev) => {
             console.log("🧾 Received paymentmethod event:", ev.paymentMethod);
+            console.log("📤 Billing details:", ev.paymentMethod.billing_details);
+
             try {
               const { data } = await axios.post(
                 `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
@@ -103,17 +106,33 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
               );
 
               const clientSecret = data?.clientSecret;
+              console.log("🔑 Received clientSecret:", clientSecret);
 
-              const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
-                payment_method: ev.paymentMethod.id,
-                return_url: `${window.location.origin}/checkout-success`,
+              if (!clientSecret) {
+                console.error("❌ No clientSecret received");
+                ev.complete("fail");
+                return;
+              }
+
+              const { error, paymentIntent } = await stripe.confirmPayment({
+                clientSecret,
+                confirmParams: {
+                  payment_method_data: {
+                    type: "card",
+                    card: ev.paymentMethod.card,
+                    billing_details: ev.paymentMethod.billing_details,
+                  },
+                  return_url: `${window.location.origin}/checkout-success`,
+                },
               });
+
+              console.log("📦 confirmPayment result:", { error, paymentIntent });
 
               if (error) {
                 console.error("❌ Google/Apple Pay failed:", error.message);
                 ev.complete("fail");
               } else {
-                console.log("✅ Google/Apple Pay succeeded:", paymentIntent.id);
+                console.log("✅ Google/Apple Pay succeeded:", paymentIntent?.id);
                 ev.complete("success");
               }
             } catch (err) {
@@ -286,7 +305,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         handleChange={handleChange}
       />
 
-<PaymentMethods
+      <PaymentMethods
         selected={selected}
         setSelected={setSelected}
         paymentRequest={paymentRequest}
@@ -300,7 +319,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         cartItems={cartItems}
         stripe={stripe}
         elements={elements}
-        canMakePaymentResult={canMakePaymentResult} // ✅ добавлено
+        canMakePaymentResult={canMakePaymentResult}
       />
 
       <PaymentFooter

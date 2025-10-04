@@ -22,6 +22,8 @@ router.post("/create-payment-intent", auth, async (req, res) => {
   try {
     console.log("📨 Incoming request to /create-payment-intent");
     console.log("🧾 Raw body:", JSON.stringify(req.body, null, 2));
+    console.log("🌐 Request headers:", req.headers);
+    console.log("📍 Request IP:", req.ip);
 
     const { cartItems, deliveryInfo } = req.body;
     const userId = req.user?._id;
@@ -49,10 +51,13 @@ router.post("/create-payment-intent", auth, async (req, res) => {
     const parsed = parseAddress(deliveryInfo?.address || "");
     console.log("📦 Parsed address:", parsed);
 
+    const paymentMethodTypes = ["card", "blik"];
+    console.log("📥 Requested payment_method_types:", paymentMethodTypes);
+
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(totalAmount * 100),
       currency: "pln",
-      payment_method_types: ["card", "blik"],
+      payment_method_types: paymentMethodTypes,
       metadata: {
         userId,
         delivery_name: `${deliveryInfo?.name} ${deliveryInfo?.surname}`,
@@ -66,6 +71,7 @@ router.post("/create-payment-intent", auth, async (req, res) => {
     });
 
     console.log("✅ PaymentIntent created:", paymentIntent.id);
+    console.log("🔑 Returning clientSecret:", paymentIntent.client_secret);
     res.send({ clientSecret: paymentIntent.client_secret });
   } catch (err) {
     console.error("❌ PaymentIntent error:", err);

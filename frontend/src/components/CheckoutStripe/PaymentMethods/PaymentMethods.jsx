@@ -44,7 +44,7 @@ const PaymentMethods = ({
               <span>Google Pay</span>
             </label>
           </div>
-          {selected === "googlepay" && (
+          {(selected === "googlepay" || selected === "applepay") && (
             <GoogleApplePayButton paymentRequest={paymentRequest} />
           )}
 

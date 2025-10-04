@@ -56,6 +56,12 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     }
   }, [selectedDelivery]);
 
+  useEffect(() => {
+    console.log("📦 Stripe loaded:", !!stripe);
+    console.log("🧮 Cart total:", cartItems.reduce((sum, item) => sum + item.qty * 1000, 0));
+  }, [stripe, cartItems]);  
+
+
   const [paymentRequest, setPaymentRequest] = useState(null);
   const [blikCode, setBlikCode] = useState("");
   const [isExpanded, setIsExpanded] = useState(false);
@@ -86,6 +92,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         if (result) {
           setPaymentRequest(pr);
           pr.on("paymentmethod", async (ev) => {
+            console.log("🧾 Received paymentmethod event:", ev.paymentMethod);
             try {
               const { data } = await axios.post(
                 `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
@@ -119,6 +126,8 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
               ev.complete("fail");
             }
           });          
+        }else {
+          console.warn("⚠️ PaymentRequest not available on this device/browser");
         }
       });
     }

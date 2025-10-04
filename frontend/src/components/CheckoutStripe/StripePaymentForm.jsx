@@ -114,29 +114,22 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
                 return;
               }
 
-              const { error, paymentIntent } = await stripe.confirmPayment({
-                clientSecret,
-                confirmParams: {
-                  payment_method_data: {
-                    type: "card",
-                    card: ev.paymentMethod.card,
-                    billing_details: ev.paymentMethod.billing_details,
-                  },
-                  return_url: `${window.location.origin}/checkout-success`,
-                },
+              const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                payment_method: ev.paymentMethod.id,
+                return_url: `${window.location.origin}/checkout-success`,
               });
 
-              console.log("📦 confirmPayment result:", { error, paymentIntent });
+              console.log("📦 confirmCardPayment result:", { error, paymentIntent });
 
               if (error) {
-                console.error("❌ Google/Apple Pay failed:", error.message);
+                console.error("❌ Google Pay failed:", error.message);
                 ev.complete("fail");
               } else {
-                console.log("✅ Google/Apple Pay succeeded:", paymentIntent?.id);
+                console.log("✅ Google Pay succeeded:", paymentIntent?.id);
                 ev.complete("success");
               }
             } catch (err) {
-              console.error("❌ Google/Apple Pay error:", err.message);
+              console.error("❌ Google Pay error:", err.message);
               ev.complete("fail");
             }
           });

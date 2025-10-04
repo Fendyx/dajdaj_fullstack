@@ -73,9 +73,10 @@ const PaymentMethods = ({
           )}
 
           {/* Unified PaymentRequestButton */}
-          {(selected === "googlepay" || selected === "applepay") && (
+          {canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay ? (
             <GoogleApplePayButton paymentRequest={paymentRequest} />
-          )}
+          ) : null}
+
 
           {/* BLIK */}
           <div

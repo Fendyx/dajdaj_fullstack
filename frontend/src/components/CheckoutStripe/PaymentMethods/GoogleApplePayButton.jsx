@@ -16,11 +16,9 @@ const GoogleApplePayButton = ({ paymentRequest }) => {
     });
   }, [paymentRequest]);
 
-  if (!shouldRender || !canPay) return null;
-
-  return (
+  // ✅ Stripe элемент создаётся один раз, не пересоздаётся
+  return shouldRender && canPay ? (
     <div className="stripe-payment-request-wrapper">
-      {/* ✅ Создаётся один раз, не пересоздаётся */}
       <PaymentRequestButtonElement
         key="payment-request-button"
         options={{ paymentRequest }}
@@ -33,7 +31,7 @@ const GoogleApplePayButton = ({ paymentRequest }) => {
         }}
       />
     </div>
-  );
+  ) : null;
 };
 
 export default GoogleApplePayButton;

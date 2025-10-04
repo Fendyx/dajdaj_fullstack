@@ -2,7 +2,7 @@ import { FaCreditCard, FaGoogle, FaApple, FaBolt } from "react-icons/fa";
 import { PaymentRequestButtonElement } from "@stripe/react-stripe-js";
 import "./PaymentFooter.css";
 
-const PaymentFooter = ({ selected, paymentRequest, blikCode }) => {
+const PaymentFooter = ({ selected, paymentRequest, blikCode, canMakePaymentResult }) => {
   return (
     <div className="payment-footer">
       {/* Левый блок — иконка + название метода */}
@@ -19,7 +19,7 @@ const PaymentFooter = ({ selected, paymentRequest, blikCode }) => {
         </span>
       </div>
 
-      {/* Правый блок — кнопка или Stripe PaymentRequestButton */}
+      {/* Правый блок — кнопка оплаты */}
       <div className="payment-footer-actions">
         {selected === "blik" && (
           <button type="submit" className="payment-btn blik-btn">
@@ -35,8 +35,10 @@ const PaymentFooter = ({ selected, paymentRequest, blikCode }) => {
           </button>
         )}
 
-        {(selected === "googlepay" || selected === "applepay") && paymentRequest && (
+        {/* ✅ Stripe кнопка рендерится один раз, независимо от selected */}
+        {(canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay) && paymentRequest && (
           <PaymentRequestButtonElement
+            key="payment-request-button"
             options={{ paymentRequest }}
             style={{
               paymentRequestButton: {

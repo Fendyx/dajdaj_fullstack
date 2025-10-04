@@ -315,11 +315,13 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         canMakePaymentResult={canMakePaymentResult}
       />
 
-      <PaymentFooter
-        selected={selected}
-        paymentRequest={paymentRequest}
-        blikCode={blikCode}
-      />
+        <PaymentFooter
+          selected={selected}
+          paymentRequest={paymentRequest}
+          blikCode={blikCode}
+          canMakePaymentResult={canMakePaymentResult}
+        />
+
     </form>
   );
 };

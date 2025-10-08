@@ -107,7 +107,8 @@
         "summary": {
           "total": "Razem",
           "taxesShipping": "Podatki i wysyłka zostaną obliczone przy kasie",
-          "loginToCheckout": "Zaloguj się, aby sfinalizować zakup"
+          "loginToCheckout": "Zaloguj się, aby sfinalizować zakup",
+          "proceedToDelivery": "Przejdź do płatności"
         }
       },
       "payButton": {

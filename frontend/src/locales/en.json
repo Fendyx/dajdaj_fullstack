@@ -107,7 +107,8 @@
         "summary": {
           "total": "Subtotal",
           "taxesShipping": "Taxes and shipping will be calculated at checkout",
-          "loginToCheckout": "Log in to complete your purchase"
+          "loginToCheckout": "Log in to complete your purchase",
+          "proceedToDelivery": "Proceed to payment"
         }
       },
       "payButton": {

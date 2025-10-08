@@ -165,19 +165,30 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("🧩 [App] useEffect triggered");
+  
     const params = new URLSearchParams(window.location.search);
     const oauthToken = params.get("token");
     const storedToken = oauthToken || localStorage.getItem("token");
-
+  
+    console.log("🔑 [App] oauthToken:", oauthToken);
+    console.log("🔑 [App] localStorage token:", localStorage.getItem("token"));
+    console.log("🔑 [App] storedToken:", storedToken);
+  
     if (storedToken) {
+      console.log("🚀 [App] Dispatching setToken and fetchUserProfile");
       dispatch(setToken(storedToken));
       dispatch(fetchUserProfile());
-
+  
       if (oauthToken) {
+        console.log("🧼 [App] Cleaning up URL");
         window.history.replaceState({}, document.title, window.location.pathname);
       }
+    } else {
+      console.warn("🚫 [App] No token found — skipping fetchUserProfile");
     }
   }, [dispatch]);
+  
 
   return (
     <div className="App">

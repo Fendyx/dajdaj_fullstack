@@ -194,6 +194,25 @@ const NavBar = () => {
                   </Link>
                 </>
               )}
+
+              {/* Login/register */}
+              {!auth._id && (
+                <div className="menu-row">
+                  <Link to="/login" onClick={closeMenu} className="menu-card menu-card-small">
+                    <div className="card-icon-wrapper">
+                      <i className="fa-solid fa-right-to-bracket"></i>
+                    </div>
+                    <span className="card-text">{t("navbar.signIn")}</span>
+                  </Link>
+
+                  <Link to="/register" onClick={closeMenu} className="menu-card menu-card-small">
+                    <div className="card-icon-wrapper">
+                      <i className="fa-solid fa-user-plus"></i>
+                    </div>
+                    <span className="card-text">{t("navbar.joinUs")}</span>
+                  </Link>
+                </div>
+              )}
             </div>
 
             {/* Мотивационный текст внизу */}

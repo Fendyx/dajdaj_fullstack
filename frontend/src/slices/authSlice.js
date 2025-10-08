@@ -37,14 +37,18 @@ const initialState = {
 export const fetchUserProfile = createAsyncThunk(
   "auth/fetchUserProfile",
   async (_, { rejectWithValue }) => {
+    console.log("📡 [fetchUserProfile] called");
     try {
       const res = await axios.get(`${url}/user/profile`, setHeaders());
+      console.log("✅ [fetchUserProfile] success:", res.data);
       return res.data;
     } catch (err) {
+      console.error("❌ [fetchUserProfile] error:", err.response?.data || err.message);
       return rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
 
 // Thunk to update profile
 export const updateUserProfile = createAsyncThunk(
@@ -98,9 +102,10 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setToken(state, action) {
+      console.log("📝 [authSlice] setToken:", action.payload);
       state.token = action.payload;
       localStorage.setItem("token", action.payload);
-    },
+    },    
     logoutUser(state) {
       localStorage.removeItem("token");
       return { ...initialState, token: "" };
@@ -140,17 +145,20 @@ const authSlice = createSlice({
         state.getUserError = null;
       })
       .addCase(fetchUserProfile.fulfilled, (state, { payload }) => {
+        console.log("✅ [authSlice] fetchUserProfile.fulfilled");
         Object.assign(state, payload);
         state.isAuthenticated = true;
         state.userLoaded = true;
         state.getUserStatus = "succeeded";
       })
       .addCase(fetchUserProfile.rejected, (state, action) => {
+        console.log("❌ [authSlice] fetchUserProfile.rejected:", action.payload);
         state.getUserError = action.payload;
         state.isAuthenticated = false;
         state.userLoaded = true;
         state.getUserStatus = "failed";
       })
+      
 
       // PROFILE UPDATE
       .addCase(updateUserProfile.pending, (state) => {

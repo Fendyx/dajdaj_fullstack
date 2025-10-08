@@ -34,12 +34,19 @@ export function UserProfile() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  console.log("🔍 [UserProfile] auth:", auth);
+  console.log("🔍 [UserProfile] token:", token);
+
+
   // Если токена нет → сразу редиректим на логин
   useEffect(() => {
+    console.log("📦 [useEffect] token:", token);
     if (!token) {
+      console.log("🚪 [useEffect] Redirecting to /login");
       navigate("/login");
     }
   }, [token, navigate]);
+  
 
   const { data: orders, isLoading: loadingOrders, error: errorOrders } = useGetUserOrdersQuery(undefined, { skip: !token });
   const { data: discounts, isLoading: loadingDiscounts, error: errorDiscounts } = useGetUserDiscountsQuery(undefined, { skip: !token });
@@ -60,6 +67,9 @@ export function UserProfile() {
     errorDiscounts?.originalStatus === 400 ||
     errorFavorites?.originalStatus === 401 ||
     errorFavorites?.originalStatus === 400;
+
+    console.log("🛑 [UserProfile] hasAuthError:", hasAuthError);
+
 
   const handleReLogin = () => {
     dispatch(logoutUser());

@@ -1,15 +1,21 @@
 import { useSelector } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 
 const PrivateRoute = ({ children }) => {
-  const { isAuthenticated, userLoaded } = useSelector((s) => s.auth);
+  const { token } = useSelector((state) => state.auth);
+  const location = useLocation();
 
-  // Wait until we know whether the JWT was valid or not
-  if (!userLoaded) {
-    return <div>Loading your session…</div>;
+  console.groupCollapsed("🔐 [PrivateRoute]");
+  console.log("📍 Current route:", location.pathname);
+  console.log("🔑 token:", token);
+  console.groupEnd();
+
+  if (!token) {
+    console.warn("🚫 [PrivateRoute] No token — redirecting to /login");
+    return <Navigate to="/login" replace />;
   }
 
-  return isAuthenticated ? children : <Navigate to="/login" />;
+  return children;
 };
 
 export default PrivateRoute;

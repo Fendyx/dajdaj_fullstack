@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import StripePaymentForm from "./StripePaymentForm";
+import "./CheckoutStripe.css"
 
 export default function CheckoutStripe() {
   const cart = useSelector((state) => state.cart);
@@ -17,14 +18,14 @@ export default function CheckoutStripe() {
     method: profile?.delivery?.method || "",
   };
 
-  const cartItems = cart?.cartItems?.map((item) => ({
-    id: item.id,
-    qty: item.cartQuantity || item.qty || 1,
-  })) || [];
+  const cartItems =
+    cart?.cartItems?.map((item) => ({
+      id: item.id,
+      qty: item.cartQuantity || item.qty || 1,
+    })) || [];
 
   return (
-    <div style={{ padding: "2rem", paddingTop: "100px", maxWidth: "600px", margin: "0 auto" }}>
-      {/* <h2 style={{ marginBottom: "2rem" }}>Stripe Elements Checkout</h2> */}
+    <div className="checkout-container">
       <StripePaymentForm cartItems={cartItems} deliveryInfo={deliveryInfo} />
     </div>
   );

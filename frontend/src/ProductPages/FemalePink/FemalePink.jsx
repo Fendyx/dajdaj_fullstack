@@ -3,6 +3,7 @@ import { ImageCarousel } from '../ImageCarousel';
 import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
 import FemaleModelPoster from "../../assets/img/arnold_wooden_stand_2.png";
+import "../ProductPage.css"
 
 export default function FemalePink() {
     const productImages = [
@@ -20,11 +21,11 @@ export default function FemalePink() {
         };
       
         return (
-          <div className="page">
-            <div className="page-container">
-              <div className="layout">
+          <div className="product-page">
+            <div className="product-page-container">
+              <div className="product-layout">
                 {/* Left Side - Gallery / 3D */}
-                <div className="left-side">
+                <div className="product-left-side">
                   {show3D ? (
                     <model-viewer
                       id="femaleViewer"
@@ -47,13 +48,13 @@ export default function FemalePink() {
                   )}
       
                   {/* 3D View Button */}
-                  <div className="three-d-container">
+                  <div className="product-three-d-container">
                     <ThreeDViewButton onClick={handle3DToggle} is3DMode={show3D} />
                   </div>
                 </div>
       
                 {/* Right Side - Product Details */}
-                <div className="right-side">
+                <div className="product-right-side">
                   <ProductDetails />
                 </div>
               </div>

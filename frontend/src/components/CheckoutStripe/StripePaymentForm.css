@@ -410,3 +410,42 @@ input:focus, select:focus {
   margin-top: 0.25rem;
   font-style: italic;
 }
+
+.stripe-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .stripe-layout {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 2rem;
+  }
+
+  .stripe-left {
+    flex: 0 0 60%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .stripe-right {
+    flex: 0 0 40%;
+    position: sticky;
+    top: 1rem;
+    align-self: flex-start;
+  }
+
+  .stripe-form {
+    width: 100%;
+    margin: 0;
+    max-width: none;
+    padding: 1rem;
+  }
+}
+
+
+

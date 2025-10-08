@@ -36,6 +36,12 @@ import PrivateRoute from "./components/PrivateRoute";
 
 import MaleBodybuilder from "./ProductPages/MaleBodybuilder/MaleBodybuilder";
 import BeerEdition from "./ProductPages/BeerEdition/BeerEdition";
+import TrustBulk from "./ProductPages/TrustBulk/TrustBulk";
+import NeverSkipLegs from "./ProductPages/NeverSkipLegs/NeverSkipLegs";
+import FemaleBlond from "./ProductPages/FemaleBlond/FemaleBlond";
+import FemaleBrunette from "./ProductPages/FemaleBrunette/FemaleBrunette";
+import FemalePink from "./ProductPages/FemalePink/FemalePink";
+import SpecialGirl from "./ProductPages/SpecialGirl/SpecialGirl";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
@@ -107,6 +113,30 @@ function AppContent() {
               <Route
                 path="/products/beer-edition"
                 element={<BeerEdition />}
+              />
+              <Route
+                path="/products/trust-bulk"
+                element={<TrustBulk />}
+              />
+              <Route
+                path="/products/never-skip-legs"
+                element={<NeverSkipLegs />}
+              />
+              <Route
+                path="/products/female-brunette"
+                element={<FemaleBrunette />}
+              />
+              <Route
+                path="/products/female-blond"
+                element={<FemaleBlond />}
+              />
+              <Route
+                path="/products/female-pink"
+                element={<FemalePink />}
+              />
+              <Route
+                path="/products/special-girl"
+                element={<SpecialGirl />}
               />
               <Route
                 path="/select-delivery-method"

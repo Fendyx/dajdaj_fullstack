@@ -16,7 +16,7 @@ const NavBar = () => {
 
   const { i18n, t } = useTranslation();
 
-  const langMenuRef = useRef(null); // ✅ ссылка на блок выбора языка
+  const langMenuRef = useRef(null);
 
   useEffect(() => {
     if (isMenuOpen) {
@@ -34,7 +34,6 @@ const NavBar = () => {
     dispatch(getTotals());
   }, [cart.cartItems, dispatch]);
 
-  // ✅ Закрытие меню при клике вне блока выбора языка
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (langMenuRef.current && !langMenuRef.current.contains(e.target)) {
@@ -61,11 +60,11 @@ const NavBar = () => {
     i18n.changeLanguage(lng)
       .then(() => {
         console.log("Language changed:", i18n.language);
-        setIsLangMenuOpen(false); // ✅ закрываем после успешной смены
+        setIsLangMenuOpen(false);
       })
       .catch((err) => {
         console.error("Error changing language:", err);
-        setIsLangMenuOpen(false); // ✅ даже при ошибке закрываем
+        setIsLangMenuOpen(false);
       });
   };
 
@@ -80,7 +79,7 @@ const NavBar = () => {
         </div>
 
         <div className="nav-right">
-          {/* ✅ Блок выбора языка */}
+          {/* Language selector */}
           <div className="lang-selector" ref={langMenuRef} onClick={toggleLangMenu}>
             <i className="fa-solid fa-globe"></i>
             <span>{i18n.language.toUpperCase()}</span>
@@ -132,67 +131,71 @@ const NavBar = () => {
             <div className="close-btn" onClick={closeMenu}>
               <i className="fa-solid fa-xmark"></i>
             </div>
-            <div class="menu-header">DajDaj</div>
+            <div className="menu-header">DajDaj</div>
+
             <div className="mobile-links">
-              <Link to="/" onClick={closeMenu}>
-                <span className="left-part">
+              {/* Home - большая карточка */}
+              <Link to="/" onClick={closeMenu} className="menu-card menu-card-large">
+                <div className="card-icon-wrapper">
                   <i className="fa-solid fa-house"></i>
-                  <span>Home</span>
-                </span>
+                </div>
+                <span className="card-text">Home</span>
               </Link>
 
-              <Link to="/about" onClick={closeMenu}>
-                <span className="left-part">
-                  <i className="fa-solid fa-circle-info"></i>
-                  <span>About</span>
-                </span>
-              </Link>
+              {/* About и Contact - две карточки в ряд */}
+              <div className="menu-row">
+                <Link to="/about" onClick={closeMenu} className="menu-card menu-card-small">
+                  <div className="card-icon-wrapper">
+                    <i className="fa-solid fa-circle-info"></i>
+                  </div>
+                  <span className="card-text">About</span>
+                </Link>
 
-              <Link to="/contact" onClick={closeMenu}>
-                <span className="left-part">
-                  <i className="fa-solid fa-envelope"></i>
-                  <span>Contact</span>
-                </span>
-              </Link>
+                <Link to="/contact" onClick={closeMenu} className="menu-card menu-card-small">
+                  <div className="card-icon-wrapper">
+                    <i className="fa-solid fa-envelope"></i>
+                  </div>
+                  <span className="card-text">Contact</span>
+                </Link>
+              </div>
 
               {auth._id && (
                 <>
-                  <Link to="/favorites" onClick={closeMenu}>
-                    <span className="left-part">
-                      <i className="fa-solid fa-heart"></i>
-                      <span>Favorites</span>
-                    </span>
-                  </Link>
+                  {/* Favorites и My orders - две карточки в ряд */}
+                  <div className="menu-row">
+                    <Link to="/favorites" onClick={closeMenu} className="menu-card menu-card-small">
+                      <div className="card-icon-wrapper">
+                        <i className="fa-solid fa-heart"></i>
+                      </div>
+                      <span className="card-text">Favorites</span>
+                    </Link>
 
-                  <Link to="/profile" onClick={closeMenu} className="mobile-profile-btn">
-                    <span className="left-part">
-                      <i className="fa-solid fa-user-circle"></i>
-                      <span>Profile</span>
-                    </span>
+                    <Link to="/orders" onClick={closeMenu} className="menu-card menu-card-small">
+                      <div className="card-icon-wrapper">
+                        <i className="fa-solid fa-shopping-bag"></i>
+                      </div>
+                      <span className="card-text">My orders</span>
+                    </Link>
+                  </div>
+
+                  {/* Profile - большая фиолетовая кнопка */}
+                  <Link to="/profile" onClick={closeMenu} className="menu-card menu-card-profile">
+                    <i className="fa-solid fa-user-circle"></i>
+                    <span className="card-text">Profile</span>
                   </Link>
                 </>
               )}
             </div>
-            <div class="menu-footer">This world would be empty without you</div>
+
+            {/* Мотивационный текст внизу */}
+            <div className="menu-footer">This world would be empty without you</div>
           </div>
         </div>
       </nav>
 
-      {/* ✅ Фон для клика, если меню языков открыто */}
+      {/* Overlay для языкового меню */}
       {isLangMenuOpen && (
-        <div
-          className="overlay"
-          onClick={() => setIsLangMenuOpen(false)}
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-            zIndex: 5,
-          }}
-        ></div>
+        <div className="overlay" onClick={() => setIsLangMenuOpen(false)}></div>
       )}
     </>
   );

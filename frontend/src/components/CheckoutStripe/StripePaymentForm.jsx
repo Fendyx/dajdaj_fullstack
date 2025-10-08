@@ -290,40 +290,47 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
 
   return (
     <form onSubmit={handleSubmit} className="stripe-form">
-      <SelectedCartItem />
-
-      <SelectDeliveryMethod
-        onSelectDelivery={setSelectedDelivery}
-        formData={formData}
-        handleChange={handleChange}
-      />
-
-      <PaymentMethods
-        selected={selected}
-        setSelected={setSelected}
-        paymentRequest={paymentRequest}
-        blikCode={blikCode}
-        setBlikCode={setBlikCode}
-        cardFields={cardFields}
-        handleCardFieldChange={handleCardFieldChange}
-        handleCardFieldFocus={handleCardFieldFocus}
-        handleCardFieldBlur={handleCardFieldBlur}
-        formData={formData}
-        cartItems={cartItems}
-        stripe={stripe}
-        elements={elements}
-        canMakePaymentResult={canMakePaymentResult}
-      />
-
-        <PaymentFooter
-          selected={selected}
-          paymentRequest={paymentRequest}
-          blikCode={blikCode}
-          canMakePaymentResult={canMakePaymentResult}
-        />
-
+      <div className="stripe-layout">
+        {/* Левая часть */}
+        <div className="stripe-left">
+          <SelectedCartItem />
+  
+          <SelectDeliveryMethod
+            onSelectDelivery={setSelectedDelivery}
+            formData={formData}
+            handleChange={handleChange}
+          />
+  
+          <PaymentFooter
+            selected={selected}
+            paymentRequest={paymentRequest}
+            blikCode={blikCode}
+            canMakePaymentResult={canMakePaymentResult}
+          />
+        </div>
+  
+        {/* Правая часть */}
+        <div className="stripe-right">
+          <PaymentMethods
+            selected={selected}
+            setSelected={setSelected}
+            paymentRequest={paymentRequest}
+            blikCode={blikCode}
+            setBlikCode={setBlikCode}
+            cardFields={cardFields}
+            handleCardFieldChange={handleCardFieldChange}
+            handleCardFieldFocus={handleCardFieldFocus}
+            handleCardFieldBlur={handleCardFieldBlur}
+            formData={formData}
+            cartItems={cartItems}
+            stripe={stripe}
+            elements={elements}
+            canMakePaymentResult={canMakePaymentResult}
+          />
+        </div>
+      </div>
     </form>
-  );
+  );  
 };
 
 export default StripePaymentForm;

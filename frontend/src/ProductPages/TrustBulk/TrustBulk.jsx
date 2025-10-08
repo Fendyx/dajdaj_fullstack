@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ImageCarousel } from '../ImageCarousel';
 import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
+import "../ProductPage.css"
 
 export default function TrustBulk() {
     const productImages = [
@@ -14,11 +15,11 @@ export default function TrustBulk() {
       const [currentImage, setCurrentImage] = useState(productImages[0]);
     
       return (
-        <div className="page">
-          <div className="page-container">
-            <div className="layout">
+        <div className="product-page">
+          <div className="product-page-container">
+            <div className="product-layout">
               {/* Left Side - Image Gallery */}
-              <div className="left-side">
+              <div className="product-left-side">
                 <ImageCarousel
                   images={productImages}
                   mainImage={currentImage}
@@ -26,13 +27,13 @@ export default function TrustBulk() {
                 />
                 
                 {/* 3D View Button */}
-                <div className="three-d-container">
+                <div className="product-three-d-container">
                   <ThreeDViewButton />
                 </div>
               </div>
     
               {/* Right Side - Product Details */}
-              <div className="right-side">
+              <div className="product-right-side">
               <ProductDetails
                 product={{
                   name: "Figurine Brunette",

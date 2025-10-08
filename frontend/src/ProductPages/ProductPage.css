@@ -1,0 +1,400 @@
+/* Product Page Styles */
+
+.product-page {
+    min-height: 100vh;
+    background-color: #f8f9fa;
+    padding: 20px;
+    padding-top: 90px;
+    margin-bottom: 80px;
+  }
+  
+  .product-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  /* Layout без карточки - просто grid на странице */
+  .product-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: start;
+    /* Убрали background, border-radius, padding и box-shadow */
+  }
+  
+  /* Left Side - Gallery / 3D */
+  .product-left-side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .product-left-side model-viewer {
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: #f5f5f5;
+  }
+  
+  /* 3D Button Container */
+  .product-three-d-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  /* Right Side - Product Details */
+  .product-right-side {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-left: 20px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .product-page-container {
+      padding: 0 15px;
+    }
+    
+    .product-layout {
+      grid-template-columns: 1fr;
+      gap: 30px;
+    }
+    
+    .product-right-side {
+      padding-left: 0;
+    }
+    
+    .product-left-side model-viewer {
+      height: 400px !important;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .product-page {
+      padding: 10px;
+      padding-top: 80px;
+    }
+       
+    .product-layout {
+      gap: 20px;
+    }
+    
+    .product-left-side model-viewer {
+      height: 300px !important;
+    }
+  }
+  
+  /* Image Carousel Styles */
+  .product-left-side .image-carousel {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .product-left-side .main-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+  
+  .product-left-side .thumbnail-container {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    overflow-x: auto;
+    padding: 5px 0;
+  }
+  
+  .product-left-side .thumbnail {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+  }
+  
+  .product-left-side .thumbnail:hover {
+    border-color: #007bff;
+    transform: scale(1.05);
+  }
+  
+  .product-left-side .thumbnail.active {
+    border-color: #007bff;
+  }
+  
+  /* Loading States */
+  .product-left-side .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 500px;
+    background: #f5f5f5;
+    border-radius: 12px;
+    color: #666;
+    font-size: 16px;
+  }
+  
+  /* Smooth Transitions */
+  .product-left-side * {
+    transition: all 0.3s ease;
+  }
+  
+  /* Focus States for Accessibility */
+  .product-three-d-container button:focus,
+  .product-left-side .thumbnail:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+  }
+  
+  /* Print Styles */
+  @media print {
+    .product-page {
+      background: white;
+      box-shadow: none;
+    }
+    
+    .product-three-d-container {
+      display: none;
+    }
+    
+    .product-layout {
+      box-shadow: none;
+      border: 1px solid #ddd;
+    }
+  }
+  
+  
+  /* ============================================ */
+  /* ВАРИАНТЫ АНИМАЦИЙ - выберите нужные */
+  /* ============================================ */
+  
+  /* ВАРИАНТ 1: Появление элементов при загрузке страницы (fade in + slide up) */
+  .product-left-side {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  .product-right-side {
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  
+  /* ВАРИАНТ 2: Плавное появление при переключении между галереей и 3D 
+     (Добавьте класс "fade-transition" к элементу, который переключается) */
+  .fade-transition {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  
+  /* ВАРИАНТ 3: Slide transition для переключения галерея/3D 
+     (более динамичный эффект) */
+  .slide-in-left {
+    animation: slideInLeft 0.5s ease-out;
+  }
+  
+  .slide-in-right {
+    animation: slideInRight 0.5s ease-out;
+  }
+  
+  @keyframes slideInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  
+  /* ВАРИАНТ 4: Hover эффекты для главного изображения */
+  .product-left-side .main-image {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .product-left-side .main-image:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+  
+  
+  /* ВАРИАНТ 5: Пульсация для 3D кнопки (привлекает внимание) */
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+  }
+  
+  .product-three-d-container button {
+    transition: all 0.3s ease;
+  }
+  
+  .product-three-d-container button:hover {
+    animation: pulse 1s infinite;
+  }
+  
+  
+  /* ВАРИАНТ 6: Анимация появления миниатюр (появляются по очереди) */
+  .product-left-side .thumbnail:nth-child(1) {
+    animation: fadeInUp 0.4s ease-out 0.1s both;
+  }
+  
+  .product-left-side .thumbnail:nth-child(2) {
+    animation: fadeInUp 0.4s ease-out 0.2s both;
+  }
+  
+  .product-left-side .thumbnail:nth-child(3) {
+    animation: fadeInUp 0.4s ease-out 0.3s both;
+  }
+  
+  .product-left-side .thumbnail:nth-child(4) {
+    animation: fadeInUp 0.4s ease-out 0.4s both;
+  }
+  
+  
+  /* ВАРИАНТ 7: Плавная анимация 3D модели при появлении */
+  .product-left-side model-viewer {
+    animation: scaleIn 0.6s ease-out;
+  }
+  
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  
+  /* ВАРИАНТ 8: Smooth parallax effect на скролл (требует JS) */
+  /* Добавьте класс "parallax" к элементу в JS при скролле */
+  .parallax {
+    transition: transform 0.5s ease-out;
+  }
+  
+  
+  /* ВАРИАНТ 9: Эффект "loading shimmer" для изображений при загрузке */
+  @keyframes shimmer {
+    0% {
+      background-position: -468px 0;
+    }
+    100% {
+      background-position: 468px 0;
+    }
+  }
+  
+  .loading-shimmer {
+    background: linear-gradient(
+      to right,
+      #f0f0f0 0%,
+      #e0e0e0 20%,
+      #f0f0f0 40%,
+      #f0f0f0 100%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  
+  /* ВАРИАНТ 10: Hover эффект для карусели с глубиной */
+  .product-left-side .image-carousel {
+    transition: all 0.3s ease;
+  }
+  
+  .product-left-side .image-carousel:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+  
+  
+  /* ВАРИАНТ 11: Ripple эффект при клике (требует JS для добавления класса) */
+  @keyframes ripple {
+    0% {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(2);
+      opacity: 0;
+    }
+  }
+  
+  .ripple-effect {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ripple-effect::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100px;
+    height: 100px;
+    background: rgba(0, 123, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: ripple 0.6s ease-out;
+  }
+  
+  
+  /* ВАРИАНТ 12: Bounce эффект для кнопки 3D */
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateY(0);
+    }
+    40% {
+      transform: translateY(-10px);
+    }
+    60% {
+      transform: translateY(-5px);
+    }
+  }
+  
+  .product-three-d-container button.bounce {
+    animation: bounce 1s ease;
+  }

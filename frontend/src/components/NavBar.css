@@ -266,14 +266,15 @@
   align-items: center;
   padding: 6rem 2rem 3rem;
   overflow-y: auto;
-  transform: translateY(-100%);
+  transform: translateY(-100%) translateZ(0); /* переводим на GPU слой */
+  will-change: transform, opacity;
   opacity: 0;
   pointer-events: none;
   transition: transform 0.35s ease, opacity 0.35s ease;
 }
 
 .mobile-menu.open {
-  transform: translateY(0);
+  transform: translateY(0) translateZ(0);
   opacity: 1;
   pointer-events: auto;
 }

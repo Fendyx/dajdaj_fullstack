@@ -52,7 +52,16 @@ const NavBar = () => {
     };
   }, [isLangMenuOpen]);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  const toggleMenu = () => {
+    if (!isMenuOpen) {
+      document.body.classList.add("no-blur");
+      setIsMenuOpen(true);
+      setTimeout(() => document.body.classList.remove("no-blur"), 350);
+    } else {
+      setIsMenuOpen(false);
+    }
+  };
+  
   const closeMenu = () => setIsMenuOpen(false);
   const toggleLangMenu = () => setIsLangMenuOpen((prev) => !prev);
 

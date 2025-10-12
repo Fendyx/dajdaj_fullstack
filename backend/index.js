@@ -16,6 +16,8 @@ const profile = require("./routes/profile");
 const products = require("./products");
 const oauth = require("./routes/oauth");
 const paymentIntent = require("./routes/paymentIntent");
+const orders = require("./routes/orders");
+const adminUsers = require("./routes/adminUsers");
 
 const app = express();
 
@@ -53,6 +55,11 @@ app.use("/api/register", register);
 app.use("/api/login", login);
 app.use("/api/user", profile);
 app.use("/api/oauth", oauth);
+app.use("/api/orders", orders); 
+app.use("/api/users", adminUsers);
+console.log("📦 Admin users routes mounted");
+
+console.log("📦 Orders routes mounted");
 console.log("🔐 Auth routes mounted");
 
 // Root test

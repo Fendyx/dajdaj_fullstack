@@ -1,32 +1,26 @@
-// App.jsx
+// LottieTestHero.jsx
 import React from "react";
+import { useTranslation } from "react-i18next";
 import LottiePlayer from "./LottiePlayer";
 import "./LottieTestHero.css";
 
 const LottieTestHero = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="appp-container">
-
       <div className="center-content">
-        <h1>WEŹŻE DAJ COŚ WYJĄTKOWEGO</h1>
-        <p>
-          Te kulturowe i kulturowe elementy sprawiają, że obraz staje się bardziej
-          osobisty i atrakcyjny.
-        </p>
-        <button className="glass-button">Buy</button>
+        <h1>{t("hero.title")}</h1>
+        <p>{t("hero.description")}</p>
+        <button className="glass-button">{t("hero.button")}</button>
       </div>
 
       <div className="right-lottie">
-        <div className="glass-block">
-            Bóbr nie ku**a bo kupuje na DajDaj
-        </div>
-        <LottiePlayer className="lottie-figure"/>
+        <div className="glass-block">{t("hero.slogan")}</div>
+        <LottiePlayer className="lottie-figure" />
       </div>
     </div>
   );
 };
 
 export default LottieTestHero;
-
-
-

@@ -13,10 +13,10 @@
       "buyNow": "Kup to!"
     },
     "hero": {
-      "badge": "Znaczące Prezenty",
-      "title": "Prezent, który wygląda dokładnie jak ich duch",
-      "subtitle": "Wybierz gotową figurkę kulturystyczną i dodaj imię oraz osobistą wiadomość — wyjątkowy sposób, aby uhonorować czyjąś siłę.",
-      "button": "↓ Przeglądaj naszą kolekcję"
+      "title": "WEŹŻE DAJ COŚ WYJĄTKOWEGO",
+      "description": "Bóbr wie, co dobre! Wygryziemy najlepsze rabaty i wyjątkowe rzeczy — prezenty, gadżety i figurki personalizowane, które robią wrażenie!",
+      "button": "Zobacz produkty",
+      "slogan": "Bóbr nie ku**a bo kupuje na DajDaj"
     },
     "userProfile": {
       "authError": "Błąd uwierzytelniania",

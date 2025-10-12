@@ -13,10 +13,10 @@
       "buyNow": "Buy it!"
     },
     "hero": {
-      "badge": "Meaningful Gifts",
-      "title": "A Gift That Looks Just Like Their Spirit",
-      "subtitle": "Choose a ready-made bodybuilding figurine and add a name and personal message — a unique way to honor someone's strength.",
-      "button": "↓ Explore Our Collection"
+      "title": "Come on, snap up something really cool!",
+      "description": "The bóbr's got your back! We’ll dig out the best deals and coolest finds — gifts, gadgets, and personalized figures are ready for you!",
+      "button": "See Products",
+      "slogan": "Bóbr nie ku**a bo kupuje na DajDaj"
     },
     "userProfile": {
         "authError": "Authentication Error",

@@ -5,7 +5,7 @@ import LanguageDetector from "i18next-browser-languagedetector";
 import en from "./locales/en.json";
 import pl from "./locales/pl.json";
 import ru from "./locales/ru.json";
-import uk from "./locales/uk.json"; // <-- именно uk, не ua
+import uk from "./locales/uk.json";
 
 i18n
   .use(LanguageDetector) // определяет язык автоматически

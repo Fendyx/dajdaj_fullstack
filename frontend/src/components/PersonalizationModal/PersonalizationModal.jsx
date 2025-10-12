@@ -17,8 +17,26 @@ export function PersonalizationModal({ product, onClose, onConfirm }) {
 
   useEffect(() => {
     setIsModalOpen(true);
-    return () => setIsModalOpen(false);
-  }, [setIsModalOpen]);
+  
+    // Проверяем, если текущий state не modal и не был уже установлен
+    if (!window.history.state?.modal) {
+      window.history.pushState({ modal: true }, "");
+    }
+  
+    const handlePopState = () => {
+      onClose();
+      setIsModalOpen(false);
+    };
+  
+    window.addEventListener("popstate", handlePopState);
+  
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+      setIsModalOpen(false);
+    };
+  }, []);
+  
+  
 
   const handleConfirm = () => {
     const personalizedData = {
@@ -39,7 +57,7 @@ export function PersonalizationModal({ product, onClose, onConfirm }) {
           <button
             className="back-btn"
             onClick={() => {
-              onClose();
+              window.history.back(); // ← вместо прямого onClose
               setIsModalOpen(false);
             }}
           >

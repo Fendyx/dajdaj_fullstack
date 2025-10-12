@@ -31,6 +31,21 @@ const NavBar = () => {
   }, [isMenuOpen]);
 
   useEffect(() => {
+    const handlePopState = () => {
+      if (isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+  
+    window.addEventListener("popstate", handlePopState);
+  
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [isMenuOpen]);
+  
+
+  useEffect(() => {
     dispatch(getTotals());
   }, [cart.cartItems, dispatch]);
 
@@ -56,6 +71,7 @@ const NavBar = () => {
     if (!isMenuOpen) {
       document.body.classList.add("no-blur");
       setIsMenuOpen(true);
+      window.history.pushState({ menu: true }, ""); // ← добавляем запись
       setTimeout(() => document.body.classList.remove("no-blur"), 350);
     } else {
       setIsMenuOpen(false);

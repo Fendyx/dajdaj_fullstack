@@ -70,7 +70,10 @@ export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (values, { dispatch, rejectWithValue }) => {
     try {
-      const res = await axios.post(`${url}/register`, values);
+      // 👇 Убираем confirmPassword перед отправкой
+      const { confirmPassword, ...cleanValues } = values;
+
+      const res = await axios.post(`${url}/register`, cleanValues);
       const token = res.data;
       dispatch(setToken(token));
       await dispatch(fetchUserProfile());
@@ -80,6 +83,7 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
+
 
 // Thunk to login. On success we store token + load profile
 export const loginUser = createAsyncThunk(

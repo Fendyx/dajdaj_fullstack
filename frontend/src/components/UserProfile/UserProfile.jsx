@@ -7,6 +7,8 @@ import {
   useGetUserOrdersQuery,
   useGetUserDiscountsQuery,
   useGetUserFavoritesQuery,
+  useGetUserProfileQuery,
+  userApi,
 } from "../../slices/userApi";
 import { logoutUser } from "../../slices/authSlice";
 import AccordionItem from "./AccordionItem";
@@ -37,7 +39,6 @@ export function UserProfile() {
   console.log("🔍 [UserProfile] auth:", auth);
   console.log("🔍 [UserProfile] token:", token);
 
-
   // Если токена нет → сразу редиректим на логин
   useEffect(() => {
     console.log("📦 [useEffect] token:", token);
@@ -46,12 +47,47 @@ export function UserProfile() {
       navigate("/login");
     }
   }, [token, navigate]);
-  
 
-  const { data: orders, isLoading: loadingOrders, error: errorOrders } = useGetUserOrdersQuery(undefined, { skip: !token });
-  const { data: discounts, isLoading: loadingDiscounts, error: errorDiscounts } = useGetUserDiscountsQuery(undefined, { skip: !token });
-  const { data: favorites, isLoading: loadingFavorites, error: errorFavorites } = useGetUserFavoritesQuery(undefined, { skip: !token });
+  // ---- 🔹 Все RTK Query запросы ----
+  const {
+    data: userProfile,
+    isLoading: loadingProfile,
+    refetch: refetchProfile,
+  } = useGetUserProfileQuery(undefined, { skip: !token });
 
+  const {
+    data: orders,
+    isLoading: loadingOrders,
+    error: errorOrders,
+    refetch: refetchOrders,
+  } = useGetUserOrdersQuery(undefined, { skip: !token });
+
+  const {
+    data: discounts,
+    isLoading: loadingDiscounts,
+    error: errorDiscounts,
+    refetch: refetchDiscounts,
+  } = useGetUserDiscountsQuery(undefined, { skip: !token });
+
+  const {
+    data: favorites,
+    isLoading: loadingFavorites,
+    error: errorFavorites,
+    refetch: refetchFavorites,
+  } = useGetUserFavoritesQuery(undefined, { skip: !token });
+
+  // ---- 🔹 Форсим обновление при смене токена ----
+  useEffect(() => {
+    if (token) {
+      console.log("🔄 Token changed — refetching user data...");
+      refetchProfile();
+      refetchOrders();
+      refetchDiscounts();
+      refetchFavorites();
+    }
+  }, [token, refetchProfile, refetchOrders, refetchDiscounts, refetchFavorites]);
+
+  // ---- 🔹 UI состояния ----
   const [expandedSection, setExpandedSection] = useState(null);
   const [showGallery, setShowGallery] = useState(false);
 
@@ -68,13 +104,14 @@ export function UserProfile() {
     errorFavorites?.originalStatus === 401 ||
     errorFavorites?.originalStatus === 400;
 
-    console.log("🛑 [UserProfile] hasAuthError:", hasAuthError);
-
+  console.log("🛑 [UserProfile] hasAuthError:", hasAuthError);
 
   const handleReLogin = () => {
     dispatch(logoutUser());
     navigate("/login");
   };
+
+  
 
   if (hasAuthError) {
     return (
@@ -114,18 +151,20 @@ export function UserProfile() {
     );
   }
 
-  const handleEditProfile = (profileId) => {
-    console.log(`Editing profile: ${profileId}`);
-  };
+    const handleLogOutProfile = () => {
+      // 💥 сбрасываем кэш RTK Query и стейт при logout
+      dispatch(userApi.util.resetApiState());
+      dispatch(logoutUser());
+      navigate("/login");
+    };
 
-  const handleLogOutProfile = () => {
-    dispatch(logoutUser());
-    navigate("/login");
-  };
+    const handleEditProfile = (profileId) => {
+      console.log(`Editing profile: ${profileId}`);
+    };
 
-  const handleAddNewProfile = () => {
-    console.log("Adding new profile");
-  };
+    const handleAddNewProfile = () => {
+      console.log("Adding new profile");
+    };
 
   return (
     <div className="up-container">
@@ -136,12 +175,20 @@ export function UserProfile() {
         <p>{t("userProfile.greetingSubtitle", { name: name || t("userProfile.user") })}</p>
       </div>
 
-      <CardGallery
-  profiles={[auth]} // оборачиваем в массив, потому что CardGallery ждёт массив
-  onEditProfile={handleEditProfile}
-  onLogOut={handleLogOutProfile}
-  onAddNewProfile={handleAddNewProfile}
-/>
+      {loadingProfile ? (
+  <div className="up-loading-state">
+    <div className="up-loading-spinner"></div>
+    <span>Loading profile...</span>
+  </div>
+) : (
+  <CardGallery
+    profiles={userProfile ? [userProfile] : []}
+    onEditProfile={handleEditProfile}
+    onLogOut={handleLogOutProfile}
+    onAddNewProfile={handleAddNewProfile}
+  />
+)}
+
 
 
       <div className="up-card">

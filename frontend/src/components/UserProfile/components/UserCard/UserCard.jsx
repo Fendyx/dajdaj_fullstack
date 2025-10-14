@@ -20,19 +20,25 @@ export function UserCard({
     return null;
   }
 
+  // 👇 Безопасно достаем deliveryDatas[0], даже если массив пуст
+  const firstDelivery = Array.isArray(data.deliveryDatas)
+    ? data.deliveryDatas[0] || {}
+    : {};
+
   const {
     name,
     surname,
     email,
     cardNumber,
     registrationDate,
-    delivery,
-    personalData,
     address,
-    phoneNumber
+    phoneNumber,
   } = data;
 
-  const phone = personalData?.phone || phoneNumber;
+  // 👇 Берем delivery и personalData из первой записи, если есть
+  const delivery = firstDelivery.delivery || {};
+  const personalData = firstDelivery.personalData || {};
+  const phone = personalData.phone || phoneNumber;
 
   return (
     <>
@@ -125,20 +131,36 @@ export function UserCard({
           <div className="uc-card-back">
             <div className="uc-delivery-container">
               <h3 className="uc-back-title">Delivery Details</h3>
-              {delivery ? (
+
+              {delivery && (delivery.address || delivery.method) ? (
                 <>
-                  <p><strong>Address:</strong> {delivery.address}</p>
-                  <p><strong>Method:</strong> {delivery.method}</p>
+                  {delivery.address && (
+                    <p>
+                      <strong>Address:</strong> {delivery.address}
+                    </p>
+                  )}
+                  {delivery.method && (
+                    <p>
+                      <strong>Method:</strong> {delivery.method}
+                    </p>
+                  )}
                 </>
-              ) : (
+              ) : address ? (
                 <div className="uc-back-section">
                   <p className="uc-back-label">Address:</p>
-                  <p>{address?.street}</p>
-                  <p>{address?.city}</p>
-                  <p>{address?.postalCode}</p>
+                  {address?.street && <p>{address.street}</p>}
+                  {address?.city && <p>{address.city}</p>}
+                  {address?.postalCode && <p>{address.postalCode}</p>}
                   {address?.country && <p>{address.country}</p>}
                 </div>
+              ) : (
+                // 👇 если нет вообще ничего — показываем заглушку
+                <div className="uc-back-section">
+                  <p className="uc-back-label">Address:</p>
+                  <p>No delivery data available</p>
+                </div>
               )}
+
               {phone && (
                 <div className="uc-back-section">
                   <p className="uc-back-label">Contact Number:</p>
@@ -147,6 +169,7 @@ export function UserCard({
               )}
             </div>
           </div>
+          
         </div>
       </div>
 

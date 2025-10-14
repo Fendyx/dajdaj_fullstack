@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useGetAllUsersQuery } from "../../slices/adminUsersApi";
+import { useGetAllUsersQuery, useDeleteUserMutation } from "../../slices/adminUsersApi";
 import Card, { CardHeader, CardContent, CardTitle } from "./ui/Card";
 import Badge from "./ui/Badge";
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "./ui/Table";
@@ -7,6 +7,18 @@ import Button from "./ui/Button";
 
 export default function UsersPage() {
   const { data: users = [], isLoading, error } = useGetAllUsersQuery();
+  const [deleteUser] = useDeleteUserMutation();
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Удалить пользователя?")) {
+      try {
+        await deleteUser(id).unwrap();
+        console.log("✅ Пользователь удален:", id);
+      } catch (err) {
+        console.error("❌ Ошибка удаления:", err);
+      }
+    }
+  };
 
   if (isLoading) return <p>Loading users...</p>;
   if (error) return <p>Error loading users</p>;
@@ -51,7 +63,13 @@ export default function UsersPage() {
                     <TableCell>{new Date(user.registrationDate).toLocaleDateString()}</TableCell>
                     <TableCell>
                       <Button variant="ghost">Edit</Button>
-                      <Button variant="ghost" className="text-red">Delete</Button>
+                      <Button
+                        variant="ghost"
+                        className="text-red"
+                        onClick={() => handleDelete(user._id)}
+                      >
+                        Delete
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))

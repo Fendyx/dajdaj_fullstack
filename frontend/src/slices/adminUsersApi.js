@@ -16,7 +16,14 @@ export const adminUsersApi = createApi({
       query: () => "/users",
       providesTags: ["Users"],
     }),
+    deleteUser: builder.mutation({
+      query: (id) => ({
+        url: `/users/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Users"],
+    }),
   }),
 });
 
-export const { useGetAllUsersQuery } = adminUsersApi;
+export const { useGetAllUsersQuery, useDeleteUserMutation } = adminUsersApi;

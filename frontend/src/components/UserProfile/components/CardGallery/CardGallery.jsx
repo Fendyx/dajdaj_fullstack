@@ -24,22 +24,28 @@ export function CardGallery({ profiles, onEditProfile, onLogOut, onAddNewProfile
     const deliveryDatas = profile?.deliveryDatas || [];
     const [mainDelivery, ...extraDeliveries] = deliveryDatas;
 
-    if (mainDelivery) {
-      const mainCardData = {
-        ...profile,
-        delivery: mainDelivery.delivery,
-        personalData: mainDelivery.personalData,
-      };
+    // Даже если нет данных доставки — показываем базовую карточку
+      const mainCardData = mainDelivery
+      ? {
+          ...profile,
+          delivery: mainDelivery.delivery,
+          personalData: mainDelivery.personalData,
+        }
+      : {
+          ...profile,
+          delivery: { address: "No address added", method: "—" },
+          personalData: { name: profile.name, email: profile.email },
+        };
 
       cards.push(
-        <UserCard
-          key={`main-${profile.id}`}
-          profile={mainCardData}
-          onEdit={() => onEditProfile?.(profile.id)}
-          onLogOut={() => onLogOut?.()}
-        />
+      <UserCard
+        key={`main-${profile._id || profile.id || profile.clientId}`}
+        profile={mainCardData}
+        onEdit={() => onEditProfile?.(profile._id || profile.id)}
+        onLogOut={() => onLogOut?.()}
+      />
       );
-    }
+
 
     extraDeliveries.forEach((delivery, idx) => {
       const extraCardData = {

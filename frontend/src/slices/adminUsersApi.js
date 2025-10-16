@@ -23,7 +23,29 @@ export const adminUsersApi = createApi({
       }),
       invalidatesTags: ["Users"],
     }),
+    getAdmins: builder.query({
+      query: () => "/users/admins",
+      providesTags: ["Users"],
+    }),
+    findUserByEmail: builder.query({
+      query: (email) => `/users/find-by-email?email=${encodeURIComponent(email)}`,
+    }),
+    promoteUserToAdmin: builder.mutation({
+      query: (id) => ({
+        url: `/users/promote/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Users"],
+    }),
   }),
 });
 
-export const { useGetAllUsersQuery, useDeleteUserMutation } = adminUsersApi;
+export const {
+  useGetAllUsersQuery,
+  useDeleteUserMutation,
+  useGetAdminsQuery,
+  useFindUserByEmailQuery,
+  usePromoteUserToAdminMutation,
+} = adminUsersApi;
+
+

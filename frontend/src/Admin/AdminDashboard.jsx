@@ -1,4 +1,3 @@
-// AdminDashboard.jsx
 import { useState } from "react";
 import Sidebar from "./components/Sidebar";
 import Header from "./components/Header";
@@ -7,9 +6,17 @@ import UsersPage from "./components/UsersPage";
 import ProductsPage from "./components/ProductsPage";
 import AdminsPage from "./components/AdminsPage";
 import "./AdminDashboard.css";
+import { useSelector } from "react-redux";
+import { Navigate } from "react-router-dom";
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState("orders");
+  const { role } = useSelector((state) => state.auth);
+  const [activeTab, setActiveTab] = useState("orders"); // 👈 перемещено выше
+
+  if (role !== "superadmin" && role !== "admin") {
+    return <Navigate to="/" replace />;
+  }
+  
 
   const renderContent = () => {
     switch (activeTab) {

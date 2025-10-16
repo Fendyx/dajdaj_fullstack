@@ -8,7 +8,7 @@ const products = require("../products");
 // ✅ Получить полный профиль пользователя
 router.get("/profile", auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user._id).select("-password");
+    const user = await User.findById(req.user._id).select("name email role clientId cardNumber registrationDate discounts favorites deliveryDatas");
     if (!user) return res.status(404).json({ message: "Пользователь не найден" });
     res.json(user);
   } catch (error) {

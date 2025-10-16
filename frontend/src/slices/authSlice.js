@@ -31,6 +31,7 @@ const initialState = {
 
   userLoaded: false,      // only true after fetchUserProfile settles
   isAuthenticated: false, // only true if profile fetch succeeded
+  role: "", // ← будет "user", "admin" или "superadmin"
 };
 
 // Thunk to fetch profile, using the token from state

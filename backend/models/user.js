@@ -50,6 +50,11 @@ const userSchema = new mongoose.Schema({
     type: [deliveryDataSchema],
     default: [],
   },
+  role: {
+    type: String,
+    enum: ["user", "admin", "superadmin"],
+    default: "user",
+  },
 });
 
 function randomFourDigits() {

@@ -3,12 +3,16 @@ import React, { useState } from "react";
 import { ProgressBar } from "./components/ProgressBar";
 import { PersonalInfoForm } from "./components/PersonalInfoForm";
 import DeliveryStep from "./components/DeliveryStep/DeliveryStep";
-import "./Checkout.css";
+import "./ShippingInfo.css";
 
 // <-- добавленный импорт
 import { useAddDeliveryDataMutation } from "../../slices/userApi";
+import { useLocation, useNavigate } from "react-router-dom";
 
-export default function Checkout() {
+export default function ShippingInfo() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const fromCart = location.state?.fromCart || false;
   const steps = ["Dane", "Dostawa"];
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -82,6 +86,8 @@ export default function Checkout() {
       console.error("❌ Ошибка сохранения:", error);
       alert("Ошибка сохранения данных доставки");
     }
+    if (fromCart) navigate("/checkout-stripe");
+    else navigate("/");
   };
 
   return (

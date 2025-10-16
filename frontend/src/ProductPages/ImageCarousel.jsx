@@ -1,115 +1,107 @@
-import React, { useState } from 'react';
-import './ImageCarousel.css';
+import React, { useState } from "react";
+import "./ImageCarousel.css";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-export function ImageCarousel({ images, mainImage, onImageChange }) {
+export function ImageCarousel({ images = [], mainImage, onImageChange }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   const handlePrevious = () => {
     if (isTransitioning) return;
     const newIndex = activeIndex === 0 ? images.length - 1 : activeIndex - 1;
-    triggerCardTransition(newIndex);
+    triggerTransition(newIndex);
   };
 
   const handleNext = () => {
     if (isTransitioning) return;
     const newIndex = activeIndex === images.length - 1 ? 0 : activeIndex + 1;
-    triggerCardTransition(newIndex);
+    triggerTransition(newIndex);
   };
 
   const handleCardClick = (index) => {
-    if (index === activeIndex || isTransitioning) return;
-    triggerCardTransition(index);
+    if (isTransitioning || index === activeIndex) return;
+    triggerTransition(index);
   };
 
-  const triggerCardTransition = (newIndex) => {
+  const triggerTransition = (newIndex) => {
     setIsTransitioning(true);
     setActiveIndex(newIndex);
-    if (onImageChange) {
-      onImageChange(images[newIndex]);
-    }
-
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 400);
+    if (onImageChange) onImageChange(images[newIndex]);
+    setTimeout(() => setIsTransitioning(false), 400);
   };
 
   const getCardStyle = (index) => {
     const position = index - activeIndex;
-    const totalImages = images.length;
+    const total = images.length;
 
-    const normalizedPosition =
-      position > totalImages / 2
-        ? position - totalImages
-        : position < -totalImages / 2
-        ? position + totalImages
+    const normalized =
+      position > total / 2
+        ? position - total
+        : position < -total / 2
+        ? position + total
         : position;
 
-    if (normalizedPosition === 0) {
+    if (normalized === 0) {
       return {
-        transform: 'translateX(0px) translateY(0px) scale(1)',
-        zIndex: totalImages,
+        transform: "translateX(0px) translateY(0px) scale(1)",
+        zIndex: total,
         opacity: 1,
       };
-    } else if (normalizedPosition > 0) {
-      const offset = Math.min(normalizedPosition, 3);
+    } else if (normalized > 0) {
+      const offset = Math.min(normalized, 3);
       return {
         transform: `translateX(${offset * 8}px) translateY(${offset * 6}px) scale(${1 - offset * 0.05})`,
-        zIndex: totalImages - normalizedPosition,
+        zIndex: total - normalized,
         opacity: Math.max(0.4, 1 - offset * 0.2),
       };
     } else {
-      const offset = Math.min(Math.abs(normalizedPosition), 3);
+      const offset = Math.min(Math.abs(normalized), 3);
       return {
         transform: `translateX(${-offset * 8}px) translateY(${offset * 6}px) scale(${1 - offset * 0.05})`,
-        zIndex: totalImages - Math.abs(normalizedPosition),
+        zIndex: total - Math.abs(normalized),
         opacity: Math.max(0.4, 1 - offset * 0.2),
       };
     }
   };
 
   return (
-    <div className="product-carousel-container">
-      {/* Кнопки переключения */}
+    <div className="carousel">
+      {/* Кнопки навигации */}
       <button
         onClick={handlePrevious}
         disabled={isTransitioning}
-        className="product-carousel-arrow product-left"
+        className="carousel-arrow carousel-left"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor">
-          <path d="M15.5 19.5L8.5 12l7-7.5" stroke="currentColor" strokeWidth="2" fill="none" />
-        </svg>
+        <FaChevronLeft />
       </button>
 
       <button
         onClick={handleNext}
         disabled={isTransitioning}
-        className="product-carousel-arrow product-right"
+        className="carousel-arrow carousel-right"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor">
-          <path d="M8.5 19.5l7-7.5-7-7.5" stroke="currentColor" strokeWidth="2" fill="none" />
-        </svg>
+        <FaChevronRight />
       </button>
 
-      {/* Картинки */}
-      <div className="product-carousel-images">
+      {/* Основные изображения */}
+      <div className="carousel-track">
         {images.map((image, index) => {
           const style = getCardStyle(index);
-          const isActive = index === activeIndex;
+          const active = index === activeIndex;
 
           return (
             <div
               key={index}
-              className={`product-carousel-card ${!isActive ? 'product-inactive' : 'product-active'}`}
-              style={{
-                transform: style.transform,
-                zIndex: style.zIndex,
-                opacity: style.opacity,
-              }}
+              className={`carousel-card ${active ? "carousel-active" : ""}`}
+              style={style}
               onClick={() => handleCardClick(index)}
             >
-              <div className={`product-carousel-card-inner ${isActive ? 'product-active-ring' : ''}`}>
-                <img src={image} alt={`Product view ${index + 1}`} className="product-carousel-image" />
+              <div className={`carousel-inner ${active ? "carousel-active-ring" : ""}`}>
+                <img
+                  src={image}
+                  alt={`Product ${index}`}
+                  className="carousel-image"
+                />
               </div>
             </div>
           );
@@ -117,15 +109,19 @@ export function ImageCarousel({ images, mainImage, onImageChange }) {
       </div>
 
       {/* Индикаторы */}
-      <div className="product-carousel-indicators">
+      <div className="carousel-indicators">
         {images.map((image, index) => (
           <button
             key={index}
             onClick={() => handleCardClick(index)}
             disabled={isTransitioning}
-            className={`product-indicator ${index === activeIndex ? 'product-active' : ''}`}
+            className={`carousel-indicator ${index === activeIndex ? "carousel-indicator-active" : ""}`}
           >
-            <img src={image} alt={`Thumbnail ${index + 1}`} className="product-indicator-image" />
+            <img
+              src={image}
+              alt={`Thumb ${index}`}
+              className="carousel-indicator-image"
+            />
           </button>
         ))}
       </div>

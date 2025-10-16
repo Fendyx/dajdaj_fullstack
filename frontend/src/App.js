@@ -23,8 +23,8 @@ import AdminLayout from "./layouts/AdminLayout";
 
 import Home from "./components/Home";
 import Cart from "./components/Cart/Cart";
-import Checkout from "./Pages/Checkout/Checkout";
-import SelectDeliveryMethod from "./Pages/Checkout/components/selectDeliveryMethod/SelectDeliveryMethod";
+import ShippingInfo from "./Pages/ShippingInfo/ShippingInfo";
+import SelectDeliveryMethod from "./Pages/ShippingInfo/components/selectDeliveryMethod/SelectDeliveryMethod";
 import CheckoutSuccess from "./components/CheckoutSuccess/CheckoutSuccess";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
@@ -91,10 +91,10 @@ function AppContent() {
                 }
               />
               <Route
-                path="/checkout"
+                path="/shipping-info"
                 element={
                   <PrivateRoute>
-                    <Checkout />
+                    <ShippingInfo />
                   </PrivateRoute>
                 }
               />

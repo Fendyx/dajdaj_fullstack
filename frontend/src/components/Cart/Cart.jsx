@@ -39,6 +39,26 @@ const Cart = () => {
     dispatch(clearCart());
   };
 
+  const handleProceedToCheckout = () => {
+    if (!auth._id) {
+      // если пользователь не авторизован — на логин
+      navigate("/login?redirect=/cart");
+      return;
+    }
+  
+    // если у пользователя нет deliveryDatas или оно пустое
+    const deliveryList = auth.deliveryDatas || [];
+  
+    if (deliveryList.length === 0) {
+      navigate("/shipping-info", { state: { fromCart: true } });
+      return;
+    }
+  
+    // если всё ок — переход на оплату
+    navigate("/checkout-stripe");
+  };
+  
+
   return (
     <div className="cart-container">
       <h2>{t("cart.title")}</h2>
@@ -128,7 +148,7 @@ const Cart = () => {
               {auth._id ? (
                 <button
                   className="cart-proceed"
-                  onClick={() => navigate("/checkout-stripe")}
+                  onClick={handleProceedToCheckout}
                 >
                   {t("cart.summary.proceedToDelivery")}
                 </button>

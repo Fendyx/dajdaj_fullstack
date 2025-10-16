@@ -29,7 +29,7 @@ export default function MaleBodybuilder() {
             {show3D ? (
               <model-viewer
                 id="femaleViewer"
-                src="/3dObj/FemaleBlond/blond.gltf"  // замени на свой путь
+                src="/3dObj/FemaleBlond/blond.gltf"
                 shadow-intensity="1"
                 autoplay
                 camera-orbit="-90deg 75deg"

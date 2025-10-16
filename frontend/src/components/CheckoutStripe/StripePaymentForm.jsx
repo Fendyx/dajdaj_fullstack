@@ -7,7 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import "./StripePaymentForm.css";
-import SelectDeliveryMethod from "../../Pages/Checkout/components/selectDeliveryMethod/SelectDeliveryMethod";
+import SelectDeliveryMethod from "../../Pages/ShippingInfo/components/selectDeliveryMethod/SelectDeliveryMethod";
 import SelectedCartItem from "../SelectedCartItem/SelectedCartItem";
 import CardPayment from "./PaymentMethods/CardPayment";
 import BlikPayment from "./PaymentMethods/BlikPayment";

@@ -1,145 +1,104 @@
 /* Product Page Styles */
 
 .product-page {
-    min-height: 100vh;
-    background-color: #f8f9fa;
-    padding: 20px;
-    padding-top: 90px;
-    margin-bottom: 80px;
-  }
-  
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 20px;
+  padding-top: 90px;
+  margin-bottom: 80px;
+}
+
+.product-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  height: 100%;
+}
+
+/* Layout без карточки - просто grid на странице */
+.product-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+  height: 100%;
+  /* Убрали background, border-radius, padding и box-shadow */
+}
+
+/* Left Side - Gallery / 3D */
+.product-left-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.product-left-side model-viewer {
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background: #f5f5f5;
+}
+
+/* 3D Button Container */
+.product-three-d-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+/* Right Side - Product Details */
+.product-right-side {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-left: 20px;
+  height: 100%;
+  width: 100%;
+}
+
+/* Обеспечиваем, чтобы ProductDetails занимал всю высоту */
+.product-right-side > * {
+  height: 100%;
+  width: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .product-page-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+    padding: 0 15px;
   }
   
-  /* Layout без карточки - просто grid на странице */
   .product-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    align-items: start;
-    /* Убрали background, border-radius, padding и box-shadow */
+    grid-template-columns: 1fr;
+    gap: 30px;
   }
   
-  /* Left Side - Gallery / 3D */
-  .product-left-side {
-    display: flex;
-    flex-direction: column;
+  .product-right-side {
+    padding-left: 0;
+    height: auto;
+  }
+  
+  .product-left-side model-viewer {
+    height: 400px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-page {
+    padding: 10px;
+    padding-top: 80px;
+  }
+     
+  .product-layout {
     gap: 20px;
   }
   
   .product-left-side model-viewer {
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    background: #f5f5f5;
+    height: 300px !important;
   }
+}
   
-  /* 3D Button Container */
-  .product-three-d-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
-  }
-  
-  /* Right Side - Product Details */
-  .product-right-side {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding-left: 20px;
-  }
-  
-  /* Responsive Design */
-  @media (max-width: 768px) {
-    .product-page-container {
-      padding: 0 15px;
-    }
-    
-    .product-layout {
-      grid-template-columns: 1fr;
-      gap: 30px;
-    }
-    
-    .product-right-side {
-      padding-left: 0;
-    }
-    
-    .product-left-side model-viewer {
-      height: 400px !important;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .product-page {
-      padding: 10px;
-      padding-top: 80px;
-    }
-       
-    .product-layout {
-      gap: 20px;
-    }
-    
-    .product-left-side model-viewer {
-      height: 300px !important;
-    }
-  }
-  
-  /* Image Carousel Styles */
-  .product-left-side .image-carousel {
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .product-left-side .main-image {
-    width: 100%;
-    height: 500px;
-    object-fit: cover;
-    border-radius: 12px;
-  }
-  
-  .product-left-side .thumbnail-container {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-    overflow-x: auto;
-    padding: 5px 0;
-  }
-  
-  .product-left-side .thumbnail {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-  }
-  
-  .product-left-side .thumbnail:hover {
-    border-color: #007bff;
-    transform: scale(1.05);
-  }
-  
-  .product-left-side .thumbnail.active {
-    border-color: #007bff;
-  }
-  
-  /* Loading States */
-  .product-left-side .loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 500px;
-    background: #f5f5f5;
-    border-radius: 12px;
-    color: #666;
-    font-size: 16px;
-  }
   
   /* Smooth Transitions */
   .product-left-side * {

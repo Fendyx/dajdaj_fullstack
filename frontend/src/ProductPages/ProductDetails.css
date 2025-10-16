@@ -1,112 +1,345 @@
-/* --- Базовый стиль (для ноутов до 1400px) --- */
-.product-details {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 2rem;
+.prod-page {
+  min-height: 100vh;
+  /* padding: 2rem 1rem; */
+  width: 100%;
 }
 
-.product-title {
-  font-size: 2.25rem;
-  font-weight: bold;
-  color: #111827;
+.prod-container {
+  width: 100%;
+  margin: 0 auto;
+  /* display: grid;
+  grid-template-columns: 1fr; */
+  gap: 2rem;
+  align-items: start;
+}
+
+/* --- Галерея --- */
+.prod-gallery-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+.prod-gallery {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.prod-3d-button-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.prod-viewer3d {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 31rem;
+  aspect-ratio: 1 / 1;
+  background: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+}
+
+.prod-viewer3d-icon {
+  font-size: 4rem;
+  color: #9ca3af;
   margin-bottom: 1rem;
 }
 
-.product-description {
-  color: #4B5563;
-  line-height: 1.625;
-  font-size: 1rem;
+.prod-viewer3d-title {
+  color: #6b7280;
+  margin-bottom: 0.5rem;
 }
 
-.product-price {
-  font-size: 1.875rem;
-  font-weight: bold;
+.prod-viewer3d-subtitle {
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* --- Информация --- */
+.prod-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  height: 100%;
+  max-width: none; /* Убираем ограничение по ширине */
+}
+
+.prod-header {
+  width: 100%;
+}
+
+.prod-title {
+  font-size: 2.25rem;
   color: #111827;
+  margin-bottom: 1rem;
+  width: 100%;
 }
 
-.buy-button {
+.prod-description {
+  font-size: 1.125rem;
+  color: #4b5563;
+  line-height: 1.7;
+  width: 100%;
+}
+
+.prod-price {
+  font-size: 2.25rem;
+  color: #111827;
+  width: 100%;
+}
+
+.prod-add-btn {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 1rem 2rem;
-  border-radius: 0.75rem;
-  background: linear-gradient(135deg, #3B82F6 0%, #EC4899 100%);
+  background: #3b82f6;
   color: white;
-  font-weight: 500;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem 2rem;
+  cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
-/* --- Увеличение для Full HD (1920px+) --- */
-@media (min-width: 1600px) {
-  .product-details {
-    max-width: 1100px;
+.prod-add-btn:hover {
+  background: #2563eb;
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+}
+
+.prod-cart-icon {
+  font-size: 1.25rem;
+}
+
+/* --- Аккордеоны --- */
+.prod-accordion {
+  margin-top: 2rem;
+  background: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  width: 100%;
+}
+
+.prod-accordion-item {
+  border-bottom: 1px solid #f3f4f6;
+  width: 100%;
+}
+
+.prod-accordion-item:last-child {
+  border-bottom: none;
+}
+
+.prod-accordion-trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.prod-accordion-trigger:hover {
+  background: #f9fafb;
+}
+
+.prod-accordion-icon {
+  font-size: 0.875rem;
+  color: #6b7280;
+  transition: transform 0.3s ease;
+}
+
+.prod-accordion-icon-open {
+  transform: rotate(180deg);
+}
+
+.prod-accordion-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  width: 100%;
+}
+
+.prod-accordion-content-open {
+  max-height: 1000px;
+}
+
+.prod-accordion-inner {
+  padding: 0 1.5rem 1rem;
+  width: 100%;
+}
+
+.prod-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f3f4f6;
+  color: #6b7280;
+  width: 100%;
+}
+
+.prod-row-last {
+  border-bottom: none;
+}
+
+.prod-row-value {
+  color: #111827;
+}
+
+.prod-review {
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.prod-review-last {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.prod-review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.prod-username {
+  color: #111827;
+}
+
+.prod-date {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.prod-stars {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.prod-star {
+  font-size: 1rem;
+  color: #d1d5db;
+}
+
+.prod-star-filled {
+  color: #fbbf24;
+}
+
+.prod-comment {
+  color: #4b5563;
+  line-height: 1.6;
+  width: 100%;
+}
+
+.prod-no-reviews {
+  text-align: center;
+  color: #6b7280;
+  padding: 1rem 0;
+  width: 100%;
+}
+
+/* Loading States */
+.prod-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  width: 100%;
+  color: #6b7280;
+}
+
+.prod-loading-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #9ca3af;
+}
+
+.prod-not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  width: 100%;
+  color: #6b7280;
+  font-size: 1.125rem;
+}
+
+/* --- Responsive --- */
+@media (min-width: 1024px) {
+  .prod-container {
+    /* grid-template-columns: 1fr 1fr; */
     gap: 3rem;
-    padding: 3rem;
   }
 
-  .product-title {
+  .prod-info {
+    position: sticky;
+    top: 2rem;
+  }
+}
+
+@media (min-width: 1600px) {
+  .prod-page {
+    /* padding: 3rem 2rem; */
+  }
+
+  .prod-title {
     font-size: 3rem;
   }
 
-  .product-description {
+  .prod-description {
     font-size: 1.25rem;
-    line-height: 1.75;
   }
 
-  .product-price {
+  .prod-price {
     font-size: 2.5rem;
   }
 
-  .buy-button {
-    padding: 1.25rem 3rem;
-    font-size: 1.125rem;
-  }
-
-  .extra-title {
-    font-size: 1.125rem;
-  }
-
-  .extra-text {
-    font-size: 1rem;
+  .prod-add-btn {
+    padding: 1.25rem 2.5rem;
   }
 }
 
-/* --- Ещё больше для 4K (например 2560px+) --- */
 @media (min-width: 2000px) {
-  .product-details {
-    max-width: 1300px;
-    gap: 4rem;
-    padding: 4rem;
+  .prod-page {
+    /* padding: 4rem 2rem; */
   }
 
-  .product-title {
+  .prod-title {
     font-size: 3.5rem;
   }
 
-  .product-description {
+  .prod-description {
     font-size: 1.375rem;
   }
 
-  .product-price {
+  .prod-price {
     font-size: 3rem;
   }
 
-  .buy-button {
-    padding: 1.5rem 3.5rem;
-    font-size: 1.25rem;
-  }
-
-  .extra-title {
-    font-size: 1.25rem;
-  }
-
-  .extra-text {
-    font-size: 1.125rem;
+  .prod-add-btn {
+    padding: 1.5rem 3rem;
   }
 }

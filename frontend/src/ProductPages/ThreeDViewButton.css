@@ -1,28 +1,25 @@
 .three-d-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    padding: 1rem 1.5rem;
-    border-radius: 0.75rem;
-    background: linear-gradient(135deg, #3B82F6 0%, #EC4899 100%);
-    color: white;
-    font-weight: 500;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transition: all 0.3s ease;
-    transform: scale(1);
-  }
-  
-  .three-d-button:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  }
-  
-  .three-d-icon {
-    transition: transform 0.3s ease;
-  }
-  
-  .three-d-button:hover .three-d-icon {
-    transform: rotate(12deg);
-  }
-  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  border-radius: 0.75rem;
+  background: #16a34a;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.25);
+}
+
+.three-d-button:hover {
+  background: #15803d;
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
+  transform: scale(1.05);
+}
+
+.three-d-icon {
+  width: 20px;
+  height: 20px;
+}

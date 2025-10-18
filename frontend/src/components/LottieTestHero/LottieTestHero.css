@@ -107,14 +107,23 @@
 
 
 @media(max-width: 692px){
-    .glass-block {
-        position: relative;
-        width: auto;
-        height: 12vh;
-        margin-left: 10%;
-        width: 100%;
-        padding: 5px;
-      }
+  .center-content {
+    width: 100%;
+    z-index: 1;
+    height: auto;
+    padding: 30px;
+  }
+  .glass-block {
+      position: relative;
+      width: auto;
+      height: 12vh;
+      margin-left: 10%;
+      width: 100%;
+      padding: 5px;
+    }
+    .glass-button{
+      width: 60%;
+    }
 }
 
 @media (max-width: 665px) {

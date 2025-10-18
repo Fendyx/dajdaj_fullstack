@@ -418,7 +418,7 @@ input:focus, select:focus {
   width: 100%;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1052px) {
   .stripe-layout {
     flex-direction: row;
     align-items: flex-start;
@@ -426,14 +426,14 @@ input:focus, select:focus {
   }
 
   .stripe-left {
-    flex: 0 0 60%;
+    flex: 0 0 50%;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
   .stripe-right {
-    flex: 0 0 40%;
+    flex: 0 0 50%;
     position: sticky;
     top: 1rem;
     align-self: flex-start;

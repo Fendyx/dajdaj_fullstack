@@ -84,7 +84,7 @@ export default function CreateNewProfileModal({ isOpen, onClose }) {
 
         <div className="uc-method-selector">
           <p>Способ доставки:</p>
-          {["InPost", "ORLEN Paczka", "Poczta Polska", "flash"].map((option) => (
+          {["InPost", "ORLEN Paczka", "Poczta Polska"].map((option) => (
             <div
               key={option}
               className={`uc-method-option ${

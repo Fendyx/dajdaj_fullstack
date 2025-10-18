@@ -110,10 +110,9 @@ const PersonalInformationForm = ({ formData, handleChange, isExpanded, setIsExpa
                 <option value="" disabled>
                   Select delivery method
                 </option>
-                <option value="standard">Standard Delivery (3-5 days)</option>
-                <option value="express">Express Delivery (1-2 days)</option>
-                <option value="overnight">Overnight Delivery</option>
-                <option value="pickup">Store Pickup</option>
+                <option value="standard">InPost (3-5 bussiness days)</option>
+                <option value="express">ORLEN Paczka (3-5 bussiness)</option>
+                <option value="overnight">Poczta Polska (3-5 bussiness)</option>
               </select>
             </div>
           </>

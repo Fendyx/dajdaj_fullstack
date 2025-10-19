@@ -1,8 +1,20 @@
 import { FaCreditCard, FaGoogle, FaApple, FaBolt } from "react-icons/fa";
 import { PaymentRequestButtonElement } from "@stripe/react-stripe-js";
+import { useSelector } from "react-redux";
 import "./PaymentFooter.css";
 
 const PaymentFooter = ({ selected, paymentRequest, blikCode, canMakePaymentResult }) => {
+  // ✅ Получаем товары из Redux
+  const cartItems = useSelector((state) => state.cart.cartItems);
+
+  // ✅ Считаем сумму корзины
+  const cartTotal = cartItems.reduce((total, item) => {
+    return total + item.price * item.cartQuantity;
+  }, 0);
+
+  const deliveryFee = 9.99;
+  const totalWithDelivery = (cartTotal + deliveryFee).toFixed(2);
+
   return (
     <div className="payment-footer">
       {/* Левый блок — иконка + название метода */}
@@ -19,23 +31,38 @@ const PaymentFooter = ({ selected, paymentRequest, blikCode, canMakePaymentResul
         </span>
       </div>
 
+      {/* Центральный блок — суммы */}
+      <div className="payment-footer-summary">
+        <div className="payment-summary-line">
+          <span>Subtotal:</span>
+          <span>{cartTotal.toFixed(2)} PLN</span>
+        </div>
+        <div className="payment-summary-line">
+          <span>Delivery:</span>
+          <span>{deliveryFee.toFixed(2)} PLN</span>
+        </div>
+        <div className="payment-summary-total">
+          <strong>Total:</strong>
+          <strong>{totalWithDelivery} PLN</strong>
+        </div>
+      </div>
+
       {/* Правый блок — кнопка оплаты */}
       <div className="payment-footer-actions">
         {selected === "blik" && (
           <button type="submit" className="payment-btn blik-btn">
             <FaBolt />
-            Pay with BLIK
+            Pay {totalWithDelivery} PLN
           </button>
         )}
 
         {selected === "card" && (
           <button type="submit" className="payment-btn card-btn">
             <FaCreditCard />
-            Pay Now
+            Pay {totalWithDelivery} PLN
           </button>
         )}
 
-        {/* ✅ Stripe кнопка рендерится только если выбрано Google/Apple Pay */}
         {(selected === "googlepay" || selected === "applepay") &&
           (canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay) &&
           paymentRequest && (

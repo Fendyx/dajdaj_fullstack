@@ -9,22 +9,19 @@ import axios from "axios";
 import "./StripePaymentForm.css";
 import SelectDeliveryMethod from "../../Pages/ShippingInfo/components/selectDeliveryMethod/SelectDeliveryMethod";
 import SelectedCartItem from "../SelectedCartItem/SelectedCartItem";
-import CardPayment from "./PaymentMethods/CardPayment";
-import BlikPayment from "./PaymentMethods/BlikPayment";
-import GoogleApplePayButton from "./PaymentMethods/GoogleApplePayButton";
-import PersonalInformationForm from "./PersonalInformationForm";
 import PaymentMethods from "./PaymentMethods/PaymentMethods";
-import PaymentFooter from "./PaymentFooter";
+import PaymentFooter from "./PaymentFooter"
+import { FaCreditCard } from "react-icons/fa";
+
+import Drawer, { DrawerTrigger, DrawerContent } from "../Drawer/Drawer";
 
 const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const stripe = useStripe();
   const elements = useElements();
   const { token } = useSelector((state) => state.auth);
 
-  const cardNumberRef = useRef(null);
-  const cardExpiryRef = useRef(null);
-  const cardCvcRef = useRef(null);
-
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [dragState, setDragState] = useState({ dragging: false, translateY: 0 });
   const [formData, setFormData] = useState({
     name: deliveryInfo?.name || "",
     surname: deliveryInfo?.surname || "",
@@ -46,11 +43,8 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     cvc: { complete: false, focused: false },
   });
 
-  useEffect(() => {
-    console.log("🌍 Current URL:", window.location.href);
-    console.log("📦 Stripe loaded:", !!stripe);
-    console.log("🧮 Cart total:", cartItems.reduce((sum, item) => sum + item.qty * 1000, 0));
-  }, [stripe, cartItems]);
+  const cardExpiryRef = useRef(null);
+  const cardCvcRef = useRef(null);
 
   useEffect(() => {
     if (selectedDelivery) {
@@ -65,87 +59,56 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     }
   }, [selectedDelivery]);
 
+  // PaymentRequest для Google/Apple Pay
   useEffect(() => {
     if (stripe) {
+      const totalAmount = cartItems.reduce(
+        (sum, item) => sum + item.qty * 1000,
+        0
+      );
+
       const pr = stripe.paymentRequest({
         country: "PL",
         currency: "pln",
         total: {
           label: "Total",
-          amount: Math.round(
-            cartItems.reduce((sum, item) => sum + item.qty * 1000, 0)
-          ),
+          amount: totalAmount,
         },
         requestPayerName: true,
         requestPayerEmail: true,
       });
 
       pr.canMakePayment().then((result) => {
-        console.log("🔍 canMakePayment result:", result);
         setCanMakePaymentResult(result);
-
         if (result) {
           setPaymentRequest(pr);
 
           pr.on("paymentmethod", async (ev) => {
-            console.log("🧾 Received paymentmethod event:", ev.paymentMethod);
-            console.log("📤 Billing details:", ev.paymentMethod.billing_details);
-
             try {
               const { data } = await axios.post(
                 `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
-                {
-                  cartItems,
-                  deliveryInfo: formData,
-                },
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
+                { cartItems, deliveryInfo: formData },
+                { headers: { Authorization: `Bearer ${token}` } }
               );
 
               const clientSecret = data?.clientSecret;
-              console.log("🔑 Received clientSecret:", clientSecret);
+              if (!clientSecret) return ev.complete("fail");
 
-              if (!clientSecret) {
-                console.error("❌ No clientSecret received");
-                ev.complete("fail");
-                return;
-              }
-
-              const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+              const { error } = await stripe.confirmCardPayment(clientSecret, {
                 payment_method: ev.paymentMethod.id,
                 return_url: `${window.location.origin}/checkout-success`,
               });
 
-              console.log("📦 confirmCardPayment result:", { error, paymentIntent });
-
-              if (error) {
-                console.error("❌ Google Pay failed:", error.message);
-                ev.complete("fail");
-              } else {
-                console.log("✅ Google Pay succeeded:", paymentIntent?.id);
-                ev.complete("success");
-              }
+              if (error) ev.complete("fail");
+              else ev.complete("success");
             } catch (err) {
-              console.error("❌ Google Pay error:", err.message);
               ev.complete("fail");
             }
           });
-        } else {
-          console.warn("⚠️ PaymentRequest not available on this device/browser");
         }
       });
     }
-  }, [stripe, cartItems]);
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  }, [stripe, cartItems, formData, token]);
 
   const handleCardFieldChange = (fieldName) => (event) => {
     setCardFields((prev) => ({
@@ -158,16 +121,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     }));
 
     if (event.complete) {
-      switch (fieldName) {
-        case "number":
-          cardExpiryRef.current?.focus();
-          break;
-        case "expiry":
-          cardCvcRef.current?.focus();
-          break;
-        default:
-          break;
-      }
+      if (fieldName === "expiry") cardCvcRef.current?.focus();
     }
   };
 
@@ -188,44 +142,22 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("🧾 Starting payment submission...");
-    console.log("🛒 Cart items:", cartItems);
-    console.log("📦 Delivery info:", formData);
-    console.log("💳 Selected method:", selected);
-
     let clientSecret;
-
     try {
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
-        {
-          cartItems,
-          deliveryInfo: formData,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        { cartItems, deliveryInfo: formData },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
       clientSecret = data?.clientSecret;
-      console.log("🎯 Received clientSecret:", clientSecret);
-
-      if (!clientSecret) {
-        console.error("❌ No clientSecret received from backend");
-        return;
-      }
+      if (!clientSecret) return;
     } catch (err) {
-      console.error("❌ Error creating payment intent:", err.response?.data || err.message);
       return;
     }
 
     if (selected === "blik") {
-      console.log("⚡ Attempting BLIK payment with code:", blikCode);
-
       try {
-        const { error } = await stripe.confirmPayment({
+        await stripe.confirmPayment({
           clientSecret,
           confirmParams: {
             payment_method_data: {
@@ -242,28 +174,15 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
             return_url: `${window.location.origin}/checkout-success`,
           },
         });
-
-        if (error) {
-          console.error("❌ BLIK payment failed:", error.message);
-        } else {
-          console.log("✅ BLIK payment confirmed");
-        }
-      } catch (err) {
-        console.error("❌ BLIK payment error:", err.message);
-      }
+      } catch (err) {}
     }
 
     if (selected === "card") {
-      console.log("💳 Attempting card payment...");
-
       const cardElement = elements.getElement(CardNumberElement);
-      if (!cardElement) {
-        console.error("❌ CardNumberElement not found");
-        return;
-      }
+      if (!cardElement) return;
 
       try {
-        const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
             card: cardElement,
             billing_details: {
@@ -274,63 +193,70 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
           },
           return_url: `${window.location.origin}/checkout-success`,
         });
-
-        if (error) {
-          console.error("❌ Card payment failed:", error.message);
-        } else if (paymentIntent?.status === "succeeded") {
-          console.log("✅ Card payment succeeded:", paymentIntent.id);
-        } else {
-          console.warn("⚠️ Card payment status:", paymentIntent?.status);
-        }
-      } catch (err) {
-        console.error("❌ Card payment error:", err.message);
-      }
+      } catch (err) {}
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="stripe-form">
       <div className="stripe-layout">
-        {/* Левая часть */}
         <div className="stripe-left">
           <SelectedCartItem />
-  
           <SelectDeliveryMethod
             onSelectDelivery={setSelectedDelivery}
             formData={formData}
-            handleChange={handleChange}
+            handleChange={(e) =>
+              setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+            }
           />
-  
-          <PaymentFooter
+
+        {/* DrawerTrigger с обработчиком dragState */}
+        <DrawerTrigger
+            open={drawerOpen}
+            onClick={() => setDrawerOpen(true)}
+            onDragState={setDragState}
+          >
+            {/* <div className="drawer-trigger-summary">
+              <span>Change delivery information</span>
+            </div> */}
+          </DrawerTrigger>
+
+
+          {/* Сам Drawer */}
+          <Drawer open={drawerOpen} 
+            onOpenChange={setDrawerOpen}
+            dragState={dragState}>
+            <DrawerContent className="stripe-drawer-content">
+              <h2 className="text-lg font-semibold mb-4">Choose Payment Method</h2>
+              <PaymentMethods
+                selected={selected}
+                setSelected={setSelected}
+                paymentRequest={paymentRequest}
+                blikCode={blikCode}
+                setBlikCode={setBlikCode}
+                cardFields={cardFields}
+                handleCardFieldChange={handleCardFieldChange}
+                handleCardFieldFocus={handleCardFieldFocus}
+                handleCardFieldBlur={handleCardFieldBlur}
+                formData={formData}
+                cartItems={cartItems}
+                stripe={stripe}
+                elements={elements}
+                canMakePaymentResult={canMakePaymentResult}
+              />
+
+            <PaymentFooter
             selected={selected}
             paymentRequest={paymentRequest}
             blikCode={blikCode}
             canMakePaymentResult={canMakePaymentResult}
           />
-        </div>
-  
-        {/* Правая часть */}
-        <div className="stripe-right">
-          <PaymentMethods
-            selected={selected}
-            setSelected={setSelected}
-            paymentRequest={paymentRequest}
-            blikCode={blikCode}
-            setBlikCode={setBlikCode}
-            cardFields={cardFields}
-            handleCardFieldChange={handleCardFieldChange}
-            handleCardFieldFocus={handleCardFieldFocus}
-            handleCardFieldBlur={handleCardFieldBlur}
-            formData={formData}
-            cartItems={cartItems}
-            stripe={stripe}
-            elements={elements}
-            canMakePaymentResult={canMakePaymentResult}
-          />
+            </DrawerContent>
+          </Drawer>
         </div>
       </div>
     </form>
-  );  
+  );
 };
 
 export default StripePaymentForm;

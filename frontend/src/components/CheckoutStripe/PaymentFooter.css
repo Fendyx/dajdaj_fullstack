@@ -1,83 +1,123 @@
 /* PaymentFooter — фиксированный блок внизу */
 .payment-footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: #ffffff;
-    border-top: 2px solid #e5e7eb;
-    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
-    padding: 1rem 1.5rem;
-    z-index: 50;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    transition: all 0.3s ease;
-  }
-  
-  /* Иконка + название выбранного метода оплаты */
-  .payment-footer-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-weight: 500;
-    color: #1f2937;
-    font-size: 1rem;
-  }
-  
-  /* Иконки способов оплаты */
-  .payment-footer-info svg {
-    font-size: 1.5rem;
-  }
-  
-  /* Кнопки оплаты */
-  .payment-footer button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border-top: 2px solid #e5e7eb;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
+  padding: 1rem 1.5rem;
+  z-index: 50;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  transition: all 0.3s ease;
+}
+
+/* Иконка + название выбранного метода оплаты */
+.payment-footer-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 1rem;
+}
+
+/* Иконки способов оплаты */
+.payment-footer-info svg {
+  font-size: 1.5rem;
+}
+
+/* 💰 Центральный блок — суммы */
+.payment-footer-summary {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  min-width: 120px;
+  color: #111827;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.payment-summary-line {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+}
+
+.payment-summary-total {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 1rem;
+  font-weight: 700;
+  margin-top: 4px;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 4px;
+}
+
+/* Кнопки оплаты */
+.payment-footer button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Цвета кнопок по методу оплаты */
+.payment-footer .blik-btn {
+  background: #dc2626;
+  color: #ffffff;
+}
+
+.payment-footer .blik-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+}
+
+.payment-footer .card-btn {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.payment-footer .card-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 480px) {
+  .payment-footer {
+    flex-direction: column;
+    align-items: stretch;
     gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    padding: 0.75rem 1rem;
   }
-  
-  /* Цвета кнопок по методу оплаты */
-  .payment-footer .blik-btn {
-    background: #dc2626;
-    color: #ffffff;
+
+  .payment-footer-summary {
+    align-items: flex-start;
+    width: 100%;
+    font-size: 0.95rem;
   }
-  
-  .payment-footer .blik-btn:hover {
-    background: #b91c1c;
-    transform: translateY(-1px);
+
+  .payment-summary-line,
+  .payment-summary-total {
+    justify-content: space-between;
+    width: 100%;
   }
-  
-  .payment-footer .card-btn {
-    background: #2563eb;
-    color: #ffffff;
+
+  .payment-footer button {
+    width: 100%;
   }
-  
-  .payment-footer .card-btn:hover {
-    background: #1d4ed8;
-    transform: translateY(-1px);
-  }
-  
-  /* Адаптив для мобильных */
-  @media (max-width: 480px) {
-    .payment-footer {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 0.5rem;
-      padding: 0.75rem 1rem;
-    }
-  
-    .payment-footer button {
-      width: 100%;
-    }
-  }
-  
+}

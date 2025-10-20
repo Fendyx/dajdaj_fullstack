@@ -8,6 +8,28 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
   const lastYRef = useRef(0);
   const [translateY, setTranslateY] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const [showBackdrop, setShowBackdrop] = useState(false);
+  const [hasBeenOpened, setHasBeenOpened] = useState(false);
+
+  // Отслеживание, был ли drawer открыт хотя бы раз
+  useEffect(() => {
+    if (open) {
+      setHasBeenOpened(true);
+    }
+  }, [open]);
+
+  // Backdrop с проверкой на первое открытие
+  useEffect(() => {
+    if (!hasBeenOpened) return;
+    
+    if (open) {
+      const t = setTimeout(() => setShowBackdrop(true), 100);
+      return () => clearTimeout(t);
+    } else {
+      const t = setTimeout(() => setShowBackdrop(false), 300);
+      return () => clearTimeout(t);
+    }
+  }, [open, hasBeenOpened]);
 
   useEffect(() => {
     if (open) {
@@ -22,12 +44,14 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
 
   // Закрытие по ESC
   useEffect(() => {
+    if (!open) return;
+    
     const handleEsc = (e) => {
       if (e.key === "Escape") onOpenChange(false);
     };
     document.addEventListener("keydown", handleEsc);
     return () => document.removeEventListener("keydown", handleEsc);
-  }, [onOpenChange]);
+  }, [open, onOpenChange]);
 
   const handleTouchStart = (e) => {
     startYRef.current = e.touches[0].clientY;
@@ -70,9 +94,14 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
     transform = `translateY(100%)`;
   }
 
+  // Не рендерим drawer вообще, пока он не был открыт хотя бы раз
+  if (!hasBeenOpened && !open && !isDraggingFromTrigger) {
+    return null;
+  }
+
   return (
     <>
-      {(open || isDraggingFromTrigger) && (
+      {showBackdrop && (
         <div
           className={`drawer-backdrop ${isDraggingFromTrigger ? "drawer-backdrop-partial" : ""}`}
           style={{
@@ -80,7 +109,10 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
               ? Math.min(Math.abs(dragState.translateY) / 200, 0.5)
               : undefined,
           }}
-          onClick={() => onOpenChange(false)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onOpenChange(false);
+          }}
         />
       )}
 
@@ -120,11 +152,16 @@ export const DrawerTrigger = ({
   const startYRef = useRef(0);
   const [translateY, setTranslateY] = useState(0);
   const [dragging, setDragging] = useState(false);
+  const [clickDisabled, setClickDisabled] = useState(true);
 
-  // ✅ Получаем данные корзины из Redux
   const cartItems = useSelector((state) => state.cart.cartItems);
 
-  // ✅ Считаем суммы
+  // Блокировка клика на короткое время после монтирования
+  useEffect(() => {
+    const timer = setTimeout(() => setClickDisabled(false), 300);
+    return () => clearTimeout(timer);
+  }, []);
+
   const cartTotal = cartItems.reduce(
     (total, item) => total + item.price * item.cartQuantity,
     0
@@ -138,32 +175,29 @@ export const DrawerTrigger = ({
     }
   }, [dragging, translateY, onDragState]);
 
-  if (open) return null;
-
   const handleTouchStart = (e) => {
+    if (clickDisabled) return;
     startYRef.current = e.touches[0].clientY;
     setDragging(true);
   };
 
   const handleTouchMove = (e) => {
-    if (!dragging) return;
+    if (!dragging || clickDisabled) return;
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - startYRef.current;
-    if (deltaY < 0) {
-      setTranslateY(deltaY);
-    }
+    if (deltaY < 0) setTranslateY(deltaY);
   };
 
   const handleTouchEnd = () => {
-    const wasDragging = dragging;
+    if (clickDisabled) return;
     const dragDistance = Math.abs(translateY);
-
     setTranslateY(0);
     setDragging(false);
+    if (dragDistance > 80) onClick?.();
+  };
 
-    if (wasDragging && dragDistance > 80) {
-      onClick?.();
-    }
+  const handleClick = (e) => {
+    if (!dragging && !clickDisabled) onClick?.(e);
   };
 
   return (
@@ -174,19 +208,13 @@ export const DrawerTrigger = ({
         transform: `translateY(0)`,
         transition: dragging ? "none" : "transform 0.2s ease",
       }}
-      onClick={(e) => {
-        if (!dragging) {
-          onClick?.(e);
-        }
-      }}
+      onClick={handleClick}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
       {...props}
     >
       <div className="drawer-trigger-handle" />
-
-      {/* 💰 Информация о сумме */}
       <div className="drawer-trigger-summary">
         <div className="drawer-summary-row">
           <span>Subtotal</span>
@@ -201,12 +229,11 @@ export const DrawerTrigger = ({
           <strong>{totalWithDelivery} PLN</strong>
         </div>
       </div>
-
-      {/* 🔵 Кнопка выбора оплаты */}
       <button
         type="button"
         className="drawer-payment-method-trigger"
-        onClick={onClick}
+        onClick={handleClick}
+        disabled={clickDisabled}
       >
         Select Payment Method
       </button>
@@ -214,6 +241,7 @@ export const DrawerTrigger = ({
     </button>
   );
 };
+
 
 /* --- DrawerContent --- */
 export const DrawerContent = ({ children, className = "" }) => {
@@ -230,6 +258,5 @@ export const DrawerContent = ({ children, className = "" }) => {
     </div>
   );
 };
-
 
 export default Drawer;

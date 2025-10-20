@@ -21,6 +21,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const { token } = useSelector((state) => state.auth);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [userInitiated, setUserInitiated] = useState(false);
   const [dragState, setDragState] = useState({ dragging: false, translateY: 0 });
   const [formData, setFormData] = useState({
     name: deliveryInfo?.name || "",
@@ -139,6 +140,16 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     }));
   };
 
+  const handleDrawerOpen = () => {
+    setUserInitiated(true);
+    setDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setUserInitiated(false);
+    setDrawerOpen(false);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -210,22 +221,19 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
             }
           />
 
-        {/* DrawerTrigger с обработчиком dragState */}
-        <DrawerTrigger
+          {/* DrawerTrigger с обработчиком dragState */}
+          <DrawerTrigger
             open={drawerOpen}
-            onClick={() => setDrawerOpen(true)}
+            onClick={handleDrawerOpen}
             onDragState={setDragState}
-          >
-            {/* <div className="drawer-trigger-summary">
-              <span>Change delivery information</span>
-            </div> */}
-          </DrawerTrigger>
-
+          />
 
           {/* Сам Drawer */}
-          <Drawer open={drawerOpen} 
-            onOpenChange={setDrawerOpen}
-            dragState={dragState}>
+          <Drawer 
+            open={drawerOpen && userInitiated}
+            onOpenChange={handleDrawerClose}
+            dragState={dragState}
+          >
             <DrawerContent className="stripe-drawer-content">
               <PaymentMethods
                 selected={selected}
@@ -243,15 +251,13 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
                 elements={elements}
                 canMakePaymentResult={canMakePaymentResult}
               />
-
-           
             </DrawerContent>
             <PaymentFooter
-            selected={selected}
-            paymentRequest={paymentRequest}
-            blikCode={blikCode}
-            canMakePaymentResult={canMakePaymentResult}
-          />
+              selected={selected}
+              paymentRequest={paymentRequest}
+              blikCode={blikCode}
+              canMakePaymentResult={canMakePaymentResult}
+            />
           </Drawer>
         </div>
       </div>

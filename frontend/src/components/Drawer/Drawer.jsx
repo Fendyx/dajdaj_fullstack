@@ -9,6 +9,17 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
   const [translateY, setTranslateY] = useState(0);
   const [dragging, setDragging] = useState(false);
 
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);  
+
   // Закрытие по ESC
   useEffect(() => {
     const handleEsc = (e) => {
@@ -206,7 +217,19 @@ export const DrawerTrigger = ({
 
 /* --- DrawerContent --- */
 export const DrawerContent = ({ children, className = "" }) => {
-  return <div className={`drawer-content ${className}`}>{children}</div>;
+  const handleTouchMove = (e) => {
+    e.stopPropagation();
+  };
+
+  return (
+    <div
+      className={`drawer-content ${className}`}
+      onTouchMove={handleTouchMove}
+    >
+      {children}
+    </div>
+  );
 };
+
 
 export default Drawer;

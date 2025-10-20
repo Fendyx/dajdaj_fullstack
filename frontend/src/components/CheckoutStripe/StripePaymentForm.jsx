@@ -227,7 +227,6 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
             onOpenChange={setDrawerOpen}
             dragState={dragState}>
             <DrawerContent className="stripe-drawer-content">
-              <h2 className="text-lg font-semibold mb-4">Choose Payment Method</h2>
               <PaymentMethods
                 selected={selected}
                 setSelected={setSelected}
@@ -245,13 +244,14 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
                 canMakePaymentResult={canMakePaymentResult}
               />
 
+           
+            </DrawerContent>
             <PaymentFooter
             selected={selected}
             paymentRequest={paymentRequest}
             blikCode={blikCode}
             canMakePaymentResult={canMakePaymentResult}
           />
-            </DrawerContent>
           </Drawer>
         </div>
       </div>

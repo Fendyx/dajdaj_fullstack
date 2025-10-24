@@ -1,126 +1,148 @@
 import React, { useState } from "react";
-import "./ImageCarousel.css";
+import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { Img } from "react-image";
+import "./ImageCarousel.css";
 
 export function ImageCarousel({ images = [], mainImage, onImageChange }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const handlePrevious = () => {
-    if (isTransitioning) return;
-    const newIndex = activeIndex === 0 ? images.length - 1 : activeIndex - 1;
-    triggerTransition(newIndex);
-  };
+  const swipeConfidenceThreshold = 10000;
+  const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
 
-  const handleNext = () => {
-    if (isTransitioning) return;
-    const newIndex = activeIndex === images.length - 1 ? 0 : activeIndex + 1;
-    triggerTransition(newIndex);
-  };
+  const handleDragEnd = (e, { offset, velocity }) => {
+    const swipe = swipePower(offset.x, velocity.x);
 
-  const handleCardClick = (index) => {
-    if (isTransitioning || index === activeIndex) return;
-    triggerTransition(index);
-  };
-
-  const triggerTransition = (newIndex) => {
-    setIsTransitioning(true);
-    setActiveIndex(newIndex);
-    if (onImageChange) onImageChange(images[newIndex]);
-    setTimeout(() => setIsTransitioning(false), 400);
-  };
-
-  const getCardStyle = (index) => {
-    const position = index - activeIndex;
-    const total = images.length;
-
-    const normalized =
-      position > total / 2
-        ? position - total
-        : position < -total / 2
-        ? position + total
-        : position;
-
-    if (normalized === 0) {
-      return {
-        transform: "translateX(0px) translateY(0px) scale(1)",
-        zIndex: total,
-        opacity: 1,
-      };
-    } else if (normalized > 0) {
-      const offset = Math.min(normalized, 3);
-      return {
-        transform: `translateX(${offset * 8}px) translateY(${offset * 6}px) scale(${1 - offset * 0.05})`,
-        zIndex: total - normalized,
-        opacity: Math.max(0.4, 1 - offset * 0.2),
-      };
-    } else {
-      const offset = Math.min(Math.abs(normalized), 3);
-      return {
-        transform: `translateX(${-offset * 8}px) translateY(${offset * 6}px) scale(${1 - offset * 0.05})`,
-        zIndex: total - Math.abs(normalized),
-        opacity: Math.max(0.4, 1 - offset * 0.2),
-      };
+    if (swipe < -swipeConfidenceThreshold && currentIndex < images.length - 1) {
+      goToNext();
+    } else if (swipe > swipeConfidenceThreshold && currentIndex > 0) {
+      goToPrevious();
     }
+
+    setDragOffset(0);
+    setIsDragging(false);
+  };
+
+  const handleDrag = (e, { offset }) => {
+    setDragOffset(offset.x);
+    setIsDragging(true);
+  };
+
+  const goToNext = () => {
+    const newIndex = currentIndex + 1;
+    setCurrentIndex(newIndex);
+    if (onImageChange) onImageChange(images[newIndex]);
+  };
+
+  const goToPrevious = () => {
+    const newIndex = currentIndex - 1;
+    setCurrentIndex(newIndex);
+    if (onImageChange) onImageChange(images[newIndex]);
+  };
+
+  const goToImage = (index) => {
+    setCurrentIndex(index);
+    if (onImageChange) onImageChange(images[index]);
   };
 
   return (
-    <div className="carousel">
-      {/* Кнопки навигации */}
-      <button
-        onClick={handlePrevious}
-        disabled={isTransitioning}
-        className="carousel-arrow carousel-left"
-      >
-        <FaChevronLeft />
-      </button>
+    <div className="carousel-container">
+      <div className="carousel-main">
+        <motion.div
+          className="carousel-slider"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.2}
+          onDrag={handleDrag}
+          onDragEnd={handleDragEnd}
+          animate={{
+            x: `${-currentIndex * 100}%`,
+          }}
+          transition={{
+            type: "spring",
+            stiffness: 300,
+            damping: 30,
+          }}
+          style={{
+            x: isDragging ? dragOffset : 0,
+          }}
+        >
+          {images.map((image, index) => (
+            <div key={index} className="carousel-slide">
+              <Img
+                src={image}
+                alt={`Slide ${index + 1}`}
+                className="carousel-image"
+                draggable={false}
+                loader={<div className="carousel-loader">Загрузка...</div>}
+                unloader={
+                  <img
+                    src="https://placehold.co/600x400?text=No+Image"
+                    alt="fallback"
+                    className="carousel-image"
+                    draggable={false}
+                  />
+                }
+              />
+            </div>
+          ))}
+        </motion.div>
 
-      <button
-        onClick={handleNext}
-        disabled={isTransitioning}
-        className="carousel-arrow carousel-right"
-      >
-        <FaChevronRight />
-      </button>
+        {currentIndex > 0 && (
+          <button
+            onClick={goToPrevious}
+            className="carousel-nav-button carousel-nav-left"
+            aria-label="Previous image"
+          >
+            <FaChevronLeft className="carousel-nav-icon" />
+          </button>
+        )}
 
-      {/* Основные изображения */}
-      <div className="carousel-track">
-        {images.map((image, index) => {
-          const style = getCardStyle(index);
-          const active = index === activeIndex;
+        {currentIndex < images.length - 1 && (
+          <button
+            onClick={goToNext}
+            className="carousel-nav-button carousel-nav-right"
+            aria-label="Next image"
+          >
+            <FaChevronRight className="carousel-nav-icon" />
+          </button>
+        )}
 
-          return (
+        <div className="carousel-dots">
+          {images.map((_, index) => (
             <div
               key={index}
-              className={`carousel-card ${active ? "carousel-active" : ""}`}
-              style={style}
-              onClick={() => handleCardClick(index)}
-            >
-              <div className={`carousel-inner ${active ? "carousel-active-ring" : ""}`}>
-                <img
-                  src={image}
-                  alt={`Product ${index}`}
-                  className="carousel-image"
-                />
-              </div>
-            </div>
-          );
-        })}
+              className={`carousel-dot ${
+                index === currentIndex ? "carousel-dot-active" : ""
+              }`}
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Индикаторы */}
-      <div className="carousel-indicators">
+      <div className="carousel-thumbnails">
         {images.map((image, index) => (
           <button
             key={index}
-            onClick={() => handleCardClick(index)}
-            disabled={isTransitioning}
-            className={`carousel-indicator ${index === activeIndex ? "carousel-indicator-active" : ""}`}
+            onClick={() => goToImage(index)}
+            className={`carousel-thumbnail ${
+              index === currentIndex ? "carousel-thumbnail-active" : ""
+            }`}
           >
-            <img
+            <Img
               src={image}
-              alt={`Thumb ${index}`}
-              className="carousel-indicator-image"
+              alt={`Thumbnail ${index + 1}`}
+              className="carousel-thumbnail-image"
+              loader={<div className="carousel-thumb-loader">...</div>}
+              unloader={
+                <img
+                  src="https://placehold.co/150x100?text=No+Image"
+                  alt="fallback thumb"
+                  className="carousel-thumbnail-image"
+                />
+              }
             />
           </button>
         ))}

@@ -10,9 +10,7 @@ import "./StripePaymentForm.css";
 import SelectDeliveryMethod from "../../Pages/ShippingInfo/components/selectDeliveryMethod/SelectDeliveryMethod";
 import SelectedCartItem from "../SelectedCartItem/SelectedCartItem";
 import PaymentMethods from "./PaymentMethods/PaymentMethods";
-import PaymentFooter from "./PaymentFooter"
-import { FaCreditCard } from "react-icons/fa";
-
+import PaymentFooter from "./PaymentFooter";
 import Drawer, { DrawerTrigger, DrawerContent } from "../Drawer/Drawer";
 
 const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
@@ -23,6 +21,18 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userInitiated, setUserInitiated] = useState(false);
   const [dragState, setDragState] = useState({ dragging: false, translateY: 0 });
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1052);
+
+  // отслеживаем ширину окна
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1052px)");
+    const handleResize = (e) => setIsDesktop(e.matches);
+
+    handleResize(mediaQuery);
+    mediaQuery.addEventListener("change", handleResize);
+    return () => mediaQuery.removeEventListener("change", handleResize);
+  }, []);
+
   const [formData, setFormData] = useState({
     name: deliveryInfo?.name || "",
     surname: deliveryInfo?.surname || "",
@@ -121,9 +131,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
       },
     }));
 
-    if (event.complete) {
-      if (fieldName === "expiry") cardCvcRef.current?.focus();
-    }
+    if (event.complete && fieldName === "expiry") cardCvcRef.current?.focus();
   };
 
   const handleCardFieldFocus = (fieldName) => () => {
@@ -211,30 +219,25 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   return (
     <form onSubmit={handleSubmit} className="stripe-form">
       <div className="stripe-layout">
-        <div className="stripe-left">
-          <SelectedCartItem />
-          <SelectDeliveryMethod
-            onSelectDelivery={setSelectedDelivery}
-            formData={formData}
-            handleChange={(e) =>
-              setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-            }
-          />
+        {isDesktop ? (
+          <>
+            {/* Левая часть: корзина и доставка */}
+            <div className="stripe-left">
+              <SelectedCartItem />
+              <SelectDeliveryMethod
+                onSelectDelivery={setSelectedDelivery}
+                formData={formData}
+                handleChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    [e.target.name]: e.target.value,
+                  }))
+                }
+              />
+            </div>
 
-          {/* DrawerTrigger с обработчиком dragState */}
-          <DrawerTrigger
-            open={drawerOpen}
-            onClick={handleDrawerOpen}
-            onDragState={setDragState}
-          />
-
-          {/* Сам Drawer */}
-          <Drawer 
-            open={drawerOpen && userInitiated}
-            onOpenChange={handleDrawerClose}
-            dragState={dragState}
-          >
-            <DrawerContent className="stripe-drawer-content">
+            {/* Правая часть: оплата */}
+            <div className="stripe-right">
               <PaymentMethods
                 selected={selected}
                 setSelected={setSelected}
@@ -251,16 +254,76 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
                 elements={elements}
                 canMakePaymentResult={canMakePaymentResult}
               />
-            </DrawerContent>
-            <PaymentFooter
-              selected={selected}
-              paymentRequest={paymentRequest}
-              blikCode={blikCode}
-              canMakePaymentResult={canMakePaymentResult}
-            />
-          </Drawer>
-        </div>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Мобильная версия: Drawer */}
+            <div className="stripe-left">
+              <SelectedCartItem />
+              <SelectDeliveryMethod
+                onSelectDelivery={setSelectedDelivery}
+                formData={formData}
+                handleChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    [e.target.name]: e.target.value,
+                  }))
+                }
+              />
+
+              <DrawerTrigger
+                open={drawerOpen}
+                onClick={handleDrawerOpen}
+                onDragState={setDragState}
+              />
+
+              <Drawer
+                open={drawerOpen && userInitiated}
+                onOpenChange={handleDrawerClose}
+                dragState={dragState}
+              >
+                <DrawerContent className="stripe-drawer-content">
+                  <PaymentMethods
+                    selected={selected}
+                    setSelected={setSelected}
+                    paymentRequest={paymentRequest}
+                    blikCode={blikCode}
+                    setBlikCode={setBlikCode}
+                    cardFields={cardFields}
+                    handleCardFieldChange={handleCardFieldChange}
+                    handleCardFieldFocus={handleCardFieldFocus}
+                    handleCardFieldBlur={handleCardFieldBlur}
+                    formData={formData}
+                    cartItems={cartItems}
+                    stripe={stripe}
+                    elements={elements}
+                    canMakePaymentResult={canMakePaymentResult}
+                  />
+
+                  {/* 👇 Футер внутри Drawer (только мобильный) */}
+                  <PaymentFooter
+                    selected={selected}
+                    paymentRequest={paymentRequest}
+                    blikCode={blikCode}
+                    canMakePaymentResult={canMakePaymentResult}
+                  />
+                </DrawerContent>
+              </Drawer>
+            </div>
+          </>
+        )}
       </div>
+
+      {/* 👇 Футер глобальный — только для десктопа */}
+      {isDesktop && (
+        <PaymentFooter
+          selected={selected}
+          paymentRequest={paymentRequest}
+          blikCode={blikCode}
+          canMakePaymentResult={canMakePaymentResult}
+        />
+      )}
     </form>
   );
 };

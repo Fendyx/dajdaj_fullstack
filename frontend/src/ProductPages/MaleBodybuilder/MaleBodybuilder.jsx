@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ImageCarousel } from '../ImageCarousel';
 import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
@@ -15,6 +15,9 @@ export default function MaleBodybuilder() {
 
   const [currentImage, setCurrentImage] = useState(productImages[0]);
   const [show3D, setShow3D] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const modelViewerRef = useRef(null);
+
 
   const handle3DToggle = () => {
     setShow3D((prev) => !prev);

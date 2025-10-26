@@ -1,3 +1,4 @@
+// backend/routes/paymentIntent.js
 const express = require("express");
 const Stripe = require("stripe");
 const products = require("../products");
@@ -7,7 +8,6 @@ require("dotenv").config();
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_KEY);
 
-// 🔧 Парсинг адреса из строки
 function parseAddress(rawAddress) {
   if (!rawAddress || typeof rawAddress !== "string") return {};
   const parts = rawAddress.split(",").map(p => p.trim()).filter(Boolean);
@@ -17,7 +17,6 @@ function parseAddress(rawAddress) {
   return { street, city, postalCode };
 }
 
-// ✅ Создание PaymentIntent с авторизацией
 router.post("/create-payment-intent", auth, async (req, res) => {
   try {
     console.log("📨 Incoming request to /create-payment-intent");
@@ -27,8 +26,9 @@ router.post("/create-payment-intent", auth, async (req, res) => {
 
     const { cartItems, deliveryInfo } = req.body;
     const userId = req.user?._id;
+    console.log("🧠 Extracted userId:", userId);
 
-    if (!userId || userId.length !== 24) {
+    if (!userId || typeof userId !== "string" || userId.length !== 24) {
       console.warn("⚠️ Invalid or missing userId from token");
       return res.status(401).json({ error: "Unauthorized or invalid userId" });
     }
@@ -79,7 +79,6 @@ router.post("/create-payment-intent", auth, async (req, res) => {
   }
 });
 
-// 🔧 Тестовый роут
 router.get("/test", (req, res) => {
   console.log("🧪 /create-payment-intent test route hit");
   res.send("✅ /create-payment-intent route is alive and responding");

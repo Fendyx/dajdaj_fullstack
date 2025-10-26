@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ImageCarousel } from '../ImageCarousel';
 import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
-import BeerModelPoster from "../../assets/img/arnold_wooden_stand_2.png"; // постер
-import "../ProductPage.css"
+import BeerModelPoster from "../../assets/img/arnold_wooden_stand_2.png";
+import "../ProductPage.css";
 
 export default function BeerEdition() {
   const productImages = [
@@ -15,19 +15,47 @@ export default function BeerEdition() {
 
   const [currentImage, setCurrentImage] = useState(productImages[0]);
   const [show3D, setShow3D] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const modelViewerRef = useRef(null);
 
   const handle3DToggle = () => {
     setShow3D((prev) => !prev);
   };
 
+  useEffect(() => {
+    const modelViewer = modelViewerRef.current;
+
+    if (modelViewer) {
+      const handleLoad = () => setIsLoading(false);
+      const handleError = () => setIsLoading(false);
+
+      modelViewer.addEventListener('load', handleLoad);
+      modelViewer.addEventListener('error', handleError);
+
+      return () => {
+        modelViewer.removeEventListener('load', handleLoad);
+        modelViewer.removeEventListener('error', handleError);
+      };
+    }
+  }, [show3D]);
+
   return (
     <div className="product-page">
       <div className="product-page-container">
         <div className="product-layout">
-          {/* Left Side - Gallery / 3D */}
+
+          {/* Left Side */}
           <div className="product-left-side">
             {show3D ? (
+              <div className="model-viewer-wrapper" style={{ position: 'relative' }}>
+                {isLoading && (
+                  <div className="loader-overlay">
+                    <div className="spinner"></div>
+                    <p>Loading model...</p>
+                  </div>
+                )}
               <model-viewer
+                ref={modelViewerRef}
                 id="beerViewer"
                 src="/3dObj/BeerEdition/BeerEdition.gltf"
                 shadow-intensity="1"
@@ -35,10 +63,9 @@ export default function BeerEdition() {
                 camera-orbit="-90deg 75deg"
                 camera-controls
                 disable-zoom
-                poster={BeerModelPoster}
                 style={{ width: "100%", height: "500px" }}
-              >
-              </model-viewer>
+              />
+              </div>
             ) : (
               <ImageCarousel
                 images={productImages}
@@ -47,13 +74,12 @@ export default function BeerEdition() {
               />
             )}
 
-            {/* 3D View Button */}
             <div className="product-three-d-container">
               <ThreeDViewButton onClick={handle3DToggle} is3DMode={show3D} />
             </div>
           </div>
 
-          {/* Right Side - Product Details */}
+          {/* Right Side */}
           <div className="product-right-side">
             <ProductDetails />
           </div>

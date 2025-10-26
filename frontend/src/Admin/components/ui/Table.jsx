@@ -1,26 +1,68 @@
-// components/ui/Table.jsx
+import React from "react";
 import "./Table.css";
 
-export function Table({ children }) {
-  return <table className="table">{children}</table>;
+export function Table({ className = "", children, ...props }) {
+  return (
+    <div className="table-container">
+      <table className={`table ${className}`} {...props}>
+        {children}
+      </table>
+    </div>
+  );
 }
 
-export function TableHeader({ children }) {
-  return <thead className="table-header">{children}</thead>;
+export function TableHeader({ className = "", children, ...props }) {
+  return (
+    <thead className={`table-header ${className}`} {...props}>
+      {children}
+    </thead>
+  );
 }
 
-export function TableBody({ children }) {
-  return <tbody>{children}</tbody>;
+export function TableBody({ className = "", children, ...props }) {
+  return (
+    <tbody className={`table-body ${className}`} {...props}>
+      {children}
+    </tbody>
+  );
 }
 
-export function TableRow({ children }) {
-  return <tr className="table-row">{children}</tr>;
+export function TableFooter({ className = "", children, ...props }) {
+  return (
+    <tfoot className={`table-footer ${className}`} {...props}>
+      {children}
+    </tfoot>
+  );
 }
 
-export function TableHead({ children }) {
-  return <th className="table-head">{children}</th>;
+export function TableRow({ className = "", children, ...props }) {
+  return (
+    <tr className={`table-row ${className}`} {...props}>
+      {children}
+    </tr>
+  );
 }
 
-export function TableCell({ children, className = "" }) {
-  return <td className={`table-cell ${className}`}>{children}</td>;
+export function TableHead({ className = "", children, ...props }) {
+  return (
+    <th className={`table-head ${className}`} {...props}>
+      {children}
+    </th>
+  );
+}
+
+export function TableCell({ className = "", children, ...props }) {
+  return (
+    <td className={`table-cell ${className}`} {...props}>
+      {children}
+    </td>
+  );
+}
+
+export function TableCaption({ className = "", children, ...props }) {
+  return (
+    <caption className={`table-caption ${className}`} {...props}>
+      {children}
+    </caption>
+  );
 }

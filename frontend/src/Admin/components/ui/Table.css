@@ -1,20 +1,55 @@
-/* components/ui/Table.css */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
 .table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .table-header {
-    background-color: #f0f0f0;
-  }
-  
-  .table-head, .table-cell {
-    padding: 10px 12px;
-    border-bottom: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  .table-row:hover {
-    background-color: #f9f9f9;
-  }
-  
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #222;
+  caption-side: bottom;
+}
+
+.table-header tr {
+  border-bottom: 2px solid #ddd;
+}
+
+.table-body tr:last-child {
+  border-bottom: none;
+}
+
+.table-footer {
+  background-color: #f8f8f8;
+  border-top: 2px solid #ddd;
+  font-weight: 500;
+}
+
+.table-row {
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s ease;
+}
+
+.table-row:hover {
+  background-color: #f9f9f9;
+}
+
+.table-head {
+  text-align: left;
+  padding: 10px 8px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.table-cell {
+  padding: 8px;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.table-caption {
+  text-align: left;
+  color: #666;
+  font-size: 13px;
+  margin-top: 8px;
+}

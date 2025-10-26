@@ -1,45 +1,25 @@
 import React, { useState } from "react";
-import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Img } from "react-image";
 import "./ImageCarousel.css";
 
 export function ImageCarousel({ images = [], mainImage, onImageChange }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [dragOffset, setDragOffset] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const swipeConfidenceThreshold = 10000;
-  const swipePower = (offset, velocity) => Math.abs(offset) * velocity;
-
-  const handleDragEnd = (e, { offset, velocity }) => {
-    const swipe = swipePower(offset.x, velocity.x);
-
-    if (swipe < -swipeConfidenceThreshold && currentIndex < images.length - 1) {
-      goToNext();
-    } else if (swipe > swipeConfidenceThreshold && currentIndex > 0) {
-      goToPrevious();
-    }
-
-    setDragOffset(0);
-    setIsDragging(false);
-  };
-
-  const handleDrag = (e, { offset }) => {
-    setDragOffset(offset.x);
-    setIsDragging(true);
-  };
 
   const goToNext = () => {
-    const newIndex = currentIndex + 1;
-    setCurrentIndex(newIndex);
-    if (onImageChange) onImageChange(images[newIndex]);
+    if (currentIndex < images.length - 1) {
+      const newIndex = currentIndex + 1;
+      setCurrentIndex(newIndex);
+      if (onImageChange) onImageChange(images[newIndex]);
+    }
   };
 
   const goToPrevious = () => {
-    const newIndex = currentIndex - 1;
-    setCurrentIndex(newIndex);
-    if (onImageChange) onImageChange(images[newIndex]);
+    if (currentIndex > 0) {
+      const newIndex = currentIndex - 1;
+      setCurrentIndex(newIndex);
+      if (onImageChange) onImageChange(images[newIndex]);
+    }
   };
 
   const goToImage = (index) => {
@@ -50,45 +30,23 @@ export function ImageCarousel({ images = [], mainImage, onImageChange }) {
   return (
     <div className="carousel-container">
       <div className="carousel-main">
-        <motion.div
-          className="carousel-slider"
-          drag="x"
-          dragConstraints={{ left: 0, right: 0 }}
-          dragElastic={0.2}
-          onDrag={handleDrag}
-          onDragEnd={handleDragEnd}
-          animate={{
-            x: `${-currentIndex * 100}%`,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 300,
-            damping: 30,
-          }}
-          style={{
-            x: isDragging ? dragOffset : 0,
-          }}
-        >
-          {images.map((image, index) => (
-            <div key={index} className="carousel-slide">
-              <Img
-                src={image}
-                alt={`Slide ${index + 1}`}
+        <div className="carousel-slide-wrapper">
+          <Img
+            src={images[currentIndex]}
+            alt={`Slide ${currentIndex + 1}`}
+            className="carousel-image"
+            draggable={false}
+            loader={<div className="carousel-loader">Загрузка...</div>}
+            unloader={
+              <img
+                src="https://placehold.co/600x400?text=No+Image"
+                alt="fallback"
                 className="carousel-image"
                 draggable={false}
-                loader={<div className="carousel-loader">Загрузка...</div>}
-                unloader={
-                  <img
-                    src="https://placehold.co/600x400?text=No+Image"
-                    alt="fallback"
-                    className="carousel-image"
-                    draggable={false}
-                  />
-                }
               />
-            </div>
-          ))}
-        </motion.div>
+            }
+          />
+        </div>
 
         {currentIndex > 0 && (
           <button

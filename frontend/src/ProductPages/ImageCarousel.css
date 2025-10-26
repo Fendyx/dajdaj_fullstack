@@ -3,6 +3,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  touch-action: pan-y;
 }
 
 /* Контейнер главного изображения */
@@ -16,6 +17,23 @@
 
 /* Слайд wrapper */
 .carousel-slide-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Контейнер для всех слайдов */
+.carousel-slides-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease;
+}
+
+/* Отдельный слайд */
+.carousel-slide {
+  flex: 0 0 100%;
   width: 100%;
   height: 100%;
   display: flex;
@@ -84,6 +102,9 @@
   border-radius: 3px;
   background: rgba(255, 255, 255, 0.5);
   transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  padding: 0;
 }
 
 .carousel-dot-active {
@@ -93,6 +114,10 @@
 
 .carousel-dot:not(.carousel-dot-active) {
   width: 6px;
+}
+
+.carousel-dot:hover {
+  background: rgba(255, 255, 255, 0.8);
 }
 
 /* Миниатюры */
@@ -155,6 +180,28 @@
   height: 100%;
   object-fit: cover;
   display: block;
+}
+
+/* Индикатор загрузки */
+.carousel-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #f0f0f0;
+  color: #666;
+}
+
+.carousel-thumb-loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #f0f0f0;
+  color: #666;
+  font-size: 12px;
 }
 
 /* Адаптация для мобильных устройств */

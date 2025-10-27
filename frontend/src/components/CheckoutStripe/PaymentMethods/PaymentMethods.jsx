@@ -17,9 +17,9 @@ const PaymentMethods = ({
 }) => {
   return (
     <div className="payment-card">
-      <div className="stripe-card-header">
+      {/* <div className="stripe-card-header">
         <h2 className="stripe-card-title">Payment Methods</h2>
-      </div>
+      </div> */}
 
       <div className="stripe-card-content">
         <div className="stripe-radio-group">
@@ -73,9 +73,9 @@ const PaymentMethods = ({
           )}
 
           {/* Unified PaymentRequestButton */}
-          {/* {canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay ? (
+          {canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay ? (
             <GoogleApplePayButton paymentRequest={paymentRequest} />
-          ) : null} */}
+          ) : null}
 
 
           {/* BLIK */}

@@ -3,14 +3,15 @@
   position: fixed;
   inset: 0;
   background-color: rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(4px);
   z-index: 998;
-  transition: opacity 0.3s ease, backdrop-filter 0.3s ease;
+  transition: opacity 0.3s ease;
+  opacity: 0;
+  pointer-events: none;
+  will-change: opacity;
 }
 
-.drawer-backdrop-partial {
-  pointer-events: none;
-  backdrop-filter: blur(2px);
+.drawer-backdrop-visible {
+  opacity: 1;
 }
 
 /* === Основной контейнер Drawer === */
@@ -19,21 +20,24 @@
   bottom: 0;
   left: 0;
   right: 0;
-
   z-index: 999;
   background: #ffffff;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-
   box-shadow: 0 -6px 30px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
-  animation: drawer-slide-up 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  transform: translateY(100%);
   touch-action: pan-y;
-
-  /* ключевая часть — делаем flex-контейнер */
+  will-change: transform;
+  
+  /* Flex контейнер */
   display: flex;
   flex-direction: column;
   max-height: 90vh;
+}
+
+.drawer-container.drawer-open {
+  /* Анимация открытия */
+  animation: drawer-slide-up 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @keyframes drawer-slide-up {
@@ -204,11 +208,16 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  transition: background-color 0.2s ease, box-shadow 0.3s ease;
+  transition: background-color 0.2s ease;
+  will-change: transform;
 }
 
 .drawer-trigger:hover {
   background-color: #f9fafb;
+}
+
+.drawer-trigger:active {
+  background-color: #f3f4f6;
 }
 
 /* Маленькая ручка на триггере */
@@ -218,6 +227,11 @@
   background-color: #d1d5db;
   border-radius: 3px;
   margin-bottom: 10px;
+  transition: background-color 0.2s ease;
+}
+
+.drawer-trigger:hover .drawer-trigger-handle {
+  background-color: #9ca3af;
 }
 
 /* === Сводка (Subtotal / Delivery / Total) === */
@@ -260,7 +274,8 @@
   margin-top: 8px;
   border-radius: 8px;
   box-shadow: 0 3px 10px rgba(37, 99, 235, 0.3);
-  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+  transition: all 0.2s ease;
+  will-change: transform;
 }
 
 .drawer-payment-method-trigger:hover {
@@ -272,6 +287,7 @@
 .drawer-payment-method-trigger:active {
   transform: translateY(0);
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+  background-color: #1e40af;
 }
 
 /* === Мобильная адаптивность === */

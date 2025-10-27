@@ -1,36 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import "./Drawer.css";
 
 const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) => {
   const drawerRef = useRef(null);
   const startYRef = useRef(0);
-  const lastYRef = useRef(0);
   const [translateY, setTranslateY] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const [showBackdrop, setShowBackdrop] = useState(false);
-  const [hasBeenOpened, setHasBeenOpened] = useState(false);
 
-  // Отслеживание, был ли drawer открыт хотя бы раз
-  useEffect(() => {
-    if (open) {
-      setHasBeenOpened(true);
-    }
-  }, [open]);
-
-  // Backdrop с проверкой на первое открытие
-  useEffect(() => {
-    if (!hasBeenOpened) return;
-    
-    if (open) {
-      const t = setTimeout(() => setShowBackdrop(true), 100);
-      return () => clearTimeout(t);
-    } else {
-      const t = setTimeout(() => setShowBackdrop(false), 300);
-      return () => clearTimeout(t);
-    }
-  }, [open, hasBeenOpened]);
-
+  // Управление body overflow
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -40,7 +18,7 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
     return () => {
       document.body.style.overflow = "";
     };
-  }, [open]);  
+  }, [open]);
 
   // Закрытие по ESC
   useEffect(() => {
@@ -53,36 +31,37 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
     return () => document.removeEventListener("keydown", handleEsc);
   }, [open, onOpenChange]);
 
-  const handleTouchStart = (e) => {
+  const handleTouchStart = useCallback((e) => {
+    if (!open) return;
     startYRef.current = e.touches[0].clientY;
-    lastYRef.current = startYRef.current;
     setDragging(true);
-  };
+  }, [open]);
 
-  const handleTouchMove = (e) => {
-    if (!dragging) return;
+  const handleTouchMove = useCallback((e) => {
+    if (!dragging || !open) return;
     const currentY = e.touches[0].clientY;
     const deltaY = currentY - startYRef.current;
-    lastYRef.current = currentY;
 
-    if (open && deltaY > 0) {
+    if (deltaY > 0) {
       setTranslateY(deltaY);
     }
-  };
+  }, [dragging, open]);
 
-  const handleTouchEnd = () => {
-    const delta = lastYRef.current - startYRef.current;
-    if (open && delta > 100) {
+  const handleTouchEnd = useCallback(() => {
+    if (!open) return;
+    
+    const shouldClose = translateY > 100;
+    if (shouldClose) {
       onOpenChange(false);
     }
     setDragging(false);
     setTranslateY(0);
-  };
+  }, [open, translateY, onOpenChange]);
 
-  // Вычисляем transform с учетом dragState от триггера
-  let transform;
+  // Вычисляем transform
   const isDraggingFromTrigger = dragState?.dragging && !open;
   
+  let transform;
   if (open) {
     transform = dragging ? `translateY(${translateY}px)` : `translateY(0)`;
   } else if (isDraggingFromTrigger) {
@@ -94,28 +73,29 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
     transform = `translateY(100%)`;
   }
 
-  // Не рендерим drawer вообще, пока он не был открыт хотя бы раз
-  if (!hasBeenOpened && !open && !isDraggingFromTrigger) {
-    return null;
-  }
+  // Вычисляем opacity backdrop
+  const backdropOpacity = isDraggingFromTrigger
+    ? Math.min(Math.abs(dragState.translateY) / 200, 0.45)
+    : open ? 0.45 : 0;
+
+  const shouldShowBackdrop = open || isDraggingFromTrigger;
 
   return (
     <>
-      {showBackdrop && (
-        <div
-          className={`drawer-backdrop ${isDraggingFromTrigger ? "drawer-backdrop-partial" : ""}`}
-          style={{
-            opacity: isDraggingFromTrigger
-              ? Math.min(Math.abs(dragState.translateY) / 200, 0.5)
-              : undefined,
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            onOpenChange(false);
-          }}
-        />
-      )}
+      {/* Backdrop */}
+      <div
+        className={`drawer-backdrop ${shouldShowBackdrop ? "drawer-backdrop-visible" : ""}`}
+        style={{
+          opacity: backdropOpacity,
+          pointerEvents: open ? "auto" : "none",
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (open) onOpenChange(false);
+        }}
+      />
 
+      {/* Drawer Container */}
       <div
         ref={drawerRef}
         className={`drawer-container ${open ? "drawer-open" : ""} ${
@@ -123,10 +103,7 @@ const Drawer = ({ open, onOpenChange, children, dragState, onDragStateChange }) 
         }`}
         style={{
           transform,
-          transition:
-            dragging || isDraggingFromTrigger
-              ? "none"
-              : "transform 0.3s ease",
+          transition: dragging || isDraggingFromTrigger ? "none" : "transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)",
         }}
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
@@ -150,17 +127,11 @@ export const DrawerTrigger = ({
 }) => {
   const triggerRef = useRef(null);
   const startYRef = useRef(0);
+  const rafRef = useRef(null);
   const [translateY, setTranslateY] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const [clickDisabled, setClickDisabled] = useState(true);
 
   const cartItems = useSelector((state) => state.cart.cartItems);
-
-  // Блокировка клика на короткое время после монтирования
-  useEffect(() => {
-    const timer = setTimeout(() => setClickDisabled(false), 300);
-    return () => clearTimeout(timer);
-  }, []);
 
   const cartTotal = cartItems.reduce(
     (total, item) => total + item.price * item.cartQuantity,
@@ -175,30 +146,55 @@ export const DrawerTrigger = ({
     }
   }, [dragging, translateY, onDragState]);
 
-  const handleTouchStart = (e) => {
-    if (clickDisabled) return;
+  const handleTouchStart = useCallback((e) => {
     startYRef.current = e.touches[0].clientY;
     setDragging(true);
-  };
+  }, []);
 
-  const handleTouchMove = (e) => {
-    if (!dragging || clickDisabled) return;
-    const currentY = e.touches[0].clientY;
-    const deltaY = currentY - startYRef.current;
-    if (deltaY < 0) setTranslateY(deltaY);
-  };
+  const handleTouchMove = useCallback((e) => {
+    if (!dragging) return;
+    
+    // Отменяем предыдущий RAF если есть
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+    }
+    
+    // Используем RAF для плавности
+    rafRef.current = requestAnimationFrame(() => {
+      const currentY = e.touches[0].clientY;
+      const deltaY = currentY - startYRef.current;
+      if (deltaY < 0) {
+        setTranslateY(deltaY);
+      }
+    });
+  }, [dragging]);
 
-  const handleTouchEnd = () => {
-    if (clickDisabled) return;
+  const handleTouchEnd = useCallback(() => {
     const dragDistance = Math.abs(translateY);
+    const shouldOpen = dragDistance > 80;
+    
     setTranslateY(0);
     setDragging(false);
-    if (dragDistance > 80) onClick?.();
-  };
+    
+    if (shouldOpen && onClick) {
+      onClick();
+    }
+  }, [translateY, onClick]);
 
-  const handleClick = (e) => {
-    if (!dragging && !clickDisabled) onClick?.(e);
-  };
+  const handleClick = useCallback((e) => {
+    if (!dragging && onClick) {
+      onClick(e);
+    }
+  }, [dragging, onClick]);
+
+  // Cleanup RAF on unmount
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) {
+        cancelAnimationFrame(rafRef.current);
+      }
+    };
+  }, []);
 
   return (
     <button
@@ -206,7 +202,6 @@ export const DrawerTrigger = ({
       className={`drawer-trigger ${className}`}
       style={{
         transform: `translateY(0)`,
-        transition: dragging ? "none" : "transform 0.2s ease",
       }}
       onClick={handleClick}
       onTouchStart={handleTouchStart}
@@ -233,7 +228,6 @@ export const DrawerTrigger = ({
         type="button"
         className="drawer-payment-method-trigger"
         onClick={handleClick}
-        disabled={clickDisabled}
       >
         Select Payment Method
       </button>
@@ -242,12 +236,11 @@ export const DrawerTrigger = ({
   );
 };
 
-
 /* --- DrawerContent --- */
 export const DrawerContent = ({ children, className = "" }) => {
-  const handleTouchMove = (e) => {
+  const handleTouchMove = useCallback((e) => {
     e.stopPropagation();
-  };
+  }, []);
 
   return (
     <div

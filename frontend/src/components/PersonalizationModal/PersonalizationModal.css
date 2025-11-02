@@ -110,7 +110,7 @@
 
 .confirm-btn {
   width: 100%;
-  background: linear-gradient(90deg, #3B82F6, #EC4899);
+  background-color: #3B82F6;
   color: #fff;
   border: none;
   border-radius: 12px;

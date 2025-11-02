@@ -73,9 +73,9 @@ const PaymentMethods = ({
           )}
 
           {/* Unified PaymentRequestButton */}
-          {canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay ? (
+          {/* {canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay ? (
             <GoogleApplePayButton paymentRequest={paymentRequest} />
-          ) : null}
+          ) : null} */}
 
 
           {/* BLIK */}

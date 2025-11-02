@@ -1,61 +1,208 @@
-.checkout-success {
-    max-width: 450px;
-    margin: 100px auto;
-    padding: 40px 30px;
-    background: #f0f8ff;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 12px 24px rgba(0, 123, 255, 0.25);
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #1a1a1a;
-    animation: fadeIn 0.8s ease forwards;
+.che-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #eff6ff 30%, #ffffff);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 1rem;
+  font-family: "Inter", sans-serif;
+  color: #1f2937;
+}
+
+.che-icon-wrapper {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.che-icon-bg {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(34, 197, 94, 0.2);
+  border-radius: 50%;
+  filter: blur(20px);
+  animation: che-pulse 2s infinite;
+}
+
+.che-icon-foreground {
+  position: relative;
+  background-color: white;
+  border-radius: 50%;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.che-success-icon {
+  font-size: 4rem;
+  color: #22c55e;
+}
+
+.che-thank-you {
+  text-align: center;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.che-confirmation-text {
+  text-align: center;
+  color: #6b7280;
+  max-width: 400px;
+  margin-bottom: 2rem;
+}
+
+.che-order-number {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 9999px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 2rem;
+  color: #1e3a8a;
+  font-weight: 500;
+}
+
+.che-order-icon {
+  color: #2563eb;
+}
+
+.che-product-card {
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid #e5e7eb;
+  border-radius: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  background-color: white;
+  transition: box-shadow 0.3s;
+}
+
+.che-product-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+.che-product-details {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.che-image-container {
+  width: 96px;
+  height: 96px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background-color: #f3f4f6;
+  flex-shrink: 0;
+}
+
+.che-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.che-product-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.che-product-info p {
+  color: #6b7280;
+  margin-bottom: 0.25rem;
+}
+
+.che-price {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.che-status-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #dcfce7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.che-small-success-icon {
+  color: #22c55e;
+  font-size: 1.25rem;
+}
+
+.che-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.che-btn-primary,
+.che-btn-secondary {
+  height: 48px;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.che-btn-primary {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+}
+
+.che-btn-primary:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.che-arrow-icon {
+  transition: transform 0.2s;
+}
+
+.che-btn-primary:hover .che-arrow-icon {
+  transform: translateX(4px);
+}
+
+.che-btn-secondary {
+  background-color: white;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+}
+
+.che-btn-secondary:hover {
+  background-color: #f9fafb;
+}
+
+.che-email-note {
+  margin-top: 2rem;
+  text-align: center;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+@keyframes che-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
   }
-  
-  .checkout-success__icon {
-    font-size: 60px;
-    color: #28a745;
-    margin-bottom: 20px;
-    animation: popIn 0.6s ease forwards;
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
   }
-  
-  .checkout-success__title {
-    font-weight: 700;
-    font-size: 28px;
-    margin-bottom: 12px;
-    color: #0d6efd;
-  }
-  
-  .checkout-success__text {
-    font-size: 16px;
-    margin: 8px 0;
-    color: #333;
-  }
-  
-  .checkout-success__btn-home {
-    margin-top: 25px;
-    background-color: #0d6efd;
-    color: white;
-    border: none;
-    padding: 14px 30px;
-    border-radius: 30px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    box-shadow: 0 6px 12px rgba(13, 110, 253, 0.4);
-  }
-  
-  .checkout-success__btn-home:hover {
-    background-color: #084bd8;
-  }
-  
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  @keyframes popIn {
-    0% { transform: scale(0.7); opacity: 0; }
-    60% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); }
-  }
-  
+}

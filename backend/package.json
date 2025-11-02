@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cleanup-duplicates": "node cleanup-duplicates.js",
+    "cleanup-pending-orders": "node cleanupOldPendingOrders.js",
+    "cleanup-all": "npm run cleanup-duplicates && npm run cleanup-pending-orders"
   },
   "keywords": [],
   "author": "",

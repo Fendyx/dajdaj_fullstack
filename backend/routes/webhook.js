@@ -1,133 +1,175 @@
+// backend/routes/webhook.js
 const express = require("express");
 const Stripe = require("stripe");
 const mongoose = require("mongoose");
 const Order = require("../models/order");
-const products = require("../products");
 const sendOrderEmail = require("../utils/sendEmail");
 require("dotenv").config();
 
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_KEY);
 
-// 🔧 Проверка валидности ObjectId
-function isValidObjectId(id) {
-  return mongoose.Types.ObjectId.isValid(id);
-}
-
-// 🔧 Унифицированная логика создания заказа
-async function createOrder({ userId, cart, amount, deliveryInfo, emailSource, source }) {
-  const productsFull = cart.map((item) => {
-    const product = products.find((p) => p.id === item.id);
-    return {
-      name: product?.name?.en || "Unknown",
-      price: product?.price || 0,
-      quantity: item.qty,
-      image: product?.image || "",
-    };
-  });
-
-  const order = new Order({
-    userId: isValidObjectId(userId) ? userId : undefined,
-    products: productsFull,
-    totalPrice: amount / 100,
-    status: "paid",
-    deliveryInfo: {
-      ...deliveryInfo,
-      email: emailSource || "",
-    },
-  });
-
-  await order.save();
-  console.log(`✅ Order saved via ${source} for user:`, userId || "guest");
-
-  if (order.deliveryInfo.email) {
+// Отдельная функция отправки письма с защитой ошибок
+async function trySendOrderEmail(order) {
+  if (!order?.deliveryInfo?.email) return;
+  try {
     await sendOrderEmail(order);
-  } else {
-    console.warn("⚠️ Email отсутствует, письмо не отправлено");
+    console.log(`✅ Confirmation email sent to ${order.deliveryInfo.email}`);
+  } catch (e) {
+    console.warn("⚠️ Failed to send order email:", e.message);
   }
 }
 
+// Webhook endpoint
 router.post("/webhook", express.raw({ type: "application/json" }), async (req, res) => {
   const sig = req.headers["stripe-signature"];
   let event;
 
+  console.log("📦 Webhook received, verifying signature...");
+
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+    console.log("✅ Webhook signature verified:", event.type);
   } catch (err) {
-    console.error("❌ Webhook signature verification failed:", err.message);
-    return res.status(400).send("Webhook Error");
+    console.error("❌ Webhook signature verification failed:", err?.message || err);
+    return res.status(400).send(`Webhook Error: ${err?.message || "Invalid signature"}`);
   }
 
-  console.log("📦 Verified Stripe event:", event.type);
-
   try {
-    if (event.type === "checkout.session.completed") {
-      const session = event.data.object;
-      const metadata = session.metadata;
+    // Обрабатываем успешные платежи
+    if (event.type === "payment_intent.succeeded") {
+      const paymentIntent = event.data.object;
+      const paymentIntentId = paymentIntent.id;
+      const metadata = paymentIntent.metadata || {};
+      const orderToken = metadata.orderToken;
 
-      const cart = JSON.parse(metadata.cart || "[]");
-      const deliveryInfo = {
-        method: metadata.delivery_method,
-        name: metadata.delivery_name,
-        phone: metadata.delivery_phone,
-        address: {
-          street: metadata.delivery_street,
-          city: metadata.delivery_city,
-          postalCode: metadata.delivery_postal,
-        },
-      };
+      console.log("💰 Payment succeeded:", {
+        paymentIntentId,
+        orderToken,
+        amount: paymentIntent.amount,
+        currency: paymentIntent.currency
+      });
 
-      await createOrder({
-        userId: metadata.userId,
-        cart,
-        amount: session.amount_total,
-        deliveryInfo,
-        emailSource: session.customer_details?.email,
-        source: "Checkout",
+      if (!orderToken) {
+        console.warn("⚠️ No orderToken in payment intent metadata");
+        return res.status(200).json({ received: true, processed: false, reason: "missing_order_token" });
+      }
+
+      // Ищем заказ по orderToken - ДОЛЖЕН УЖЕ СУЩЕСТВОВАТЬ
+      let order = await Order.findOne({ orderToken }).exec();
+
+      if (!order) {
+        console.error(`❌ Order not found for orderToken: ${orderToken} - order should have been created in create-payment-intent`);
+        
+        // НЕ создаем новый заказ, только логируем ошибку
+        return res.status(200).json({ 
+          received: true, 
+          processed: false, 
+          reason: "order_not_found",
+          message: "Order should have been created before payment"
+        });
+      }
+
+      // Обновляем существующий заказ
+      if (order.status !== "paid") {
+        order.status = "paid";
+        order.paymentIntentId = paymentIntentId; // убедимся что paymentIntentId установлен
+        await order.save();
+        console.log(`✅ Order ${order.orderToken} updated to paid status`);
+        
+        // Отправляем письмо подтверждения
+        await trySendOrderEmail(order);
+      } else {
+        console.log(`ℹ️ Order ${order.orderToken} already paid`);
+      }
+
+      return res.status(200).json({ 
+        received: true, 
+        processed: true, 
+        orderId: order._id,
+        status: order.status 
       });
     }
 
-    else if (event.type === "payment_intent.succeeded") {
-      const intent = event.data.object;
-      const metadata = intent.metadata;
+    // Обрабатываем failed платежи
+    if (event.type === "payment_intent.payment_failed") {
+      const paymentIntent = event.data.object;
+      const paymentIntentId = paymentIntent.id;
+      const metadata = paymentIntent.metadata || {};
+      const orderToken = metadata.orderToken;
 
-      const cart = JSON.parse(metadata.cart || "[]");
-      const deliveryInfo = {
-        method: metadata.delivery_method,
-        name: metadata.delivery_name,
-        phone: metadata.delivery_phone,
-        address: {
-          street: metadata.delivery_street,
-          city: metadata.delivery_city,
-          postalCode: metadata.delivery_postal,
-        },
-      };
-
-      await createOrder({
-        userId: metadata.userId,
-        cart,
-        amount: intent.amount,
-        deliveryInfo,
-        emailSource: intent.receipt_email,
-        source: "Elements",
+      console.log("❌ Payment failed:", {
+        paymentIntentId,
+        orderToken
       });
+
+      if (orderToken) {
+        const order = await Order.findOne({ orderToken }).exec();
+        if (order && order.status !== "canceled") {
+          order.status = "pending"; // или "failed" в зависимости от вашей логики
+          await order.save();
+          console.log(`🔄 Order ${order.orderToken} marked as pending due to payment failure`);
+        }
+      }
     }
 
-    else {
-      console.log("⚠️ Ignored event type:", event.type);
-    }
+    // Обрабатываем другие типы событий если нужно
+    console.log(`ℹ️ Ignoring event type: ${event.type}`);
+    return res.status(200).json({ received: true, ignored: true });
 
-    res.status(200).json({ received: true });
   } catch (err) {
     console.error("❌ Webhook processing error:", err);
-    res.status(500).json({ error: "Internal webhook error" });
+    return res.status(500).json({ error: "Internal webhook error" });
   }
 });
 
-// 🔧 Тестовый роут
-router.post("/webhook-test", express.raw({ type: "application/json" }), (req, res) => {
-  console.log("🧪 /webhook-test hit");
-  res.send("✅ Webhook test received");
+// Тестовый эндпоинт для ручного обновления статуса заказа
+router.post("/webhook-test", express.json(), async (req, res) => {
+  console.log("🧪 Manual webhook test received:", req.body);
+  
+  try {
+    const { orderToken, paymentIntentId } = req.body;
+    
+    if (!orderToken) {
+      return res.status(400).json({ error: "orderToken is required" });
+    }
+
+    const order = await Order.findOne({ orderToken }).exec();
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    console.log(`🔄 Manually updating order ${orderToken} to paid status`);
+    order.status = "paid";
+    if (paymentIntentId) {
+      order.paymentIntentId = paymentIntentId;
+    }
+    await order.save();
+
+    // Отправляем email
+    await trySendOrderEmail(order);
+
+    console.log(`✅ Order ${orderToken} manually updated to paid`);
+    
+    return res.json({ 
+      success: true, 
+      orderId: order._id,
+      status: order.status,
+      orderToken: order.orderToken
+    });
+  } catch (err) {
+    console.error("❌ Manual webhook test error:", err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+// Эндпоинт для проверки статуса вебхука
+router.get("/webhook-status", (req, res) => {
+  res.json({ 
+    status: "active", 
+    stripe_key: process.env.STRIPE_KEY ? "set" : "missing",
+    webhook_secret: process.env.STRIPE_WEBHOOK_SECRET ? "set" : "missing" 
+  });
 });
 
 module.exports = router;

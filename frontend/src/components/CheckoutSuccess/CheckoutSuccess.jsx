@@ -1,259 +1,194 @@
-import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
-import { useDispatch } from "react-redux";
-import { clearCart } from "../../slices/cartSlice";
-import { FaCheckCircle, FaBoxOpen, FaArrowRight, FaSpinner } from "react-icons/fa";
-import "./CheckoutSuccess.css";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import axios from 'axios';
+import './CheckoutSuccess.css';
 
-function ImageWithFallback({ src, alt }) {
-  const [error, setError] = React.useState(false);
-  return (
-    <img
-      src={!error ? src : "https://via.placeholder.com/150?text=Image+not+available"}
-      alt={alt}
-      onError={() => setError(true)}
-      className="che-product-image"
-    />
-  );
-}
-
-export default function CheckoutSuccess() {
-  const dispatch = useDispatch();
+const CheckoutSuccess = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { token } = useSelector((state) => state.auth);
+  const searchParams = new URLSearchParams(location.search);
+  const orderToken = searchParams.get('orderToken');
+  const paymentIntentId = searchParams.get('payment_intent');
+  const redirectStatus = searchParams.get('redirect_status');
+  
+  const [status, setStatus] = useState('checking');
   const [order, setOrder] = useState(null);
-  const [status, setStatus] = useState("idle"); // idle, waiting, paid, timeout, not_found, error
-  const mountedRef = useRef(true);
+  const [pollCount, setPollCount] = useState(0);
 
   useEffect(() => {
-    dispatch(clearCart());
-    return () => { mountedRef.current = false; };
-  }, [dispatch]);
+    if (!orderToken && !paymentIntentId) {
+      setStatus('error');
+      return;
+    }
 
-  const params = new URLSearchParams(window.location.search);
-  const orderToken = params.get("orderToken");
-  const API = process.env.REACT_APP_API_URL || "";
+    checkPaymentStatus();
+  }, [orderToken, paymentIntentId, token]);
 
-// В CheckoutSuccess.js - обновите часть с проверкой платежа
-useEffect(() => {
-  if (!orderToken) return;
-  
-  let attempts = 0;
-  const maxAttempts = 40;
-  mountedRef.current = true;
-  setStatus("waiting");
-
-  const attemptFetch = async () => {
-    if (!mountedRef.current) return;
-    attempts += 1;
-    
+  const checkPaymentStatus = async () => {
     try {
-      console.log(`🔄 Polling attempt ${attempts} for order: ${orderToken}`);
-      const res = await axios.get(
-        `${API}/api/orders/token/${encodeURIComponent(orderToken)}`, 
-        { timeout: 10000 }
-      );
-      
-      if (!mountedRef.current) return;
-      const data = res.data;
-      console.log(`✅ Order found:`, { status: data.status, orderId: data.orderId });
-      setOrder(data);
+      console.log("🔄 Checking payment status:", { orderToken, paymentIntentId, redirectStatus });
 
-      if (data.status === "paid") {
-        setStatus("paid");
+      // Если есть redirect_status от Stripe
+      if (redirectStatus === 'succeeded') {
+        setStatus('paid');
         return;
       }
 
-      // Если заказ все еще pending после 5 попыток, проверяем статус платежа в Stripe
-      if (attempts >= 5 && data.status === "pending") {
-        console.log("🔍 Checking payment status directly with Stripe...");
-        try {
-          const paymentCheck = await axios.post(
-            `${API}/api/orders/${orderToken}/check-payment`,
-            {},
-            { timeout: 15000 }
-          );
-          console.log("💰 Payment check result:", paymentCheck.data);
-          
-          // Если статус обновился, делаем еще один запрос
-          if (paymentCheck.data.orderStatus === "paid") {
-            const updatedOrder = await axios.get(
-              `${API}/api/orders/token/${encodeURIComponent(orderToken)}`,
-              { timeout: 10000 }
-            );
-            setOrder(updatedOrder.data);
-            setStatus("paid");
-            return;
-          }
-        } catch (paymentErr) {
-          console.log("⚠️ Payment check failed:", paymentErr.message);
+      // Сначала пробуем синхронизировать статус
+      if (paymentIntentId || orderToken) {
+        const syncResponse = await axios.post(
+          `${process.env.REACT_APP_API_URL}/api/stripe/sync-payment-status`,
+          { orderToken, paymentIntentId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        console.log("🔄 Sync response:", syncResponse.data);
+
+        if (syncResponse.data.orderStatus === 'paid') {
+          setStatus('paid');
+          setOrder(syncResponse.data);
+          return;
+        }
+
+        if (syncResponse.data.paymentIntentStatus === 'succeeded') {
+          setStatus('paid');
+          return;
         }
       }
 
-      // Продолжаем опрос
-      if (attempts < maxAttempts) {
-        const delay = Math.min(5000, 1000 * Math.floor(attempts / 3)); // Более агрессивные задержки
-        console.log(`⏳ Order not paid yet, waiting ${delay}ms for next attempt`);
-        setTimeout(attemptFetch, delay);
+      // Если есть orderToken, опрашиваем статус заказа
+      if (orderToken) {
+        await pollOrderStatus();
       } else {
-        console.log(`⏰ Timeout after ${maxAttempts} attempts`);
-        setStatus("timeout");
+        setStatus('timeout');
       }
-    } catch (err) {
-      if (!mountedRef.current) return;
-      
-      const statusCode = err.response?.status;
-      console.log(`❌ Polling attempt ${attempts} failed:`, { 
-        statusCode, 
-        error: err.message 
-      });
 
-      if (statusCode === 404 && attempts < 10) { // Даем меньше попыток для 404
-        const delay = Math.min(2000, 300 * attempts);
-        console.log(`🔄 Order not found yet, retrying in ${delay}ms`);
-        setTimeout(attemptFetch, delay);
-      } else if (statusCode === 404) {
-        console.log(`🔍 Order not found after ${attempts} attempts`);
-        setStatus("not_found");
-      } else if (attempts < maxAttempts) {
-        setTimeout(attemptFetch, 1500);
+    } catch (error) {
+      console.error('❌ Status check error:', error);
+      // Пробуем опрос если есть orderToken
+      if (orderToken) {
+        await pollOrderStatus();
       } else {
-        console.log(`💥 Final error after ${attempts} attempts:`, err);
-        setStatus("error");
+        setStatus('error');
       }
     }
   };
 
-  // Даем небольшую задержку перед первым запросом чтобы заказ успел создатьсь
-  setTimeout(attemptFetch, 1000);
-  return () => { mountedRef.current = false; };
-}, [orderToken, API]);
+  const pollOrderStatus = async (attempt = 0) => {
+    if (attempt >= 30) {
+      setStatus('timeout');
+      return;
+    }
 
-  if (!orderToken) {
-    return (
-      <div className="che-container">
-        <h1 className="che-thank-you">Order not found</h1>
-        <p className="che-confirmation-text">Missing order token in URL.</p>
-        <button className="che-btn-secondary" onClick={() => (window.location.href = "/")}>
-          Back to Home
-        </button>
-      </div>
-    );
-  }
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/stripe/order-status/${orderToken}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-  if (status === "waiting" || status === "idle") {
-    return (
-      <div className="che-container">
-        <div className="che-loading-spinner">
-          <FaSpinner className="che-spinner-icon" />
-        </div>
-        <h1 className="che-thank-you">Processing your order...</h1>
-        <p className="che-confirmation-text">
-          We are confirming your payment and preparing order details. 
-          This usually takes a few seconds.
-        </p>
-        <div className="che-loading-dots">
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    );
-  }
+      console.log(`📊 Poll attempt ${attempt}:`, response.data.status);
 
-  if (status === "not_found" || status === "timeout" || status === "error") {
-    return (
-      <div className="che-container">
-        <h1 className="che-thank-you">Processing your order</h1>
-        <p className="che-confirmation-text">
-          {status === "not_found" 
-            ? "Your order is being processed. If your payment was successful, the order will appear shortly."
-            : "We're still processing your payment. This can take a few minutes."
-          }
-          <br /><br />
-          You can safely close this page and check your email for confirmation.
-          Your order will appear in "My Orders" once processing is complete.
-        </p>
-        <div className="che-buttons">
-          <button className="che-btn-primary" onClick={() => window.location.reload()}>
-            Check Status Again
-            <FaArrowRight className="che-arrow-icon" />
-          </button>
-          <button className="che-btn-secondary" onClick={() => (window.location.href = "/profile")}>
-            View My Orders
-          </button>
-          <button className="che-btn-secondary" onClick={() => (window.location.href = "/")}>
-            Back to Home
-          </button>
-        </div>
-        <p className="che-email-note">
-          Check your email for order confirmation. Contact support if you don't receive it within 15 minutes.
-        </p>
-      </div>
-    );
-  }
+      if (response.data.status === 'paid') {
+        setStatus('paid');
+        setOrder(response.data);
+      } else if (response.data.status === 'processing') {
+        setStatus('processing');
+        // Продолжаем опрос
+        setTimeout(() => pollOrderStatus(attempt + 1), 2000);
+      } else {
+        // Продолжаем опрос для pending статуса
+        setTimeout(() => pollOrderStatus(attempt + 1), 2000);
+      }
+    } catch (error) {
+      console.error(`❌ Poll attempt ${attempt} failed:`, error);
+      setTimeout(() => pollOrderStatus(attempt + 1), 2000);
+    }
+  };
 
-  // status === "paid" and we have order
-  const orderNumber = order.orderNumber || `#${String(order.orderId || "").slice(-8)}`;
-  const firstProduct = order.products?.[0] || {};
+  const retryPayment = () => {
+    navigate('/checkout');
+  };
+
+  const goHome = () => {
+    navigate('/');
+  };
 
   return (
-    <div className="che-container">
-      <div className="che-icon-wrapper">
-        <div className="che-icon-bg"></div>
-        <div className="che-icon-foreground">
-          <FaCheckCircle className="che-success-icon" />
-        </div>
-      </div>
-
-      <h1 className="che-thank-you">Thank you for your purchase!</h1>
-      <p className="che-confirmation-text">
-        Your order has been placed successfully. You can track it in "My Orders".
-      </p>
-
-      <div className="che-order-number">
-        <FaBoxOpen className="che-order-icon" />
-        <span>Order {orderNumber}</span>
-      </div>
-
-      <div className="che-product-card">
-        <div className="che-product-details">
-          <div className="che-image-container">
-            <ImageWithFallback
-              src={firstProduct?.image}
-              alt={firstProduct?.name || "Product"}
-            />
+    <div className="checkout-success">
+      <div className="success-container">
+        {status === 'paid' && (
+          <div className="success-message">
+            <div className="success-icon">✅</div>
+            <h1>Payment Successful!</h1>
+            <p>Thank you for your purchase. Your order has been confirmed.</p>
+            {order && (
+              <div className="order-details">
+                <h3>Order Details</h3>
+                <p><strong>Order Number:</strong> {order.orderNumber}</p>
+                <p><strong>Amount:</strong> ${order.totalPrice}</p>
+                <p><strong>Status:</strong> {order.status}</p>
+              </div>
+            )}
+            <button onClick={goHome} className="home-btn">
+              Continue Shopping
+            </button>
           </div>
+        )}
 
-          <div className="che-product-info">
-            <h3>{firstProduct?.name}</h3>
-            <p>
-              Quantity: {firstProduct?.quantity}
-              {order.products && order.products.length > 1 && ` (+${order.products.length - 1} more)`}
-            </p>
-            <span className="che-price">{order.totalPrice} PLN</span>
+        {status === 'processing' && (
+          <div className="processing-message">
+            <div className="processing-spinner"></div>
+            <h1>Processing Payment...</h1>
+            <p>Your payment is being processed. This may take a few moments.</p>
+            <p>Please do not close this page.</p>
           </div>
+        )}
 
-          <div className="che-status-icon">
-            <FaCheckCircle className="che-small-success-icon" />
+        {status === 'checking' && (
+          <div className="checking-message">
+            <div className="loading-spinner"></div>
+            <h1>Verifying Payment...</h1>
+            <p>Please wait while we confirm your payment status.</p>
           </div>
-        </div>
+        )}
+
+        {status === 'timeout' && (
+          <div className="timeout-message">
+            <div className="timeout-icon">⚠️</div>
+            <h1>Payment Processing</h1>
+            <p>Your payment is still being processed. This may take a few minutes.</p>
+            <p>You will receive a confirmation email once it's completed.</p>
+            <div className="action-buttons">
+              <button onClick={retryPayment} className="retry-btn">
+                Back to Checkout
+              </button>
+              <button onClick={goHome} className="home-btn">
+                Go Home
+              </button>
+            </div>
+          </div>
+        )}
+
+        {status === 'error' && (
+          <div className="error-message">
+            <div className="error-icon">❌</div>
+            <h1>Payment Issue</h1>
+            <p>There was an issue verifying your payment. Please check your email for confirmation or try again.</p>
+            <div className="action-buttons">
+              <button onClick={retryPayment} className="retry-btn">
+                Try Again
+              </button>
+              <button onClick={goHome} className="home-btn">
+                Go Home
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-
-      <div className="che-buttons">
-        <button className="che-btn-primary" onClick={() => (window.location.href = "/profile")}>
-          View My Orders
-          <FaArrowRight className="che-arrow-icon" />
-        </button>
-
-        <button className="che-btn-secondary" onClick={() => (window.location.href = "/")}>
-          Continue Shopping
-        </button>
-      </div>
-
-      <p className="che-email-note">
-        A confirmation email has been sent to {order.deliveryInfo?.email || "your email"}.
-        <br />
-        You will receive shipping updates via email.
-      </p>
     </div>
   );
-}
+};
+
+export default CheckoutSuccess;

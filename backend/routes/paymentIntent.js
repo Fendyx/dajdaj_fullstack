@@ -1,4 +1,3 @@
-// backend/routes/paymentIntent.js
 const express = require("express");
 const Stripe = require("stripe");
 const mongoose = require("mongoose");
@@ -66,15 +65,6 @@ async function createPendingOrder({ userId, cartItems, deliveryInfo, orderToken,
   await order.save();
   console.log(`✅ Pending order created with token ${orderToken} (id: ${order._id})`);
 
-  // Отправляем письмо сразу для pending заказа
-  if (order.deliveryInfo.email) {
-    try {
-      await sendOrderEmail(order);
-    } catch (e) {
-      console.warn("⚠️ Failed to send order email:", e.message);
-    }
-  }
-
   return order;
 }
 
@@ -101,7 +91,7 @@ async function findExistingOrder({ userId, cartItems, deliveryInfo }) {
     
     const existingOrders = await Order.find({
       userId: mongoose.Types.ObjectId.isValid(userId) ? mongoose.Types.ObjectId(userId) : undefined,
-      status: "pending",
+      status: { $in: ["pending", "processing"] },
       createdAt: { $gte: tenMinutesAgo }
     }).exec();
 
@@ -134,6 +124,128 @@ async function findExistingOrder({ userId, cartItems, deliveryInfo }) {
     return null;
   }
 }
+
+// Эндпоинт для проверки статуса заказа
+router.get("/order-status/:orderToken", auth, async (req, res) => {
+  try {
+    const { orderToken } = req.params;
+    const order = await Order.findOne({ orderToken }).exec();
+    
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Если заказ pending, проверяем статус в Stripe
+    if (order.status === "pending" && order.paymentIntentId) {
+      try {
+        const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentIntentId);
+        console.log(`🔄 Checking Stripe status for ${orderToken}: ${paymentIntent.status}`);
+        
+        if (paymentIntent.status === 'succeeded' && order.status !== 'paid') {
+          order.status = 'paid';
+          await order.save();
+          console.log(`✅ Order ${orderToken} updated to paid from Stripe status`);
+          
+          // Отправляем email
+          if (order.deliveryInfo?.email) {
+            try {
+              await sendOrderEmail(order);
+            } catch (e) {
+              console.warn("⚠️ Failed to send email:", e.message);
+            }
+          }
+        }
+      } catch (stripeError) {
+        console.warn(`⚠️ Could not check Stripe status: ${stripeError.message}`);
+      }
+    }
+
+    res.json({
+      status: order.status,
+      orderToken: order.orderToken,
+      orderNumber: order.orderNumber,
+      paymentIntentId: order.paymentIntentId,
+      totalPrice: order.totalPrice,
+      products: order.products,
+      deliveryInfo: order.deliveryInfo,
+      createdAt: order.createdAt
+    });
+  } catch (err) {
+    console.error("❌ Order status error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Эндпоинт для синхронизации статуса платежа
+router.post("/sync-payment-status", auth, async (req, res) => {
+  try {
+    const { paymentIntentId, orderToken } = req.body;
+    
+    console.log("🔄 Syncing payment status:", { paymentIntentId, orderToken });
+
+    if (!paymentIntentId && !orderToken) {
+      return res.status(400).json({ error: "paymentIntentId or orderToken required" });
+    }
+
+    // Проверяем статус в Stripe
+    let paymentIntent;
+    if (paymentIntentId) {
+      paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+    }
+
+    let order;
+    if (orderToken) {
+      order = await Order.findOne({ orderToken }).exec();
+    } else if (paymentIntentId) {
+      // Ищем заказ по paymentIntentId
+      order = await Order.findOne({ paymentIntentId }).exec();
+    }
+
+    console.log("📊 Payment Intent status:", paymentIntent?.status);
+    console.log("📊 Order status:", order?.status);
+
+    // Синхронизируем статус
+    let updated = false;
+    if (order && paymentIntent) {
+      if (paymentIntent.status === 'succeeded' && order.status !== 'paid') {
+        order.status = 'paid';
+        updated = true;
+      } else if (paymentIntent.status === 'processing' && order.status !== 'processing') {
+        order.status = 'processing';
+        updated = true;
+      } else if (paymentIntent.status === 'requires_payment_method' && order.status === 'pending') {
+        order.status = 'failed';
+        updated = true;
+      }
+
+      if (updated) {
+        await order.save();
+        console.log(`✅ Order ${order.orderToken} synced to ${order.status}`);
+        
+        // Отправляем email если платеж успешен
+        if (order.status === 'paid' && order.deliveryInfo?.email) {
+          try {
+            await sendOrderEmail(order);
+          } catch (e) {
+            console.warn("⚠️ Failed to send email:", e.message);
+          }
+        }
+      }
+    }
+
+    res.json({
+      paymentIntentStatus: paymentIntent?.status,
+      orderStatus: order?.status,
+      orderToken: order?.orderToken,
+      orderNumber: order?.orderNumber,
+      synced: updated
+    });
+
+  } catch (err) {
+    console.error("❌ Sync payment status error:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // POST /create-payment-intent
 router.post("/create-payment-intent", auth, async (req, res) => {
@@ -205,6 +317,7 @@ router.post("/create-payment-intent", auth, async (req, res) => {
         userId,
         orderToken,
         delivery_name: `${deliveryInfo?.name || ""} ${deliveryInfo?.surname || ""}`.trim(),
+        delivery_email: deliveryInfo?.email || "",
         delivery_phone: deliveryInfo?.phone || "",
         delivery_method: deliveryInfo?.method || "",
         delivery_street: parsed.street || "",
@@ -244,6 +357,7 @@ router.post("/create-payment-intent", auth, async (req, res) => {
   }
 });
 
+// Тестовый эндпоинт
 router.get("/test", (req, res) => {
   console.log("🧪 /create-payment-intent test route hit");
   res.send("✅ /create-payment-intent route is alive and responding");

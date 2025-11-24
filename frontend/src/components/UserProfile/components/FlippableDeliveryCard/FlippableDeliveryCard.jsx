@@ -8,7 +8,8 @@ export function FlippableDeliveryCard({
   onLogOut,
   isFlipped = false,
   style,
-  onClick
+  onClick,
+  gradient // новый проп
 }) {
   const auth = useSelector((state) => state.auth);
   const data = profile || auth;
@@ -39,7 +40,7 @@ export function FlippableDeliveryCard({
           onClick={onClick}
         >
           {/* Front Side */}
-          <div className="uc-card-front">
+          <div className="uc-card-front" style={{ background: gradient?.front }}>
             <div className="uc-flip-pattern">
               <div className="uc-flip-pattern-element-1"></div>
               <div className="uc-flip-pattern-element-2"></div>
@@ -80,7 +81,7 @@ export function FlippableDeliveryCard({
           </div>
 
           {/* Back Side */}
-          <div className="uc-card-back">
+          <div className="uc-card-back" style={{ background: gradient?.back }}>
             <div className="uc-delivery-container">
               <h3 className="uc-back-title">Delivery Details</h3>
               {delivery ? (

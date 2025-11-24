@@ -1,6 +1,7 @@
 import { useState } from "react";
 import CreateNewProfileModal from "../../../CreateNewProfileModal.jsx/CreateNewProfileModal";
 import "./NewRecipientCard.css";
+import { FiUserPlus } from "react-icons/fi";
 
 export function NewRecipientCard({ onAdd }) {
   const [isModalOpen, setModalOpen] = useState(false);
@@ -16,7 +17,7 @@ export function NewRecipientCard({ onAdd }) {
 
         <div className="uc-new-card-content">
           <div className="uc-new-card-icon">
-            {/* svg */}
+            <FiUserPlus size={24} color="#fff" />
           </div>
 
           <div className="uc-new-card-text">

@@ -6,6 +6,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./StripePaymentForm.css";
 import SelectDeliveryMethod from "../../Pages/ShippingInfo/components/selectDeliveryMethod/SelectDeliveryMethod";
 import SelectedCartItem from "../SelectedCartItem/SelectedCartItem";
@@ -16,6 +17,7 @@ import Drawer, { DrawerTrigger, DrawerContent } from "../Drawer/Drawer";
 const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const stripe = useStripe();
   const elements = useElements();
+  const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -27,6 +29,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const [canMakePaymentResult, setCanMakePaymentResult] = useState(null);
   const [blikCode, setBlikCode] = useState("");
   const [selected, setSelected] = useState("card");
+  const [paymentError, setPaymentError] = useState("");
 
   const [cardFields, setCardFields] = useState({
     number: { complete: false, focused: false },
@@ -35,9 +38,9 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   });
 
   const cardCvcRef = useRef(null);
-  const paymentIntentRef = useRef(null); // кэш PaymentIntent (clientSecret, orderToken, paymentIntentId, ...)
-  const creatingPIRef = useRef(false); // защита от параллельного создания PI
-  const submittingRef = useRef(false); // защита от параллельной отправки формы
+  const paymentIntentRef = useRef(null);
+  const creatingPIRef = useRef(false);
+  const submittingRef = useRef(false);
 
   const handleCardFieldFocus = (fieldName) => () => {
     setCardFields((prev) => ({
@@ -45,6 +48,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
       [fieldName]: { ...prev[fieldName], focused: true },
     }));
   };
+  
   const handleCardFieldBlur = (fieldName) => () => {
     setCardFields((prev) => ({
       ...prev,
@@ -84,46 +88,44 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   }, [selectedDelivery]);
 
   // Блокирующая, идемпотентная функция: создаёт PaymentIntent только один раз
-// В функции getOrCreatePaymentIntent обновите обработку ответа:
-const getOrCreatePaymentIntent = async () => {
-  if (paymentIntentRef.current) {
-    return paymentIntentRef.current;
-  }
-  
-  if (creatingPIRef.current) {
-    while (creatingPIRef.current) {
-      await new Promise((r) => setTimeout(r, 50));
-    }
-    return paymentIntentRef.current;
-  }
-
-  creatingPIRef.current = true;
-  try {
-    const { data } = await axios.post(
-      `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
-      { cartItems, deliveryInfo: formData },
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-    
-    // Сохраняем полностью объект, включая флаг reused
-    paymentIntentRef.current = data;
-    
-    if (data.reused) {
-      console.log("🔄 Reusing existing payment intent and order");
-    } else {
-      console.log("🆕 Created new payment intent and order");
+  const getOrCreatePaymentIntent = async () => {
+    if (paymentIntentRef.current) {
+      return paymentIntentRef.current;
     }
     
-    return data;
-  } catch (err) {
-    paymentIntentRef.current = null;
-    throw err;
-  } finally {
-    creatingPIRef.current = false;
-  }
-};
+    if (creatingPIRef.current) {
+      while (creatingPIRef.current) {
+        await new Promise((r) => setTimeout(r, 50));
+      }
+      return paymentIntentRef.current;
+    }
 
-  // Google/Apple Pay (Payment Request) — использует ту же защиту
+    creatingPIRef.current = true;
+    try {
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
+        { cartItems, deliveryInfo: formData },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      
+      paymentIntentRef.current = data;
+      
+      if (data.reused) {
+        console.log("🔄 Reusing existing payment intent and order");
+      } else {
+        console.log("🆕 Created new payment intent and order");
+      }
+      
+      return data;
+    } catch (err) {
+      paymentIntentRef.current = null;
+      throw err;
+    } finally {
+      creatingPIRef.current = false;
+    }
+  };
+
+  // Google/Apple Pay (Payment Request)
   useEffect(() => {
     if (!stripe) return;
 
@@ -144,18 +146,15 @@ const getOrCreatePaymentIntent = async () => {
       setPaymentRequest(pr);
 
       pr.on("paymentmethod", async (ev) => {
-        // если уже идёт отправка — откладываем/fail
         if (submittingRef.current) {
           ev.complete("fail");
           return;
         }
         submittingRef.current = true;
         try {
-          // получаем или создаём PI (защищено)
           const pi = await getOrCreatePaymentIntent();
           const { clientSecret } = pi;
 
-          // подтверждаем payment intent используя paymentMethod из ev
           const { error } = await stripe.confirmCardPayment(clientSecret, {
             payment_method: ev.paymentMethod.id,
             return_url: `${window.location.origin}/checkout-success?orderToken=${paymentIntentRef.current?.orderToken}`,
@@ -176,7 +175,6 @@ const getOrCreatePaymentIntent = async () => {
       });
     });
 
-    // cleanup
     return () => {
       try {
         pr.destroy && pr.destroy();
@@ -203,23 +201,31 @@ const getOrCreatePaymentIntent = async () => {
     setUserInitiated(true);
     setDrawerOpen(true);
   };
+  
   const handleDrawerClose = () => {
     setUserInitiated(false);
     setDrawerOpen(false);
   };
 
-  // Отправка платежа (кнопка): защищаем от двойных отправок
+  // 🔥 ИСПРАВЛЕННАЯ ФУНКЦИЯ ОПЛАТЫ
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setPaymentError("");
 
-    if (submittingRef.current) return; // уже идёт отправка
+    if (submittingRef.current) return;
     submittingRef.current = true;
 
     try {
       const pi = await getOrCreatePaymentIntent();
-      const { clientSecret } = pi;
+      const { clientSecret, orderToken } = pi;
+
+      console.log("🔄 Starting payment with:", { 
+        selected, 
+        orderToken
+      });
 
       if (selected === "blik") {
+        // BLIK логика (работает)
         await stripe.confirmPayment({
           clientSecret,
           confirmParams: {
@@ -234,14 +240,20 @@ const getOrCreatePaymentIntent = async () => {
             payment_method_options: {
               blik: { code: blikCode },
             },
-            return_url: `${window.location.origin}/checkout-success?orderToken=${paymentIntentRef.current?.orderToken}`,
+            return_url: `${window.location.origin}/checkout-success?orderToken=${orderToken}`,
           },
         });
+
       } else if (selected === "card") {
         const cardElement = elements.getElement(CardNumberElement);
-        if (!cardElement) return;
+        if (!cardElement) {
+          throw new Error("Card element not found");
+        }
 
-        await stripe.confirmCardPayment(clientSecret, {
+        console.log("💳 Confirming card payment...");
+
+        // 🔥 ИСПРАВЛЕННЫЙ ВЫЗОВ - убраны confirmParams
+        const { error } = await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
             card: cardElement,
             billing_details: {
@@ -250,27 +262,40 @@ const getOrCreatePaymentIntent = async () => {
               phone: formData.phone,
             },
           },
-          confirmParams: {
-            return_url: `${window.location.origin}/checkout-success?orderToken=${paymentIntentRef.current?.orderToken}`,
-          },
+          // 🔥 return_url должен быть на верхнем уровне
+          return_url: `${window.location.origin}/checkout-success?orderToken=${orderToken}`,
         });
+
+        if (error) {
+          console.error("❌ Card payment failed:", error);
+          setPaymentError(`Payment failed: ${error.message}`);
+          throw error;
+        }
+
+        console.log("✅ Card payment processing completed");
+        // Stripe автоматически перенаправит на return_url при необходимости
       }
     } catch (err) {
-      console.error("❌ handleSubmit error:", err);
+      console.error("❌ Payment submission error:", err);
+      if (!err.message.includes("abort")) {
+        setPaymentError(err.message || "Payment failed. Please try again.");
+      }
     } finally {
-      // небольшая задержка гарантирует, что UI успеет отобразить disabled состояние
-      setTimeout(() => {
-        submittingRef.current = false;
-      }, 300);
+      submittingRef.current = false;
     }
   };
 
-  // disabled состояния для UI
   const isCreating = creatingPIRef.current;
   const isSubmitting = submittingRef.current;
 
   return (
     <form onSubmit={handleSubmit} className="stripe-form">
+      {paymentError && (
+        <div className="payment-error-message">
+          ❌ {paymentError}
+        </div>
+      )}
+      
       <div className="stripe-layout">
         {isDesktop ? (
           <>
@@ -293,12 +318,7 @@ const getOrCreatePaymentIntent = async () => {
                 handleCardFieldChange={handleCardFieldChange}
                 handleCardFieldFocus={handleCardFieldFocus}
                 handleCardFieldBlur={handleCardFieldBlur}
-                formData={formData}
-                cartItems={cartItems}
-                stripe={stripe}
-                elements={elements}
                 canMakePaymentResult={canMakePaymentResult}
-                disabled={isCreating || isSubmitting}
               />
             </div>
           </>
@@ -325,12 +345,7 @@ const getOrCreatePaymentIntent = async () => {
                     handleCardFieldChange={handleCardFieldChange}
                     handleCardFieldFocus={handleCardFieldFocus}
                     handleCardFieldBlur={handleCardFieldBlur}
-                    formData={formData}
-                    cartItems={cartItems}
-                    stripe={stripe}
-                    elements={elements}
                     canMakePaymentResult={canMakePaymentResult}
-                    disabled={isCreating || isSubmitting}
                   />
                   <PaymentFooter
                     selected={selected}
@@ -360,4 +375,3 @@ const getOrCreatePaymentIntent = async () => {
 };
 
 export default StripePaymentForm;
-

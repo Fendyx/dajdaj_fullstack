@@ -47,7 +47,7 @@ export function OrderSummary({ personalData, delivery, onPlaceOrder, onBack }) {
             disabled={!delivery?.address?.address || !delivery?.method}
           >
             <FiCreditCard className="btn-icon" />
-            Place Order
+            Proceed to payment
             <FiArrowRight className="btn-icon" />
           </button>
         </div>

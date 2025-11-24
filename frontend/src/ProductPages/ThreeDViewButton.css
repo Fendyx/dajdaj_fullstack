@@ -16,7 +16,6 @@
 .three-d-button:hover {
   background: #15803d;
   box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
-  transform: scale(1.05);
 }
 
 .three-d-icon {

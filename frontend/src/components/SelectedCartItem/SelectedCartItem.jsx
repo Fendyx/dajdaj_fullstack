@@ -52,6 +52,7 @@ const SelectedCartItem = () => {
               className="selected-item-image"
             />
             <button
+              type="button"
               className="toggle-btn"
               onClick={(e) => {
                 e.stopPropagation();

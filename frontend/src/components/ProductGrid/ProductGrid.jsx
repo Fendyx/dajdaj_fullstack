@@ -165,9 +165,9 @@ export function ProductGrid() {
                   {product.category === 'female' ? `💗 ${t("productGrid.tags.female")}` : `💪 ${t("productGrid.tags.male")}`}
                 </span>
               </div>
-              <div className="engraving">
+              {/* <div className="engraving">
                 {t("productGrid.engraving")}
-              </div>
+              </div> */}
             </div>
           </div>
         ))}

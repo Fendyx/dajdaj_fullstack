@@ -11,6 +11,15 @@ export function CardGallery({ profiles, onEditProfile, onLogOut, onAddNewProfile
   const [touchEnd, setTouchEnd] = useState(null);
   const minSwipeDistance = 50;
 
+  const gradients = [
+    { front: "linear-gradient(135deg, #2c3e50, #1a1a1a)", back: "linear-gradient(135deg, #34495e, #2c3e50)" }, // серый
+    { front: "linear-gradient(135deg, #4caf50, #2e7d32)", back: "linear-gradient(135deg, #66bb6a, #1b5e20)" }, // зеленый
+    { front: "linear-gradient(135deg, #ff7f50, #ff4500)", back: "linear-gradient(135deg, #ff6347, #ff8c00)" }, // оранжевый
+    { front: "linear-gradient(135deg, #8a2be2, #9400d3)", back: "linear-gradient(135deg, #9932cc, #8b008b)" }, // фиолетовый
+    { front: "linear-gradient(135deg, #00bfff, #1e90ff)", back: "linear-gradient(135deg, #87cefa, #4682b4)" }, // голубой
+  ];
+  
+
   const toggleFlip = (index) => {
     setFlipStates((prev) => ({
       ...prev,
@@ -61,8 +70,9 @@ export function CardGallery({ profiles, onEditProfile, onLogOut, onAddNewProfile
           profile={extraCardData}
           onEdit={() => onEditProfile?.(profile.id)}
           onLogOut={() => onLogOut?.()}
+          gradient={gradients[cards.length % gradients.length]} // здесь цикл через 5 градиентов
         />
-      );
+      );      
     });
   });
 

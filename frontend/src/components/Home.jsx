@@ -12,6 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { HeroSection } from "./HeroSection/HeroSection";
 import LottieTestHero from "./LottieTestHero/LottieTestHero";
 import { ProductGrid } from "./ProductGrid/ProductGrid";
+import Categories from "./Categories/Categories";
+import MainProductGrid from "./MainProductGrid/MainProductGrid";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -61,11 +63,13 @@ const Home = () => {
       ) : (
         <>
           <LottieTestHero />
-          <ProductGrid
+          {/* <Categories /> */}
+          {/* <ProductGrid
             products={products}
             onCardClick={handleCardClick}
             openModal={openModal}
-          />
+          /> */}
+          <MainProductGrid />
           {/* Модальные компоненты и баннеры можно добавить здесь */}
         </>
       )}

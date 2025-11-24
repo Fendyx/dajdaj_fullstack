@@ -16,7 +16,7 @@
       "title": "Ну давай уже — хапай щось бомбезне!",
       "description": "Бобер знає, де знайти найкрутіше! Ми вигриземо для тебе найсмачніші знижки — подарунки, ґаджети й унікальні фігурки!",
       "button": "Дивитися товари",
-      "slogan": "Bóbr nie ku**a bo kupuje na DajDaj"
+      "slogan": "Bóbr nie ku*wa bo kupuje na DajDaj"
     },
     "userProfile": {
       "authError": "Помилка автентифікації",
@@ -153,8 +153,26 @@
       "cleared": "Кошик очищено"
     },
     "productDetails": {
+      "loadingProduct": "Завантаження продукту...",
+      "notFound": "Продукт не знайдено",
+      "noName": "Без назви",
+      "noDescription": "Немає опису",
+      "showPhotos": "Показати фотографії",
+      "view3D": "Переглянути 3D-модель",
+      "about": "Про продукт",
+      "material": "Матеріал",
+      "premiumQuality": "Преміум якість",
+      "delivery": "Доставка",
+      "deliveryTime": "2–3 дні",
+      "warranty": "Гарантія",
+      "warrantyPeriod": "12 місяців",
+      "reviews": "Відгуки",
+      "anonymous": "Анонім",
+      "registered": "Зареєстрований",
+      "noComment": "Без коментарів",
+      "noReviews": "Поки що немає відгуків",
       "addToCart": "Додати до кошика"
-    },
+      },
     "login": {
       "title": "Вхід",
       "email": "Email",
@@ -179,6 +197,16 @@
       "alreadyHaveAccount": "Вже маєте акаунт?",
       "login": "Вхід",
       "passwordMismatch": "Паролі не співпадають!"
-    }
-    
+    },
+    "create-new-profile-modalmodal": { 
+      "back": "Назад", 
+      "save": "Зберегти", 
+      "cancel": "Скасування", 
+      "title": "Створити новий профіль", 
+      "name": "Ім'я:", 
+      "surname": "Прізвище:", 
+      "address": "Адреса:", 
+      "method": "Спосіб доставки:", 
+      "phone": "Телефон:" 
+      }
   }

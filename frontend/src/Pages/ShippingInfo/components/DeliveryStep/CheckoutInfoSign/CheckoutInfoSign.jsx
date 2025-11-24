@@ -66,10 +66,10 @@ export function CheckoutInfoSign() {
         </div>
       </div>
 
-      <div className="checkout-bottom-highlight">
+      {/* <div className="checkout-bottom-highlight">
         <div className="pulse-dot"></div>
         <p>Real-time tracking available for all delivery methods</p>
-      </div>
+      </div> */}
     </div>
   );
 }

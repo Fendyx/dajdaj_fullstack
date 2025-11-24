@@ -16,7 +16,7 @@
         "title": "Эй, не тормози — хватай что-нибудь крутое!",
         "description": "Бобёр знает, что тебе нужно! Мы выгрызем для тебя самые крутые штуки и скидки — подарки, гаджеты и персонализированные фигурки ждут тебя!",
         "button": "Смотреть товары",
-        "slogan": "Bóbr nie ku**a bo kupuje na DajDaj"
+        "slogan": "Bóbr nie ku*wa bo kupuje na DajDaj"
       },
     "userProfile": {
       "authError": "Ошибка аутентификации",
@@ -135,7 +135,8 @@
         "care": "Инструкции по уходу"
       },
       "contact": {
-        "title": "Напишите нам"
+        "title": "Напишите нам",
+        "clickHere": "Нажмите для связи"
       },
       "bottom": {
         "copy": "© 2024 FigureCraft. Сделано с ❤️ для значимых связей.",
@@ -153,8 +154,26 @@
         "cleared": "Корзина очищена"
       },
       "productDetails": {
+        "loadingProduct": "Загрузка продукта...",
+        "notFound": "Продукт не найден",
+        "noName": "Без названия",
+        "noDescription": "Описание отсутствует",
+        "showPhotos": "Show photos",
+        "view3D": "View 3D Model",
+        "about": "О продукте",
+        "material": "Материал",
+        "premiumQuality": "Premium Quality",
+        "delivery": "Доставка",
+        "deliveryTime": "2–3 дня",
+        "warranty": "Гарантия",
+        "warrantyPeriod": "12 месяцев",
+        "reviews": "Отзывы",
+        "anonymous": "Аноним",
+        "registered": "Зарегистрирован",
+        "noComment": "Без комментария",
+        "noReviews": "Пока нет отзывов",
         "addToCart": "Добавить в корзину"
-      },
+      },      
       "login": {
         "title": "Вход",
         "email": "Email",
@@ -179,5 +198,16 @@
         "alreadyHaveAccount": "Уже есть аккаунт?",
         "login": "Вход",
         "passwordMismatch": "Пароли не совпадают!"
+      },
+      "create-new-profile-modalmodal": {
+        "back": "Назад",
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "title": "Создать новый профиль",
+        "name": "Имя:",
+        "surname": "Фамилия:",
+        "address": "Адрес:",
+        "method": "Способ доставки:",
+        "phone": "Телефон:"
       }
   }

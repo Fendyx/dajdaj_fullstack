@@ -4,6 +4,7 @@ import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
 import FemaleModelPoster from "../../assets/img/arnold_wooden_stand_2.png";
 import "../ProductPage.css"
+import SimilarProducts from '../../components/SimilarProducts/SimilarProducts';
 
 export default function FemaleBlond() {
   const productImages = [
@@ -15,6 +16,9 @@ export default function FemaleBlond() {
 
   const [currentImage, setCurrentImage] = useState(productImages[0]);
   const [show3D, setShow3D] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const modelViewerRef = useRef(null);
+
 
   const handle3DToggle = () => {
     setShow3D((prev) => !prev);
@@ -55,10 +59,17 @@ export default function FemaleBlond() {
 
           {/* Right Side - Product Details */}
           <div className="product-right-side">
-            <ProductDetails />
+          <ProductDetails 
+            show3D={show3D} 
+            on3DToggle={handle3DToggle}
+          />
           </div>
         </div>
       </div>
+      <SimilarProducts 
+            range={[1, 8]} 
+            title="More from this collection" 
+          />
     </div>
   );
 }

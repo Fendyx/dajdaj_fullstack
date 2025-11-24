@@ -4,6 +4,7 @@ import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
 import FemaleModelPoster from "../../assets/img/arnold_wooden_stand_2.png";
 import "../ProductPage.css"
+import SimilarProducts from '../../components/SimilarProducts/SimilarProducts';
 
 export default function MaleBodybuilder() {
   const productImages = [
@@ -58,10 +59,17 @@ export default function MaleBodybuilder() {
 
           {/* Right Side - Product Details */}
           <div className="product-right-side">
-            <ProductDetails />
+          <ProductDetails 
+            show3D={show3D} 
+            on3DToggle={handle3DToggle}
+          />
           </div>
         </div>
       </div>
+      <SimilarProducts 
+            range={[1, 8]} 
+            title="More from this collection" 
+          />
     </div>
   );
 }

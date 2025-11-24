@@ -1,0 +1,117 @@
+.similar-products-section {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+  
+  .similar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Сетка карточек */
+  .similar-products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 колонки на телефоне */
+    gap: 1.5rem;
+  }
+  
+  @media (min-width: 768px) {
+    .similar-products-grid {
+      grid-template-columns: repeat(4, 1fr); /* 4 колонки на десктопе */
+    }
+  }
+  
+  /* Карточка товара */
+  .similar-card {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .similar-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  /* Изображение */
+  .similar-img-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  }
+  
+  .similar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .similar-card:hover .similar-img {
+    transform: scale(1.05);
+  }
+  
+  /* Кнопка избранного */
+  .similar-fav-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: white;
+    border: none;
+    border-radius: 50%;
+    padding: 0.3rem 0.5rem;
+    cursor: pointer;
+    font-size: 1.1rem;
+  }
+  
+  .similar-fav-btn.active {
+    color: red;
+  }
+  
+  /* Контент карточки */
+  .similar-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 1rem;
+  }
+  
+  .similar-name {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    min-height: 3rem;
+  }
+  
+  .similar-price {
+    font-weight: 600;
+    font-size: 1.125rem;
+    margin-bottom: auto; /* толкает кнопку вниз */
+  }
+  
+  /* Кнопка купить */
+  .similar-buy-btn {
+    margin-top: 1rem;
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 0.5rem 0;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .similar-buy-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+  }
+  

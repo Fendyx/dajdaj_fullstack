@@ -1,6 +1,19 @@
-import { FaUser, FaEnvelope, FaPhone, FaMapMarkerAlt, FaTruck, FaChevronDown, FaChevronUp } from "react-icons/fa";
+import {
+  FaUser,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaTruck,
+  FaChevronDown,
+  FaChevronUp
+} from "react-icons/fa";
 
-const PersonalInformationForm = ({ formData, handleChange, isExpanded, setIsExpanded }) => {
+const PersonalInformationForm = ({
+  formData,
+  handleChange,
+  isExpanded,
+  setIsExpanded
+}) => {
   return (
     <div className="stripe-card">
       <div className="stripe-card-header">
@@ -78,6 +91,7 @@ const PersonalInformationForm = ({ formData, handleChange, isExpanded, setIsExpa
                   required
                 />
               </div>
+
               <div className="stripe-form-group">
                 <label htmlFor="phone" className="stripe-label-with-icon">
                   <FaPhone className="stripe-icon" />
@@ -107,12 +121,10 @@ const PersonalInformationForm = ({ formData, handleChange, isExpanded, setIsExpa
                 onChange={handleChange}
                 required
               >
-                <option value="" disabled>
-                  Select delivery method
-                </option>
-                <option value="standard">InPost (3-5 bussiness days)</option>
-                <option value="express">ORLEN Paczka (3-5 bussiness)</option>
-                <option value="overnight">Poczta Polska (3-5 bussiness)</option>
+                <option value="" disabled>Select delivery method</option>
+                <option value="standard">InPost (3-5 business days)</option>
+                <option value="express">ORLEN Paczka (3-5 business days)</option>
+                <option value="overnight">Poczta Polska (3-5 business days)</option>
               </select>
             </div>
           </>

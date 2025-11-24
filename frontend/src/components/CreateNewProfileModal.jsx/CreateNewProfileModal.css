@@ -1,35 +1,52 @@
-/* Overlay */
-.uc-modal-overlay {
+/* ========================================
+   MODAL OVERLAY
+   ======================================== */
+   .cnp-modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
+    right: 0;
+    bottom: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%),
+                rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(8px);
+    z-index: 9999;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    animation: cnp-fadeIn 0.3s ease-out;
+    overflow: hidden;
   }
   
-  /* Fullscreen modal */
-  .uc-modal-fullscreen {
-    background: #fff;
-    padding: 24px;
-    border-radius: 12px;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    box-sizing: border-box;
-    animation: fadeIn 0.3s ease-out;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  @keyframes fadeIn {
+  @keyframes cnp-fadeIn {
     from {
       opacity: 0;
-      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  /* ========================================
+     MODAL CONTAINER
+     ======================================== */
+  .cnp-modal-container {
+    width: 100%;
+    height: 100%;
+    max-width: 900px;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    animation: cnp-slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+  }
+  
+  @keyframes cnp-slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
     }
     to {
       opacity: 1;
@@ -37,95 +54,351 @@
     }
   }
   
-  .uc-modal-fullscreen h2 {
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 1.8rem;
+  /* ========================================
+     HEADER
+     ======================================== */
+  .cnp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 32px 48px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
   
-  .uc-modal-fullscreen label {
+  .cnp-title {
+    margin: 0;
+    color: #0f172a;
+    letter-spacing: -0.02em;
+  }
+  
+  .cnp-close-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    transition: all 0.2s ease;
+    padding: 0;
+  }
+  
+  .cnp-close-btn:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: #0f172a;
+  }
+  
+  .cnp-close-btn:active {
+    transform: scale(0.95);
+  }
+  
+  .cnp-header-spacer {
+    width: 40px;
+  }
+  
+  /* ========================================
+     CONTENT
+     ======================================== */
+  .cnp-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 48px;
+    scroll-behavior: smooth;
+  }
+  
+  .cnp-content::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .cnp-content::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .cnp-content::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+  }
+  
+  .cnp-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.15);
+  }
+  
+  /* ========================================
+     FORM
+     ======================================== */
+  .cnp-form {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  
+  .cnp-section {
+    margin-bottom: 48px;
+  }
+  
+  .cnp-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .cnp-section-title {
+    margin: 0 0 24px 0;
+    color: #334155;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+  
+  /* ========================================
+     INPUT GROUPS
+     ======================================== */
+  .cnp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .cnp-input-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: 15px;
-    font-size: 1rem;
-    color: #333;
+    gap: 8px;
   }
   
-  .uc-modal-fullscreen input {
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-    margin-top: 5px;
-    outline: none;
-    transition: border-color 0.2s;
+  .cnp-input-group-full {
+    margin-bottom: 24px;
   }
   
-  .uc-modal-fullscreen input:focus {
-    border-color: #007bff;
-  }
-  
-  /* Method selector */
-  .uc-method-selector {
-    margin-bottom: 15px;
-  }
-  
-  .uc-method-selector p {
-    margin-bottom: 8px;
+  .cnp-label {
+    color: #475569;
+    font-size: 0.9375rem;
     font-weight: 500;
   }
   
-  .uc-method-option {
-    padding: 12px;
-    margin-bottom: 8px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
+  .cnp-input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    font-size: 1rem;
+    color: #0f172a;
+    background: #ffffff;
+    transition: all 0.2s ease;
+    outline: none;
+    box-sizing: border-box;
+  }
+  
+  .cnp-input::placeholder {
+    color: #cbd5e1;
+  }
+  
+  .cnp-input:hover {
+    border-color: rgba(0, 0, 0, 0.12);
+  }
+  
+  .cnp-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+  }
+  
+  .cnp-input-readonly {
+    background: rgba(0, 0, 0, 0.02);
+    color: #64748b;
+    cursor: not-allowed;
+  }
+  
+  .cnp-input-readonly:hover,
+  .cnp-input-readonly:focus {
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: none;
+  }
+  
+  /* ========================================
+     METHOD SELECTOR
+     ======================================== */
+  .cnp-method-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+  }
+  
+  .cnp-method-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    border: 2px solid rgba(0, 0, 0, 0.08);
+    border-radius: 12px;
+    background: #ffffff;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    outline: none;
   }
   
-  .uc-method-option:hover {
-    border-color: #007bff;
+  .cnp-method-card:hover {
+    border-color: rgba(99, 102, 241, 0.4);
+    background: rgba(99, 102, 241, 0.02);
   }
   
-  .uc-method-option.selected {
-    background-color: #007bff;
-    color: #fff;
-    border-color: #007bff;
+  .cnp-method-card-selected {
+    border-color: #6366f1;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%);
+    box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
   }
   
-  /* Buttons */
-  .uc-modal-actions {
+  .cnp-method-radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+  }
+  
+  .cnp-method-card-selected .cnp-method-radio {
+    border-color: #6366f1;
+    background: #6366f1;
+  }
+  
+  .cnp-method-radio-inner {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #ffffff;
+    transform: scale(0);
+    transition: transform 0.2s ease;
+  }
+  
+  .cnp-method-card-selected .cnp-method-radio-inner {
+    transform: scale(1);
+  }
+  
+  .cnp-method-name {
+    color: #0f172a;
+    font-weight: 500;
+    font-size: 0.9375rem;
+  }
+  
+  /* ========================================
+     FOOTER
+     ======================================== */
+  .cnp-footer {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: auto;
+    gap: 12px;
+    padding: 24px 48px;
+    border-top: 1px solid rgba(0, 0, 0, 0.06);
+    background: #ffffff;
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
   }
   
-  .uc-modal-actions button {
-    padding: 10px 18px;
+  /* ========================================
+     BUTTONS
+     ======================================== */
+  .cnp-btn {
+    padding: 12px 32px;
     border: none;
-    border-radius: 6px;
+    border-radius: 12px;
+    font-size: 0.9375rem;
+    font-weight: 600;
     cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
+    outline: none;
+    white-space: nowrap;
   }
   
-  .uc-modal-actions button:first-child {
-    background-color: #007bff;
-    color: #fff;
+  .cnp-btn:active {
+    transform: scale(0.98);
   }
   
-  .uc-modal-actions button:first-child:hover {
-    background-color: #0056b3;
+  .cnp-btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #ffffff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   }
   
-  .uc-modal-actions button:last-child {
-    background-color: #ccc;
-    color: #333;
+  .cnp-btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+    transform: translateY(-1px);
   }
   
-  .uc-modal-actions button:last-child:hover {
-    background-color: #999;
+  .cnp-btn-primary:active {
+    transform: translateY(0) scale(0.98);
+  }
+  
+  .cnp-btn-secondary {
+    background: rgba(0, 0, 0, 0.04);
+    color: #475569;
+  }
+  
+  .cnp-btn-secondary:hover {
+    background: rgba(0, 0, 0, 0.08);
+  }
+  
+  /* ========================================
+     RESPONSIVE
+     ======================================== */
+  @media (max-width: 768px) {
+    .cnp-header,
+    .cnp-content,
+    .cnp-footer {
+      padding-left: 24px;
+      padding-right: 24px;
+    }
+  
+    .cnp-header {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  
+    .cnp-content {
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
+  
+    .cnp-row {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+  
+    .cnp-method-grid {
+      grid-template-columns: 1fr;
+    }
+  
+    .cnp-section {
+      margin-bottom: 40px;
+    }
+  
+    .cnp-footer {
+      flex-direction: column-reverse;
+    }
+  
+    .cnp-btn {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .cnp-header,
+    .cnp-content,
+    .cnp-footer {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+  
+    .cnp-title {
+      font-size: 1.25rem;
+    }
   }
   

@@ -4,6 +4,7 @@ import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
 import BeerModelPoster from "../../assets/img/arnold_wooden_stand_2.png";
 import "../ProductPage.css";
+import SimilarProducts from '../../components/SimilarProducts/SimilarProducts';
 
 export default function BeerEdition() {
   const productImages = [
@@ -74,17 +75,23 @@ export default function BeerEdition() {
               />
             )}
 
-            <div className="product-three-d-container">
-              <ThreeDViewButton onClick={handle3DToggle} is3DMode={show3D} />
-            </div>
+            
           </div>
 
           {/* Right Side */}
           <div className="product-right-side">
-            <ProductDetails />
+          <ProductDetails 
+            show3D={show3D} 
+            on3DToggle={handle3DToggle}
+          />
           </div>
+          
         </div>
       </div>
+      <SimilarProducts 
+            range={[1, 8]} 
+            title="More from this collection" 
+          />
     </div>
   );
 }

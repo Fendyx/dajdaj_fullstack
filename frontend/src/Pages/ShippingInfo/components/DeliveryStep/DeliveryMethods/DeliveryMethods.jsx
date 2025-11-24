@@ -5,7 +5,7 @@ import "./DeliveryMethods.css";
 const deliveryMethods = [
   {
     id: "InPost",
-    name: "Standard Delivery",
+    name: "InPost",
     description: "Regular delivery during business hours",
     time: "5 bussiness days",
     price: 9.99,
@@ -13,7 +13,7 @@ const deliveryMethods = [
   },
   {
     id: "ORLEN Paczka",
-    name: "Express Delivery", 
+    name: "ORLEN Paczka", 
     description: "Priority delivery with real-time tracking",
     time: "5 bussiness days",
     price: 9.99,
@@ -22,7 +22,7 @@ const deliveryMethods = [
   },
   {
     id: "Poczta Polska",
-    name: "5 bussiness days",
+    name: "Poczta Polska",
     description: "Ultra-fast delivery for urgent orders", 
     time: "5 bussiness days",
     price: 9.99,
@@ -73,7 +73,7 @@ export function DeliveryMethods({ selectedMethod, onMethodSelect }) {
                         </div>
                       </div>
                       <div className="method-price">
-                        ${method.price.toFixed(2)}
+                        pln{method.price.toFixed(2)}
                       </div>
                     </div>
                   </div>

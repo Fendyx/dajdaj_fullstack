@@ -15,7 +15,7 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
   const [flipStates, setFlipStates] = useState({});
   const [selectedKey, setSelectedKey] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const [isAddingNew, setIsAddingNew] = useState(false); // 👈 режим добавления нового
+  const [isAddingNew, setIsAddingNew] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -35,11 +35,11 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
   const handleLogOut = () => console.log("Logging out");
 
   const handleAddNewProfile = () => {
-    setIsAddingNew(true); // 👈 переключаемся в форму
+    setIsAddingNew(true);
   };
 
   const handleBack = () => {
-    setIsAddingNew(false); // 👈 возвращаем обратно
+    setIsAddingNew(false);
   };
 
   const toggleFlip = (cardKey) => {
@@ -54,7 +54,6 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
   const [mainDelivery, ...extraDeliveries] = deliveryDatas;
   const mainKey = `main-${profile?.id}`;
 
-  // 👉 сразу выбрать дефолтную доставку
   useEffect(() => {
     if (mainDelivery && profile && onSelectDelivery) {
       setSelectedKey(mainKey);
@@ -128,30 +127,22 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
     <div className="shipping-card-wrapper">
       <h1 className="shipping-title">Shipping info</h1>
 
-      {/* Если в режиме добавления нового → показываем форму */}
       {isAddingNew ? (
         <div className="personal-info-form-section">
           <PersonalInformationForm
             formData={formData}
             handleChange={handleChange}
             isExpanded={true}
-            setIsExpanded={() => {}}
+            setIsExpanded={(expanded) => {
+              if (!expanded) handleBack(); // ← collapse triggers "go back"
+            }}
           />
-
-          <button
-            className="back-btn"
-            type="button"
-            onClick={handleBack}
-          >
-            ← Вернуться обратно
-          </button>
         </div>
       ) : (
         <>
           {selectedDelivery?.card}
 
           <div className="shipping-options">
-            {/* Select another shipping info */}
             <div
               onClick={() => setShowModal(true)}
               className="shipping-option select-another"
@@ -168,7 +159,6 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
               <FaArrowRight className="arrow-icon" />
             </div>
 
-            {/* Add another shipping method & pay */}
             <div
               onClick={handleAddNewProfile}
               className="shipping-option add-new"
@@ -198,13 +188,11 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
             setSelectedKey(key);
 
             let newDelivery;
-            if (key === mainKey) {
-              newDelivery = mainDelivery;
-            } else {
+            if (key === mainKey) newDelivery = mainDelivery;
+            else
               newDelivery = extraDeliveries.find(
                 (_, idx) => `extra-${profile.id}-${idx}` === key
               );
-            }
 
             if (newDelivery) {
               handleSelect(newDelivery, key);

@@ -1,185 +1,212 @@
 {
-    "navbar": {
-      "signIn": "Sign in",
-      "joinUs": "Join us",
-      "cart": "Cart",
-      "favorites": "Favorites",
-      "profile": "Profile"
-    },
-    "bottomNav": {
-      "home": "Home",
-      "profile": "Profile",
-      "cart": "Cart",
-      "buyNow": "Buy it!"
-    },
-    "hero": {
-      "title": "Come on, snap up something really cool!",
-      "description": "The bóbr's got your back! We’ll dig out the best deals and coolest finds — gifts, gadgets, and personalized figures are ready for you!",
-      "button": "See Products",
-      "slogan": "Bóbr nie ku**a bo kupuje na DajDaj"
-    },
-    "userProfile": {
-        "authError": "Authentication Error",
-        "status": "Status",
-        "error": "Error",
-        "loginAgain": "Please log in again.",
-        "loginBtn": "Login Again",
-        "clearToken": "Clear Token & Reload",
+  "navbar": {
+    "signIn": "Sign in",
+    "joinUs": "Join us",
+    "cart": "Cart",
+    "favorites": "Favorites",
+    "profile": "Profile"
+  },
+  "bottomNav": {
+    "home": "Home",
+    "profile": "Profile",
+    "cart": "Cart",
+    "buyNow": "Buy it!"
+  },
+  "hero": {
+    "title": "Come on, snap up something really cool!",
+    "description": "The bóbr's got your back! We’ll dig out the best deals and coolest finds — gifts, gadgets, and personalized figures are ready for you!",
+    "button": "See Products",
+    "slogan": "Bóbr nie ku*wa bo kupuje na DajDaj"
+  },
+  "userProfile": {
+      "authError": "Authentication Error",
+      "status": "Status",
+      "error": "Error",
+      "loginAgain": "Please log in again.",
+      "loginBtn": "Login Again",
+      "clearToken": "Clear Token & Reload",
 
-        "greetingTitle": "We are happy to see you!",
-        "greetingSubtitle": "Welcome to your profile, {{name}}.",
-        "user": "User",
+      "greetingTitle": "We are happy to see you!",
+      "greetingSubtitle": "Welcome to your profile, {{name}}.",
+      "user": "User",
 
-        "orders": "My Orders",
-        "loadingOrders": "Loading orders...",
-        "failedOrders": "Failed to load orders",
-        "noOrders": "No orders yet",
-        "ordersDesc": "Your order history will appear here",
-        "discounts": "My Discounts",
-        "loadingDiscounts": "Loading discounts...",
-        "failedDiscounts": "Failed to load discounts",
-        "noDiscounts": "No discounts available",
-        "discountsDesc": "Active discounts will appear here",
-        "favorites": "My Favorites",
-        "loadingFavorites": "Loading favorites...",
-        "failedFavorites": "Failed to load favorites",
-        "noFavorites": "No favorites yet",
-        "favoritesDesc": "Add products to favorites to see them here",
-        "order": "Order",
-        "expires": "Expires"
+      "orders": "My Orders",
+      "loadingOrders": "Loading orders...",
+      "failedOrders": "Failed to load orders",
+      "noOrders": "No orders yet",
+      "ordersDesc": "Your order history will appear here",
+      "discounts": "My Discounts",
+      "loadingDiscounts": "Loading discounts...",
+      "failedDiscounts": "Failed to load discounts",
+      "noDiscounts": "No discounts available",
+      "discountsDesc": "Active discounts will appear here",
+      "favorites": "My Favorites",
+      "loadingFavorites": "Loading favorites...",
+      "failedFavorites": "Failed to load favorites",
+      "noFavorites": "No favorites yet",
+      "favoritesDesc": "Add products to favorites to see them here",
+      "order": "Order",
+      "expires": "Expires"
+    },
+    "productGrid": {
+      "loading": "Loading products...",
+      "error": "Error loading products: {{message}}",
+      "headerTitle": "Choose Their Perfect Figurine",
+      "headerDescription": "Each pre-designed figurine captures a different spirit of strength. Pick the one that reminds you of them, then make it personal with their name and your message.",
+      "categories": {
+        "all": "All Figurines",
+        "male": "For Him",
+        "female": "For Her"
       },
-      "productGrid": {
-        "loading": "Loading products...",
-        "error": "Error loading products: {{message}}",
-        "headerTitle": "Choose Their Perfect Figurine",
-        "headerDescription": "Each pre-designed figurine captures a different spirit of strength. Pick the one that reminds you of them, then make it personal with their name and your message.",
-        "categories": {
-          "all": "All Figurines",
-          "male": "For Him",
-          "female": "For Her"
-        },
-        "badges": {
-          "new": "New",
-          "popular": "Popular"
-        },
-        "actions": {
-          "buyNow": "Buy now"
-        },
-        "tags": {
-          "male": "For Him",
-          "female": "For Her"
-        },
-        "engraving": "🎁 Pre-designed • Name & message engraving included"
+      "badges": {
+        "new": "New",
+        "popular": "Popular"
       },
-      "personalizationModal": {
-        "title": "Personalize Your Product",
-        "labels": {
-          "customName": "Enter a name for personalization"
-        },
-        "placeholders": {
-          "customName": "Type name here..."
-        },
-        "buttons": {
-          "back": "Return",
-          "confirm": "Personalize & Add to Cart"
-        }
+      "actions": {
+        "buyNow": "Buy now"
       },
-      "cart": {
-        "title": "Shopping Cart",
-        "emptyMessage": "Your cart is currently empty",
-        "startShopping": "Start Shopping",
-        "columns": {
-          "product": "Product",
-          "price": "Price",
-          "quantity": "Quantity",
-          "total": "Total"
-        },
-        "personalization": {
-          "title": "Personalizacja",
-          "phrase": "Wybrane hasło",
-          "customName": "Imię"
-        },
-        "buttons": {
-          "remove": "Remove",
-          "clearCart": "Clear Cart",
-          "continueShopping": "Continue Shopping"
-        },
-        "summary": {
-          "total": "Subtotal",
-          "taxesShipping": "Taxes and shipping will be calculated at checkout",
-          "loginToCheckout": "Log in to complete your purchase",
-          "proceedToDelivery": "Proceed to payment"
-        }
+      "tags": {
+        "male": "For Him",
+        "female": "For Her"
       },
-      "payButton": {
-        "checkout": "Proceed to Payment"
+      "engraving": "🎁 Pre-designed • Name & message engraving included"
+    },
+    "personalizationModal": {
+      "title": "Personalize Your Product",
+      "labels": {
+        "customName": "Enter a name for personalization"
       },
-      "footer": {
-        "brand": {
-          "title": "DajDaj",
-          "subtitle": "Meaningful Gifts",
-          "description": "Creating meaningful gifts that celebrate strength, dedication, and the special people in your life."
-        },
-        "giftGuidance": {
-          "title": "Gift Guidance",
-          "browse": "Browse Figurines",
-          "personalize": "How Personalization Works",
-          "ideas": "Gift Ideas"
-        },
-        "customerCare": {
-          "title": "Customer Care",
-          "shipping": "Shipping Info",
-          "returns": "Returns & Exchanges",
-          "faq": "FAQ",
-          "contact": "Contact Us",
-          "care": "Care Instructions"
-        },
-        "contact": {
-          "title": "Email Us"
-        },
-        "bottom": {
-          "copy": "© 2024 FigureCraft. Made with ❤️ for meaningful connections.",
-          "privacy": "Privacy Policy",
-          "terms": "Terms of Service"
-        }
+      "placeholders": {
+        "customName": "Type name here..."
       },
-      "cartToasts": {
-        "personalizedUpdated": "Product with personalization updated",
-        "quantityIncreased": "Product quantity increased",
-        "personalizedAdded": "Product with personalization added to cart",
-        "added": "Product added to cart",
-        "quantityDecreased": "Product quantity decreased",
-        "removed": "Product removed from cart",
-        "cleared": "Cart cleared"
-      },
-      "productDetails": {
-        "addToCart": "Add to Cart"
-      },
-
-      "login": {
-        "title": "Login",
-        "email": "Email",
-        "password": "Password",
-        "submit": "Login",
-        "submitting": "Submitting...",
-        "google": "Login with Google",
-        "facebook": "Login with Facebook",
-        "noAccount": "Don't have an account?",
-        "register": "Register"
-      },
-      "register": {
-        "title": "Register",
-        "name": "Name",
-        "email": "Email",
-        "password": "Password",
-        "confirmPassword": "Confirm Password",
-        "submit": "Register",
-        "submitting": "Submitting...",
-        "google": "Register with Google",
-        "facebook": "Register with Facebook",
-        "alreadyHaveAccount": "Already have an account?",
-        "login": "Login",
-        "passwordMismatch": "Passwords do not match!"
+      "buttons": {
+        "back": "Return",
+        "confirm": "Personalize & Add to Cart"
       }
-      
-  }
+    },
+    "cart": {
+      "title": "Shopping Cart",
+      "emptyMessage": "Your cart is currently empty",
+      "startShopping": "Start Shopping",
+      "columns": {
+        "product": "Product",
+        "price": "Price",
+        "quantity": "Quantity",
+        "total": "Total"
+      },
+      "personalization": {
+        "title": "Personalizacja",
+        "phrase": "Wybrane hasło",
+        "customName": "Imię"
+      },
+      "buttons": {
+        "remove": "Remove",
+        "clearCart": "Clear Cart",
+        "continueShopping": "Continue Shopping"
+      },
+      "summary": {
+        "total": "Subtotal",
+        "taxesShipping": "Taxes and shipping will be calculated at checkout",
+        "loginToCheckout": "Log in to complete your purchase",
+        "proceedToDelivery": "Proceed to payment"
+      }
+    },
+    "payButton": {
+      "checkout": "Proceed to Payment"
+    },
+    "footer": {
+      "brand": {
+        "title": "DajDaj",
+        "subtitle": "Meaningful Gifts",
+        "description": "Creating meaningful gifts that celebrate strength, dedication, and the special people in your life."
+      },
+      "giftGuidance": {
+        "title": "Gift Guidance",
+        "browse": "Browse Figurines",
+        "personalize": "How Personalization Works",
+        "ideas": "Gift Ideas"
+      },
+      "customerCare": {
+        "title": "Customer Care",
+        "shipping": "Shipping Info",
+        "returns": "Returns & Exchanges",
+        "faq": "FAQ",
+        "contact": "Contact Us",
+        "care": "Care Instructions"
+      },
+      "contact": {
+        "title": "Email Us"
+      },
+      "bottom": {
+        "copy": "© 2024 FigureCraft. Made with ❤️ for meaningful connections.",
+        "privacy": "Privacy Policy",
+        "terms": "Terms of Service"
+      }
+    },
+    "cartToasts": {
+      "personalizedUpdated": "Product with personalization updated",
+      "quantityIncreased": "Product quantity increased",
+      "personalizedAdded": "Product with personalization added to cart",
+      "added": "Product added to cart",
+      "quantityDecreased": "Product quantity decreased",
+      "removed": "Product removed from cart",
+      "cleared": "Cart cleared"
+    },
+    "productDetails": {
+      "loadingProduct": "Loading product...",
+      "notFound": "Product not found",
+      "noName": "Untitled",
+      "noDescription": "No description",
+      "showPhotos": "Show photos",
+      "view3D": "View 3D Model",
+      "about": "About the product",
+      "material": "Material",
+      "premiumQuality": "Premium Quality",
+      "delivery": "Delivery",
+      "deliveryTime": "2–3 days",
+      "warranty": "Warranty",
+      "warrantyPeriod": "12 months",
+      "reviews": "Reviews",
+      "anonymous": "Anonymous",
+      "registered": "Registered",
+      "noComment": "No comment",
+      "noReviews": "No reviews yet",
+      "addToCart": "Add to cart"
+      },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Login",
+      "submitting": "Submitting...",
+      "google": "Login with Google",
+      "facebook": "Login with Facebook",
+      "noAccount": "Don't have an account?",
+      "register": "Register"
+    },
+    "register": {
+      "title": "Register",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Register",
+      "submitting": "Submitting...",
+      "google": "Register with Google",
+      "facebook": "Register with Facebook",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Login",
+      "passwordMismatch": "Passwords do not match!"
+    },
+    "create-new-profile-modal": {
+      "back": "Back",
+      "save": "Save",
+      "cancel": "Cancel",
+      "title": "Create a new profile",
+      "name": "First name:",
+      "surname": "Last name:",
+      "address": "Address:",
+      "method": "Delivery method:",
+      "phone": "Phone:"
+      }   
+}

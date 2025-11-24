@@ -16,7 +16,7 @@
       "title": "WEŹŻE DAJ COŚ WYJĄTKOWEGO",
       "description": "Bóbr wie, co dobre! Wygryziemy najlepsze rabaty i wyjątkowe rzeczy — prezenty, gadżety i figurki personalizowane, które robią wrażenie!",
       "button": "Zobacz produkty",
-      "slogan": "Bóbr nie ku**a bo kupuje na DajDaj"
+      "slogan": "Bóbr nie ku*wa bo kupuje na DajDaj"
     },
     "userProfile": {
       "authError": "Błąd uwierzytelniania",
@@ -154,8 +154,26 @@
         "cleared": "Koszyk został wyczyszczony"
       },
       "productDetails": {
+        "loadingProduct": "Ładowanie produktu...",
+        "notFound": "Produkt nie został znaleziony",
+        "noName": "Bez tytułu",
+        "noDescription": "Brak opisu",
+        "showPhotos": "Pokaż zdjęcia",
+        "view3D": "Zobacz model 3D",
+        "about": "Informacje o produkcie",
+        "material": "Materiał",
+        "premiumQuality": "Najwyższa jakość",
+        "delivery": "Dostawa",
+        "deliveryTime": "2–3 dni",
+        "warranty": "Gwarancja",
+        "warrantyPeriod": "12 miesięcy",
+        "reviews": "Opinie",
+        "anonymous": "Anonimowy",
+        "registered": "Zarejestrowany",
+        "noComment": "Brak komentarza",
+        "noReviews": "Brak recenzji jeszcze",
         "addToCart": "Dodaj do koszyka"
-      },
+        },
         "login": {
           "title": "Logowanie",
           "email": "Email",
@@ -180,7 +198,18 @@
           "alreadyHaveAccount": "Masz już konto?",
           "login": "Logowanie",
           "passwordMismatch": "Hasła nie są zgodne!"
-        }
+        },
+        "create-new-profile-modal": {
+          "back": "Wstecz",
+          "save": "Zapisz",
+          "cancel": "Anuluj",
+          "title": "Utwórz nowy profil",
+          "name": "Imię:",
+          "surname": "Nazwisko:",
+          "address": "Adres:",
+          "method": "Sposób dostarczenia:",
+          "phone": "Telefon:"
+          }
       
   }
   

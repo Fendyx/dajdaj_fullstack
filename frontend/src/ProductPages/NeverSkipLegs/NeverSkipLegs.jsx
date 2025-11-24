@@ -3,6 +3,7 @@ import { ImageCarousel } from '../ImageCarousel';
 import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
 import "../ProductPage.css";
+import SimilarProducts from '../../components/SimilarProducts/SimilarProducts';
 
 export default function NeverSkipLegs() {
   const productImages = [
@@ -80,10 +81,17 @@ export default function NeverSkipLegs() {
 
           {/* Right Side */}
           <div className="product-right-side">
-            <ProductDetails />
+          <ProductDetails 
+            show3D={show3D} 
+            on3DToggle={handle3DToggle}
+          />
           </div>
         </div>
       </div>
+      <SimilarProducts 
+            range={[1, 8]} 
+            title="More from this collection" 
+          />
     </div>
   );
 }

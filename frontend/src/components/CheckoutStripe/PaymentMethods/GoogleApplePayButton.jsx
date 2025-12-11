@@ -1,34 +1,38 @@
 import { PaymentRequestButtonElement } from "@stripe/react-stripe-js";
-import { useEffect, useState } from "react";
-import "./PaymentMethods.css"; // Подключаем новый файл стилей
+import { useEffect, useState, useMemo } from "react"; // 1. Добавили useMemo
+import "./PaymentMethods.css";
 
 const GoogleApplePayButton = ({ paymentRequest }) => {
   const [canPay, setCanPay] = useState(null);
-  const [shouldRender, setShouldRender] = useState(false);
 
   useEffect(() => {
     if (!paymentRequest) return;
 
     paymentRequest.canMakePayment().then((result) => {
-      setCanPay(result);
-      setShouldRender(!!result);
+      setCanPay(!!result);
     });
   }, [paymentRequest]);
 
-  if (!shouldRender || !canPay) return null;
+  // 2. ВАЖНО: Мемоизируем настройки (options). 
+  // Это предотвращает бесконечную перерисовку кнопки, из-за которой она схлопывается.
+  const options = useMemo(() => ({
+    paymentRequest,
+    style: {
+      paymentRequestButton: {
+        type: "default",
+        theme: "light",
+        height: "48px", // Высота задается здесь
+      },
+    },
+  }), [paymentRequest]);
+
+  // Если paymentRequest нет или платить нельзя — не рендерим ничего
+  if (!paymentRequest || !canPay) return null;
 
   return (
     <div style={{ width: "100%", marginTop: "10px" }}>
-      <PaymentRequestButtonElement
-        options={{ paymentRequest }}
-        style={{
-          paymentRequestButton: {
-            type: "default",
-            theme: "light",
-            height: "48px", // Чуть выше для удобства нажатия
-          },
-        }}
-      />
+      {/* 3. Передаем стабильный объект options */}
+      <PaymentRequestButtonElement options={options} />
     </div>
   );
 };

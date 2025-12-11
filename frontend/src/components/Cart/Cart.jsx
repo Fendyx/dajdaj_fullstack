@@ -52,7 +52,7 @@ const Cart = () => {
   };
 
   // --- ЛОГИКА FREE SHIPPING BAR ---
-  const FREE_SHIPPING_THRESHOLD = 300; // Например, 300 PLN
+  const FREE_SHIPPING_THRESHOLD = 100; // Например, 100 PLN
   const currentTotal = cart.cartTotalAmount;
   const isFreeShipping = currentTotal >= FREE_SHIPPING_THRESHOLD;
   const amountToFreeShipping = FREE_SHIPPING_THRESHOLD - currentTotal;

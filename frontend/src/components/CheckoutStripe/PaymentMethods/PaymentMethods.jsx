@@ -2,7 +2,8 @@ import React from "react";
 import { FaCreditCard, FaGoogle, FaApple, FaBolt } from "react-icons/fa";
 import BlikPayment from "./BlikPayment";
 import CardPayment from "./CardPayment";
-import "./PaymentMethods.css"; // Подключаем новый файл стилей
+import "./PaymentMethods.css"; 
+import GoogleApplePayButton from "./GoogleApplePayButton";
 
 const PaymentMethods = ({
   selected,
@@ -14,33 +15,27 @@ const PaymentMethods = ({
   handleCardFieldFocus,
   handleCardFieldBlur,
   canMakePaymentResult,
+  paymentRequest, // <--- 1. ДОБАВЬТЕ ЭТУ СТРОКУ СЮДА
 }) => {
   
   // Вспомогательная функция для рендера опции
   const renderOption = (id, label, icon, iconClass, children = null) => {
+    // ... ваш код renderOption без изменений ...
     const isSelected = selected === id;
     
     return (
       <div className={`pm-option-container ${isSelected ? "selected" : ""}`}>
-        <div 
-          className="pm-option-header" 
-          onClick={() => setSelected(id)}
-        >
-          {/* Левая часть: Радио + Иконка + Текст */}
+        <div className="pm-option-header" onClick={() => setSelected(id)}>
           <div className="pm-label-group">
-            {/* Кастомная радио-кнопка */}
             <div className={`pm-radio-circle ${isSelected ? "active" : ""}`}>
                {isSelected && <div className="pm-radio-dot" />}
             </div>
-
             <div className={`pm-icon-box ${iconClass}`}>
               {icon}
             </div>
-            
             <span className="pm-label-text">{label}</span>
           </div>
 
-          {/* Правая часть: Брендовые иконки карт (декор) */}
           {id === "card" && (
             <div className="pm-card-brands">
                <span className="brand-dot mastercard"></span>
@@ -49,7 +44,6 @@ const PaymentMethods = ({
           )}
         </div>
 
-        {/* Раскрывающийся контент (форма карты или BLIK) */}
         {isSelected && children && (
           <div className="pm-option-content">
             {children}
@@ -70,7 +64,9 @@ const PaymentMethods = ({
           "googlepay", 
           "Google Pay", 
           <FaGoogle />, 
-          "pm-google"
+          "pm-google",
+          // Теперь paymentRequest доступен и ошибка исчезнет
+          <GoogleApplePayButton paymentRequest={paymentRequest} />
         )}
 
         {/* Apple Pay */}
@@ -78,7 +74,9 @@ const PaymentMethods = ({
           "applepay", 
           "Apple Pay", 
           <FaApple />, 
-          "pm-apple"
+          "pm-apple",
+          // Здесь тоже
+          <GoogleApplePayButton paymentRequest={paymentRequest} />
         )}
 
         {/* BLIK */}

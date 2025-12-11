@@ -1,17 +1,19 @@
 import React, { useState } from "react";
 import "./ProductDetails.css";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addToCart } from "../slices/cartSlice";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useGetAllProductsQuery } from "../slices/productsApi";
 import { PersonalizationModal } from "../components/PersonalizationModal/PersonalizationModal";
-import { FaShoppingCart, FaStar, FaCube, FaChevronDown, FaImage } from "react-icons/fa";
+import { FaShoppingCart, FaStar, FaCube, FaChevronDown, FaImage, FaCreditCard } from "react-icons/fa";
 
 export function ProductDetails({ show3D, on3DToggle }) {
   const { t, i18n } = useTranslation();
   const dispatch = useDispatch();
   const location = useLocation();
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
 
   // Загружаем продукты
   const { data: products = [], isLoading } = useGetAllProductsQuery(i18n.language);
@@ -19,7 +21,7 @@ export function ProductDetails({ show3D, on3DToggle }) {
   // Определяем slug из URL
   const slug = location.pathname.split("/products/")[1];
 
-  // Ищем продукт только после загрузки
+  // Ищем продукт
   const product = !isLoading ? products.find((p) => p.link?.endsWith(slug)) : null;
 
   const [showModal, setShowModal] = useState(false);
@@ -47,6 +49,37 @@ export function ProductDetails({ show3D, on3DToggle }) {
   const handleConfirmPersonalization = (personalizedData) => {
     dispatch(addToCart({ ...product, ...personalizedData }));
     setShowModal(false);
+  };
+
+  // --- ЛОГИКА PAY NOW ---
+  const handlePayNow = () => {
+    const buyNowItem = {
+      ...product,
+      id: product._id || product.id,
+      qty: 1
+    };
+
+    if (!auth._id) {
+      navigate(`/login?redirect=${location.pathname}`);
+      return;
+    }
+
+    const deliveryList = auth.deliveryDatas || [];
+    if (deliveryList.length === 0) {
+      navigate("/shipping-info", { 
+        state: { 
+          fromPayNow: true,
+          productToBuy: buyNowItem 
+        } 
+      });
+      return;
+    }
+
+    navigate("/checkout-stripe", {
+      state: {
+        buyNowItem: buyNowItem
+      }
+    });
   };
 
   const toggleAccordion = (value) =>
@@ -79,14 +112,21 @@ export function ProductDetails({ show3D, on3DToggle }) {
             )}
           </button>
 
-          <button className="prod-add-btn" onClick={handleAddToCartClick}>
-            <FaShoppingCart className="prod-cart-icon" />
-            <span>{t("productDetails.addToCart", "Добавить в корзину")}</span>
-          </button>
+          {/* Обертка для Sticky кнопок */}
+          <div className="prod-actions-sticky">
+            <button className="prod-add-btn" onClick={handleAddToCartClick}>
+              <FaShoppingCart className="prod-cart-icon" />
+              <span>{t("productDetails.addToCart", "Добавить в корзину")}</span>
+            </button>
+
+            <button className="prod-buy-now-btn" onClick={handlePayNow}>
+              <FaCreditCard className="prod-cart-icon" />
+              <span>{t("productDetails.payNow", "Купить сейчас")}</span>
+            </button>
+          </div>
 
           {/* Аккордеоны */}
           <div className="prod-accordion">
-            {/* О продукте */}
             <div className="prod-accordion-item">
               <button
                 className="prod-accordion-trigger"
@@ -113,7 +153,6 @@ export function ProductDetails({ show3D, on3DToggle }) {
               </div>
             </div>
 
-            {/* Отзывы */}
             <div className="prod-accordion-item">
               <button
                 className="prod-accordion-trigger"

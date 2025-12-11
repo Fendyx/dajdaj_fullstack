@@ -42,6 +42,9 @@ import FemaleBlond from "./ProductPages/FemaleBlond/FemaleBlond";
 import FemaleBrunette from "./ProductPages/FemaleBrunette/FemaleBrunette";
 import FemalePink from "./ProductPages/FemalePink/FemalePink";
 import SpecialGirl from "./ProductPages/SpecialGirl/SpecialGirl";
+import PersonalFigurine from "./ProductPages/PersonalFigurine/PersonalFigurine";
+import Posters from "./ProductPages/Posters/Posters";
+
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
@@ -138,6 +141,11 @@ function AppContent() {
                 path="/products/special-girl"
                 element={<SpecialGirl />}
               />
+              <Route
+                path="/products/personal-figurine"
+                element={<PersonalFigurine />}
+              />
+              <Route path="/posters/:slug" element={<Posters />} />
               <Route
                 path="/select-delivery-method"
                 element={<SelectDeliveryMethod />}

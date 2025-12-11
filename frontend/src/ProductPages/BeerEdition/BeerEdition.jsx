@@ -1,12 +1,27 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom'; // Импорт для навигации
+import { useSelector } from 'react-redux'; // Импорт для проверки авторизации
 import { ImageCarousel } from '../ImageCarousel';
 import { ProductDetails } from '../ProductDetails';
 import { ThreeDViewButton } from '../ThreeDViewButton';
-import BeerModelPoster from "../../assets/img/arnold_wooden_stand_2.png";
+// ... остальные импорты
 import "../ProductPage.css";
 import SimilarProducts from '../../components/SimilarProducts/SimilarProducts';
 
 export default function BeerEdition() {
+  const navigate = useNavigate();
+  const auth = useSelector((state) => state.auth);
+
+  // --- ХАРДКОД ДАННЫХ ТОВАРА ---
+  // Убедись, что ID совпадает с тем, что в базе данных (MongoDB)
+  const productData = {
+    id: "beer-edition-id", // <-- ЗАМЕНИ НА РЕАЛЬНЫЙ ID ТОВАРА ИЗ БАЗЫ
+    name: "Beer Edition Special",
+    price: 50, // <-- Цена
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/NewPiwoEdycja_withBox.png',
+    qty: 1
+  };
+
   const productImages = [
     'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/NewPiwoEdycja_withBox.png',
     'https://images.unsplash.com/photo-1704440278730-b420f5892700?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
@@ -23,16 +38,44 @@ export default function BeerEdition() {
     setShow3D((prev) => !prev);
   };
 
+  // --- ЛОГИКА PAY NOW ---
+  const handlePayNow = () => {
+    // 1. Проверка авторизации
+    if (!auth._id) {
+      navigate("/login?redirect=/product/beer-edition");
+      return;
+    }
+
+    // 2. Проверка адреса
+    const deliveryList = auth.deliveryDatas || [];
+    if (deliveryList.length === 0) {
+      // Если нет адреса, отправляем на shipping-info, но передаем товар, 
+      // чтобы после сохранения адреса нас вернуло к покупке именно этого товара
+      navigate("/shipping-info", { 
+        state: { 
+          fromPayNow: true,
+          buyNowItem: productData 
+        } 
+      });
+      return;
+    }
+
+    // 3. Переход на оплату ТОЛЬКО С ЭТИМ ТОВАРОМ
+    navigate("/checkout-stripe", {
+      state: {
+        buyNowItem: productData
+      }
+    });
+  };
+  // -----------------------
+
   useEffect(() => {
     const modelViewer = modelViewerRef.current;
-
     if (modelViewer) {
       const handleLoad = () => setIsLoading(false);
       const handleError = () => setIsLoading(false);
-
       modelViewer.addEventListener('load', handleLoad);
       modelViewer.addEventListener('error', handleError);
-
       return () => {
         modelViewer.removeEventListener('load', handleLoad);
         modelViewer.removeEventListener('error', handleError);
@@ -44,8 +87,6 @@ export default function BeerEdition() {
     <div className="product-page">
       <div className="product-page-container">
         <div className="product-layout">
-
-          {/* Left Side */}
           <div className="product-left-side">
             {show3D ? (
               <div className="model-viewer-wrapper" style={{ position: 'relative' }}>
@@ -74,24 +115,19 @@ export default function BeerEdition() {
                 onImageChange={setCurrentImage}
               />
             )}
-
-            
           </div>
 
-          {/* Right Side */}
           <div className="product-right-side">
-          <ProductDetails 
-            show3D={show3D} 
-            on3DToggle={handle3DToggle}
-          />
+            {/* Передаем функцию Pay Now в ProductDetails */}
+            <ProductDetails 
+              show3D={show3D} 
+              on3DToggle={handle3DToggle}
+              onPayNow={handlePayNow} // <--- ВОТ ЗДЕСЬ
+            />
           </div>
-          
         </div>
       </div>
-      <SimilarProducts 
-            range={[1, 8]} 
-            title="More from this collection" 
-          />
+      <SimilarProducts range={[1, 8]} title="More from this collection" />
     </div>
   );
 }

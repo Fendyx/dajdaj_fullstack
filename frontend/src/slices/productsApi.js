@@ -9,7 +9,16 @@ export const productsApi = createApi({
     getAllProducts: builder.query({
       query: (lang = "en") => `products?lang=${lang}`,
     }),
+
+    // Новый эндпоинт для загрузки продукта по slug
+    getProductBySlug: builder.query({
+      query: ({ slug, lang = "en" }) => `products/slug/${slug}?lang=${lang}`,
+    }),
   }),
 });
 
-export const { useGetAllProductsQuery } = productsApi;
+// Экспортируем хуки
+export const { 
+  useGetAllProductsQuery, 
+  useGetProductBySlugQuery 
+} = productsApi;

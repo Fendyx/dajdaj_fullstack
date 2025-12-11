@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export function PersonalInfoForm({ data, onChange }) {
+  const userEmail = useSelector((state) => state.auth.email);
+
   const handleChange = (field, value) => {
     onChange({ ...data, [field]: value });
   };
+
+  // Подставляем email сразу при наличии userEmail
+  useEffect(() => {
+    if (userEmail && data.email !== userEmail) {
+      onChange({
+        ...data,
+        email: userEmail,
+      });
+    }
+  }, [userEmail]);
 
   return (
     <div className="form-section">
@@ -16,9 +29,10 @@ export function PersonalInfoForm({ data, onChange }) {
             className="input"
             placeholder="Wpisz swoje imię"
             value={data.name}
-            onChange={(e) => handleChange('name', e.target.value)}
+            onChange={(e) => handleChange("name", e.target.value)}
           />
         </div>
+
         <div className="form-group">
           <label className="label">Nazwisko</label>
           <input
@@ -26,9 +40,10 @@ export function PersonalInfoForm({ data, onChange }) {
             className="input"
             placeholder="Wpisz swoje nazwisko"
             value={data.surname}
-            onChange={(e) => handleChange('surname', e.target.value)}
+            onChange={(e) => handleChange("surname", e.target.value)}
           />
         </div>
+
         <div className="form-group">
           <label className="label">E-mail</label>
           <input
@@ -36,9 +51,10 @@ export function PersonalInfoForm({ data, onChange }) {
             className="input"
             placeholder="example@mail.com"
             value={data.email}
-            onChange={(e) => handleChange('email', e.target.value)}
+            readOnly
           />
         </div>
+
         <div className="form-group">
           <label className="label">Numer telefonu</label>
           <input
@@ -46,7 +62,7 @@ export function PersonalInfoForm({ data, onChange }) {
             className="input"
             placeholder="+48 600 000 000"
             value={data.phone}
-            onChange={(e) => handleChange('phone', e.target.value)}
+            onChange={(e) => handleChange("phone", e.target.value)}
           />
         </div>
       </div>

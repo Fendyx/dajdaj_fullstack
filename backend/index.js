@@ -13,7 +13,7 @@ const login = require("./routes/login");
 const stripeRoutes = require("./routes/stripe");
 const stripeWebhook = require("./routes/webhook");
 const profile = require("./routes/profile");
-const products = require("./products");
+const products = require("./products"); // <-- Ваш массив продуктов
 const oauth = require("./routes/oauth");
 const paymentIntent = require("./routes/paymentIntent");
 const orders = require("./routes/orders");
@@ -138,7 +138,7 @@ app.get("/api/geocode", async (req, res) => {
   }
 });
 
-// Products
+// Products: GET /products (Возвращает ВСЕ продукты)
 app.get("/products", (req, res) => {
   console.log("📥 GET /products");
   try {
@@ -149,6 +149,7 @@ app.get("/products", (req, res) => {
     const lang = req.query.lang === "pl" ? "pl" : "en";
     const localizedProducts = products.map((product) => ({
       id: product.id,
+      slug: product.slug, // Добавляем slug
       name: product.name[lang],
       description: product.description[lang],
       descriptionProductPage: product.descriptionProductPage[lang],
@@ -168,6 +169,59 @@ app.get("/products", (req, res) => {
     res.status(500).json({ message: "Ошибка сервера при загрузке товаров" });
   }
 });
+
+
+// -------------------------------------------------------------------
+// 🚀 НОВЫЙ МАРШРУТ: GET /api/products/slug/:slugName (Возвращает ОДИН продукт по SLUG)
+app.get("/api/products/slug/:slugName", (req, res) => {
+    const slugName = req.params.slugName; 
+    console.log(`📥 GET /api/products/slug/${slugName}`);
+
+    if (!slugName) {
+        return res.status(400).json({ message: "Slug продукта не предоставлен." });
+    }
+
+    try {
+        // 1. Ищем продукт в массиве по полю 'slug'
+        const product = products.find(p => p.slug === slugName);
+
+        if (!product) {
+            return res.status(404).json({ 
+                message: `Продукт с slug '${slugName}' не найден.`,
+                success: false
+            });
+        }
+        
+        // 2. Локализация найденного продукта
+        const lang = req.query.lang === "pl" ? "pl" : "en";
+        const localizedProduct = {
+            id: product.id,
+            slug: product.slug,
+            name: product.name[lang],
+            description: product.description[lang],
+            descriptionProductPage: product.descriptionProductPage[lang],
+            price: product.price,
+            image: product.image,
+            category: product.category,
+            isNew: product.isNew,
+            isPopular: product.isPopular,
+            phrases: product.phrases[lang],
+            link: product.link,
+            // Дополнительные поля (например, 3D модель, если есть)
+            threeDModelSrc: product.threeDModelSrc || null, 
+            // ... другие поля
+        };
+
+        // 3. Возвращаем продукт
+        res.status(200).json(localizedProduct);
+
+    } catch (error) {
+        console.error("❌ Ошибка при получении продукта по slug:", error);
+        res.status(500).json({ message: "Ошибка сервера при загрузке продукта по slug" });
+    }
+});
+// -------------------------------------------------------------------
+
 
 // MongoDB
 const uri = process.env.DB_URI;

@@ -89,20 +89,20 @@ const BottomNav = () => {
       </div>
 
       {/* Кнопка Купить */}
-      {isProductPage && product && (
+      {/* {isProductPage && product && (
         <button className="buy-button-bottom-nav" onClick={handleBuyClick}>
           {t("bottomNav.buyNow")}
         </button>
-      )}
+      )} */}
 
       {/* Модалка персонализации */}
-      {showModal && currentProduct && (
+      {/* {showModal && currentProduct && (
         <PersonalizationModal
           product={currentProduct}
           onClose={() => setShowModal(false)}
           onConfirm={handleConfirmPersonalization}
         />
-      )}
+      )} */}
     </div>
   );
 };

@@ -1,13 +1,10 @@
 .prod-page {
-  /* padding: 2rem 1rem; */
   width: 100%;
 }
 
 .prod-container {
   width: 100%;
   margin: 0 auto;
-  /* display: grid;
-  grid-template-columns: 1fr; */
   gap: 2rem;
   align-items: start;
 }
@@ -69,10 +66,11 @@
 .prod-info {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  /* Убрали gap здесь, так как отступы будут регулироваться внутри prod-actions-sticky */
+  gap: 1.5rem; 
   width: 100%;
   height: 100%;
-  max-width: none; /* Убираем ограничение по ширине */
+  max-width: none; 
 }
 
 .prod-header {
@@ -99,19 +97,52 @@
   width: 100%;
 }
 
-.prod-add-btn {
-  width: 100%;
+/* === STICKY WRAPPER ДЛЯ КНОПОК (ИЗМЕНЕНО) === */
+.prod-actions-sticky {
+  position: -webkit-sticky;
+  position: sticky;
+
+  /* --- ПОДНЯЛИ НА 20px --- */
+  bottom: 65px; 
+  z-index: 50;
+  
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: row;
   gap: 0.75rem;
+  
+}
+
+/* ОБЩИЕ СТИЛИ ДЛЯ ОБЕИХ КНОПОК (НОВОЕ) */
+.prod-add-btn,
+.prod-buy-now-btn {
+    /* ИЗМЕНЕНИЕ: flex: 1 заставляет их делить пространство поровну */
+    flex: 1;
+    /* ИЗМЕНЕНИЕ: width: auto вместо 100%, чтобы работал flex: 1 */
+    width: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem; /* Чуть меньше отступ до иконки */
+    border: none;
+    border-radius: 0.75rem;
+    
+    /* ИЗМЕНЕНИЕ: Уменьшенные паддинги для компактности в ряду */
+    padding: 0.875rem 0.5rem; 
+    
+    /* ИЗМЕНЕНИЕ: Чуть меньше шрифт, чтобы текст влезал */
+    font-size: 0.9375rem; 
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+    /* Запрещаем перенос текста на новую строку, чтобы не ломать высоту */
+    white-space: nowrap; 
+}
+
+/* Индивидуальные цвета кнопок */
+.prod-add-btn {
   background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 0.75rem;
-  padding: 1rem 2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
@@ -120,8 +151,19 @@
   box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
 }
 
+.prod-buy-now-btn {
+  background: #111827; /* Темный цвет (черный) */
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.2);
+}
+
+.prod-buy-now-btn:hover {
+  background: #374151; /* Чуть светлее при наведении */
+  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.3);
+}
+
 .prod-cart-icon {
-  font-size: 1.25rem;
+  /* ИЗМЕНЕНИЕ: Чуть меньше иконка */
+  font-size: 1.1rem;
 }
 
 /* --- Аккордеоны --- */
@@ -297,48 +339,49 @@
     position: sticky;
     top: 2rem;
   }
+
+  /* На десктопе отключаем sticky и фон */
+  .prod-actions-sticky {
+    position: static;
+    background-color: transparent;
+    box-shadow: none;
+    padding: 0;
+    margin: 0;
+    /* На десктопе можно оставить их в ряд, или вернуть в колонку, если нужно.
+       Сейчас они останутся в ряд */
+  }
 }
 
 @media (min-width: 1600px) {
-  .prod-page {
-    /* padding: 3rem 2rem; */
-  }
-
   .prod-title {
     font-size: 3rem;
   }
-
   .prod-description {
     font-size: 1.25rem;
   }
-
   .prod-price {
     font-size: 2.5rem;
   }
-
-  .prod-add-btn {
-    padding: 1.25rem 2.5rem;
+  /* Возвращаем паддинги побольше на огромных экранах */
+  .prod-add-btn, .prod-buy-now-btn {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
   }
 }
 
 @media (min-width: 2000px) {
-  .prod-page {
-    /* padding: 4rem 2rem; */
-  }
-
   .prod-title {
     font-size: 3.5rem;
   }
-
   .prod-description {
     font-size: 1.375rem;
   }
-
   .prod-price {
     font-size: 3rem;
   }
-
-  .prod-add-btn {
-    padding: 1.5rem 3rem;
+   /* Возвращаем паддинги еще больше на гигантских экранах */
+  .prod-add-btn, .prod-buy-now-btn {
+    padding: 1.25rem 2rem;
+     font-size: 1.125rem;
   }
 }

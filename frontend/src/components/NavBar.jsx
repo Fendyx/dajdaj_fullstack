@@ -93,6 +93,14 @@ const NavBar = () => {
       });
   };
 
+  const LANG_LABELS = {
+  en: "EN",
+  pl: "PL",
+  uk: "UA",
+  ru: "RU",
+};
+
+
   return (
     <>
       <nav className="nav-bar">
@@ -107,7 +115,7 @@ const NavBar = () => {
           {/* Language selector */}
           <div className="lang-selector" ref={langMenuRef} onClick={toggleLangMenu}>
             <i className="fa-solid fa-globe"></i>
-            <span>{i18n.language.toUpperCase()}</span>
+            <span>{LANG_LABELS[i18n.language]}</span>
             <i className={`fa-solid fa-chevron-${isLangMenuOpen ? "up" : "down"}`}></i>
             {isLangMenuOpen && (
               <ul className="lang-dropdown">
@@ -230,9 +238,6 @@ const NavBar = () => {
                 </div>
               )}
             </div>
-
-            {/* Мотивационный текст внизу */}
-            <div className="menu-footer">This world would be empty without you</div>
           </div>
         </div>
       </nav>

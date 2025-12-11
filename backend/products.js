@@ -13,8 +13,8 @@ const products = [
       en: 'Detailed info: this male bodybuilder figurine is perfect for fitness enthusiasts and collectors.',
       pl: 'Szczegółowe info: ta figuryna kulturysty jest idealna dla miłośników fitness i kolekcjonerów.'
     },
-    isNew: true,
-    isPopular: true,
+    // isNew: true,
+    // isPopular: true,
     link: '/products/male-bodybuilder',
     phrases: {
       en: [
@@ -451,6 +451,133 @@ const products = [
       ],
       pl: [
         "Siła jest w twoich rękach",
+      ]
+    }
+  },
+  /*-----------------------------------------------------------*/
+  {
+    id: '17',
+    name: { en: 'Personal Figurine', pl: 'Personal Figurine' },
+    price: 99,
+    image: 'https://ae-pic-a1.aliexpress-media.com/kf/Sfeaf235917304a8580a8f8b8e72b7e2fo.jpg_960x960q75.jpg_.avif',
+    category: 'female',
+    description: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    descriptionProductPage: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    link: '/products/personal-figurine',
+    phrases: {
+      en: [
+        "",
+      ],
+      pl: [
+        "",
+      ]
+    }
+  },
+
+    /*-----------------------------------------------------------*/
+  {
+    id: '18',
+    name: { en: 'Map of Warszawy', pl: 'Mapa Warszawy' },
+    price: 49,
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/Warszawa.png',
+    category: 'female',
+    description: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    descriptionProductPage: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    slug: 'warsaw-map',
+    link: '/products/',
+    phrases: {
+      en: [
+        "",
+      ],
+      pl: [
+        "",
+      ]
+    }
+  },
+  {
+    id: '19',
+    name: { en: 'Map of Katowice', pl: 'Mapa Katowice' },
+    price: 49,
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/Katowice.png',
+    category: 'female',
+    description: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    descriptionProductPage: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    slug: 'katowice-map',
+    link: '/products/',
+    phrases: {
+      en: [
+        "",
+      ],
+      pl: [
+        "",
+      ]
+    }
+  },
+  {
+    id: '20',
+    name: { en: 'Map of  Kielce', pl: 'Mapa Kielce' },
+    price: 49,
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/Kielce.png',
+    category: 'female',
+    description: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    descriptionProductPage: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    slug: 'kielce-map',
+    link: '/products/',
+    phrases: {
+      en: [
+        "",
+      ],
+      pl: [
+        "",
+      ]
+    }
+  },
+  {
+    id: '21',
+    name: { en: 'Map of Bydgoszcz', pl: 'Mapa Bydgoszcza' },
+    price: 49,
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/Bydgoszcz.png',
+    category: 'female',
+    description: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    descriptionProductPage: {
+      en: 'Personal Figurine',
+      pl: 'Personal Figurine'
+    },
+    slug: 'szczecin-map',
+    link: '/products/',
+    phrases: {
+      en: [
+        "",
+      ],
+      pl: [
+        "",
       ]
     }
   }

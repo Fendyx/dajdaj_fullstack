@@ -63,7 +63,7 @@
           "popular": "Popularne"
         },
         "actions": {
-          "buyNow": "Kup teraz"
+          "addToCart": "Do koszyka"
         },
         "tags": {
           "male": "Dla Niego",
@@ -172,7 +172,8 @@
         "registered": "Zarejestrowany",
         "noComment": "Brak komentarza",
         "noReviews": "Brak recenzji jeszcze",
-        "addToCart": "Dodaj do koszyka"
+        "addToCart": "Dodaj do koszyka",
+        "payNow": "Kup i zapłać"
         },
         "login": {
           "title": "Logowanie",

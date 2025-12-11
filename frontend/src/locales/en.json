@@ -171,7 +171,8 @@
       "registered": "Registered",
       "noComment": "No comment",
       "noReviews": "No reviews yet",
-      "addToCart": "Add to cart"
+      "addToCart": "Add to cart",
+      "payNow": "Pay Now"
       },
     "login": {
       "title": "Login",

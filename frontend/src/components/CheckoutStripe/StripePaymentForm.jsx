@@ -88,27 +88,109 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     }
   }, [selectedDelivery]);
 
-  // Вычисляем полную сумму с доставкой (9.99 PLN)
+  // --- 1. ПРАВИЛЬНЫЙ ПОДСЧЕТ ЦЕНЫ ---
   const calculateTotalAmount = () => {
-    // 1. Проверка: если корзины нет или она не массив
+    // Защита: если корзины нет
     if (!cartItems || !Array.isArray(cartItems)) return 0;
 
     const itemsTotal = cartItems.reduce((sum, item) => {
-      // 2. Принудительно превращаем в числа (защита от строк "10.00" и undefined)
+      // Защита: превращаем строки в числа и берем 0 если что-то не так
       const price = Number(item.price) || 0;
+      // Внимание: используем cartQuantity (как в вашем Redux), а не qty
       const qty = Number(item.cartQuantity) || 0;
       return sum + (price * qty);
     }, 0);
 
-    // Добавляем 9.99 за доставку
-    const total = itemsTotal + 9.99;
+    // Доставка
+    const deliveryCost = 9.99;
+    const total = itemsTotal + deliveryCost;
 
-    // 3. Округляем до копеек (грошей)
+    // Stripe принимает сумму в грошах (целое число), поэтому * 100
     const totalInCents = Math.round(total * 100);
 
-    // 4. Финальная проверка: если все равно NaN, возвращаем 0
+    // Лог для проверки в консоли
+    // console.log("💰 Calculated Total for Stripe:", totalInCents, "cents");
+    
     return isNaN(totalInCents) ? 0 : totalInCents;
   };
+
+  // --- 2. ИНИЦИАЛИЗАЦИЯ ЗАПРОСА ---
+  useEffect(() => {
+    if (!stripe) return;
+
+    const amount = calculateTotalAmount();
+    // Не создаем кнопку, если сумма 0 (это вызывает ошибку NaN)
+    if (amount <= 0) return;
+
+    const pr = stripe.paymentRequest({
+      country: "PL",
+      currency: "pln",
+      total: { 
+        label: "Total (incl. delivery)", // Красивая надпись в Google Pay
+        amount: amount 
+      },
+      requestPayerName: true,
+      requestPayerEmail: true,
+    });
+
+    pr.canMakePayment().then((result) => {
+      setCanMakePaymentResult(result);
+      if (result) {
+        setPaymentRequest(pr);
+      }
+    });
+
+    pr.on("paymentmethod", async (ev) => {
+      if (submittingRef.current) {
+        ev.complete("fail");
+        return;
+      }
+      submittingRef.current = true;
+      try {
+        const pi = await getOrCreatePaymentIntent();
+        const { clientSecret } = pi;
+
+        const { error } = await stripe.confirmCardPayment(clientSecret, {
+          payment_method: ev.paymentMethod.id,
+        }, { handleActions: false }); 
+
+        if (error) {
+          ev.complete("fail");
+          console.error("❌ Google Pay confirm error:", error);
+        } else {
+          ev.complete("success");
+          if (pi.orderToken) {
+             window.location.href = `${window.location.origin}/checkout-success?orderToken=${pi.orderToken}`;
+          }
+        }
+      } catch (err) {
+        console.error("❌ Google Pay processing failed:", err);
+        ev.complete("fail");
+      } finally {
+        submittingRef.current = false;
+      }
+    });
+
+  }, [stripe]); // Запускается 1 раз при старте
+
+  // --- 3. ОБНОВЛЕНИЕ ЦЕНЫ В GOOGLE PAY ПРИ ИЗМЕНЕНИИ КОРЗИНЫ ---
+  // Вот этого, скорее всего, не хватало или оно не срабатывало
+  useEffect(() => {
+    if (paymentRequest) {
+      const newAmount = calculateTotalAmount();
+      
+      if (newAmount > 0) {
+        console.log("🔄 Updating Google Pay price to:", newAmount);
+        paymentRequest.update({
+          total: {
+            label: "Total (incl. delivery)",
+            amount: newAmount,
+          },
+        });
+      }
+    }
+  }, [cartItems, paymentRequest]); // Срабатывает каждый раз, когда меняется корзина
+
 
   const getOrCreatePaymentIntent = async () => {
     if (paymentIntentRef.current) return paymentIntentRef.current;
@@ -135,82 +217,6 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
       creatingPIRef.current = false;
     }
   };
-
-  // Google/Apple Pay (Payment Request) INIT
-  useEffect(() => {
-    if (!stripe) return;
-
-    const amount = calculateTotalAmount();
-
-    // ВАЖНО: Если сумма 0 или меньше (например, корзина пуста), 
-    // Stripe выбросит ошибку. Мы просто не создаем кнопку в этом случае.
-    if (amount <= 0) return;
-
-    const pr = stripe.paymentRequest({
-      country: "PL",
-      currency: "pln",
-      total: { 
-        label: "Total", 
-        amount: amount 
-      },
-      requestPayerName: true,
-      requestPayerEmail: true,
-    });
-
-    // Проверяем возможность оплаты
-    pr.canMakePayment().then((result) => {
-      setCanMakePaymentResult(result);
-      if (result) {
-        setPaymentRequest(pr);
-      }
-    });
-
-    pr.on("paymentmethod", async (ev) => {
-      if (submittingRef.current) {
-        ev.complete("fail");
-        return;
-      }
-      submittingRef.current = true;
-      try {
-        const pi = await getOrCreatePaymentIntent();
-        const { clientSecret } = pi;
-
-        const { error } = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: ev.paymentMethod.id,
-        }, { handleActions: false }); 
-
-        if (error) {
-          ev.complete("fail");
-          console.error("❌ PaymentRequest confirm error:", error);
-        } else {
-          ev.complete("success");
-          if (pi.orderToken) {
-             window.location.href = `${window.location.origin}/checkout-success?orderToken=${pi.orderToken}`;
-          }
-        }
-      } catch (err) {
-        console.error("❌ PaymentRequest failed:", err);
-        ev.complete("fail");
-      } finally {
-        submittingRef.current = false;
-      }
-    });
-
-    // Важно: добавьте cartItems в зависимости, чтобы при загрузке корзины кнопка пересоздалась
-  }, [stripe, cartItems, formData, token]);
-
-  // Обновление цены в Google Pay, если корзина изменилась
-  useEffect(() => {
-    if (paymentRequest) {
-      paymentRequest.update({
-        total: {
-          label: "Total",
-          amount: calculateTotalAmount(),
-        },
-      });
-    }
-  }, [cartItems, paymentRequest]);
-
 
   const handleCardFieldChange = (fieldName) => (event) => {
     setCardFields((prev) => ({
@@ -284,8 +290,6 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
           setPaymentError(`Payment failed: ${error.message}`);
           throw error;
         }
-        // Если успеха нет в error, значит успех, Stripe может сам редиректнуть или мы делаем это:
-        // window.location.href = ... 
       }
     } catch (err) {
       console.error("❌ Payment submission error:", err);

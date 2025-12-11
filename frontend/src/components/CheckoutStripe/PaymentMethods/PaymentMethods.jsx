@@ -3,7 +3,6 @@ import { FaCreditCard, FaGoogle, FaApple, FaBolt } from "react-icons/fa";
 import BlikPayment from "./BlikPayment";
 import CardPayment from "./CardPayment";
 import "./PaymentMethods.css"; 
-import GoogleApplePayButton from "./GoogleApplePayButton";
 
 const PaymentMethods = ({
   selected,
@@ -15,24 +14,28 @@ const PaymentMethods = ({
   handleCardFieldFocus,
   handleCardFieldBlur,
   canMakePaymentResult,
-  paymentRequest, // <--- 1. ДОБАВЬТЕ ЭТУ СТРОКУ СЮДА
+  // paymentRequest здесь больше не обязателен для рендера, 
+  // так как кнопка переехала в Footer, но оставим, если понадобится логика
 }) => {
   
-  // Вспомогательная функция для рендера опции
   const renderOption = (id, label, icon, iconClass, children = null) => {
-    // ... ваш код renderOption без изменений ...
     const isSelected = selected === id;
     
     return (
       <div className={`pm-option-container ${isSelected ? "selected" : ""}`}>
-        <div className="pm-option-header" onClick={() => setSelected(id)}>
+        <div 
+          className="pm-option-header" 
+          onClick={() => setSelected(id)}
+        >
           <div className="pm-label-group">
             <div className={`pm-radio-circle ${isSelected ? "active" : ""}`}>
                {isSelected && <div className="pm-radio-dot" />}
             </div>
+
             <div className={`pm-icon-box ${iconClass}`}>
               {icon}
             </div>
+            
             <span className="pm-label-text">{label}</span>
           </div>
 
@@ -60,13 +63,15 @@ const PaymentMethods = ({
       <div className="pm-list">
         
         {/* Google Pay */}
+        {/* Кнопка удалена отсюда, чтобы не конфликтовать с Футером */}
         {canMakePaymentResult?.googlePay && renderOption(
           "googlepay", 
           "Google Pay", 
           <FaGoogle />, 
           "pm-google",
-          // Теперь paymentRequest доступен и ошибка исчезнет
-          <GoogleApplePayButton paymentRequest={paymentRequest} />
+          <div style={{ fontSize: "14px", color: "#666", padding: "5px 0" }}>
+            Click the button below to pay with Google Pay
+          </div>
         )}
 
         {/* Apple Pay */}
@@ -75,8 +80,9 @@ const PaymentMethods = ({
           "Apple Pay", 
           <FaApple />, 
           "pm-apple",
-          // Здесь тоже
-          <GoogleApplePayButton paymentRequest={paymentRequest} />
+          <div style={{ fontSize: "14px", color: "#666", padding: "5px 0" }}>
+            Click the button below to pay with Apple Pay
+          </div>
         )}
 
         {/* BLIK */}

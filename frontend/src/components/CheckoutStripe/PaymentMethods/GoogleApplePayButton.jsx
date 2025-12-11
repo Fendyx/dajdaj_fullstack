@@ -1,6 +1,5 @@
 import { PaymentRequestButtonElement } from "@stripe/react-stripe-js";
-import { useEffect, useState, useMemo } from "react"; // 1. Добавили useMemo
-import "./PaymentMethods.css";
+import { useEffect, useState, useMemo } from "react";
 
 const GoogleApplePayButton = ({ paymentRequest }) => {
   const [canPay, setCanPay] = useState(null);
@@ -13,25 +12,22 @@ const GoogleApplePayButton = ({ paymentRequest }) => {
     });
   }, [paymentRequest]);
 
-  // 2. ВАЖНО: Мемоизируем настройки (options). 
-  // Это предотвращает бесконечную перерисовку кнопки, из-за которой она схлопывается.
+  // Мемоизация options критична для предотвращения схлопывания в 1px
   const options = useMemo(() => ({
     paymentRequest,
     style: {
       paymentRequestButton: {
         type: "default",
         theme: "light",
-        height: "48px", // Высота задается здесь
+        height: "48px",
       },
     },
   }), [paymentRequest]);
 
-  // Если paymentRequest нет или платить нельзя — не рендерим ничего
   if (!paymentRequest || !canPay) return null;
 
   return (
-    <div style={{ width: "100%", marginTop: "10px" }}>
-      {/* 3. Передаем стабильный объект options */}
+    <div style={{ width: "100%", height: "48px", marginTop: "10px" }}>
       <PaymentRequestButtonElement options={options} />
     </div>
   );

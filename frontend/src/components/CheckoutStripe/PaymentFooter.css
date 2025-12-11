@@ -1,123 +1,165 @@
-/* PaymentFooter — фиксированный блок внизу */
-.payment-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #ffffff;
-  border-top: 2px solid #e5e7eb;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
-  padding: 1rem 1.5rem;
-  z-index: 50;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  transition: all 0.3s ease;
-}
-
-/* Иконка + название выбранного метода оплаты */
-.payment-footer-info {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-weight: 500;
-  color: #1f2937;
-  font-size: 1rem;
-}
-
-/* Иконки способов оплаты */
-.payment-footer-info svg {
-  font-size: 1.5rem;
-}
-
-/* 💰 Центральный блок — суммы */
-.payment-footer-summary {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  min-width: 120px;
-  color: #111827;
-  font-size: 0.9rem;
-  line-height: 1.4;
-}
-
-.payment-summary-line {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  gap: 1rem;
-}
-
-.payment-summary-total {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  gap: 1rem;
-  font-weight: 700;
-  margin-top: 4px;
-  border-top: 1px solid #e5e7eb;
-  padding-top: 4px;
-}
-
-/* Кнопки оплаты */
-.payment-footer button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-/* Цвета кнопок по методу оплаты */
-.payment-footer .blik-btn {
-  background: #dc2626;
-  color: #ffffff;
-}
-
-.payment-footer .blik-btn:hover {
-  background: #b91c1c;
-  transform: translateY(-1px);
-}
-
-.payment-footer .card-btn {
-  background: #2563eb;
-  color: #ffffff;
-}
-
-.payment-footer .card-btn:hover {
-  background: #1d4ed8;
-  transform: translateY(-1px);
-}
-
-/* Адаптив для мобильных */
-@media (max-width: 480px) {
+/* ========================
+   MOBILE & GLOBAL STYLES
+   ======================== */
+   .pf-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 49;
+    backdrop-filter: blur(2px);
+  }
+  
+  /* Container */
   .payment-footer {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0.5rem;
-    padding: 0.75rem 1rem;
-  }
-
-  .payment-footer-summary {
-    align-items: flex-start;
+    /* По умолчанию (Мобильный) - Фиксирован снизу */
+    position: fixed;
+    bottom: 0;
+    left: 0;
     width: 100%;
-    font-size: 0.95rem;
+    background: #ffffff;
+    z-index: 50;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
+    padding-bottom: env(safe-area-inset-bottom);
   }
-
-  .payment-summary-line,
-  .payment-summary-total {
+  
+  .pf-main-bar {
+    display: flex;
     justify-content: space-between;
-    width: 100%;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    gap: 1rem;
+    height: 80px;
   }
-
-  .payment-footer button {
-    width: 100%;
+  
+  /* Left side (Total) */
+  .pf-total-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: pointer;
   }
-}
+  
+  .pf-total-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  
+  .pf-total-amount {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #111827;
+  }
+  
+  .pf-chevron {
+    color: #2563eb;
+    font-size: 0.75rem;
+  }
+  
+  /* Right side (Buttons) */
+  .pf-actions {
+    flex: 1;
+    max-width: 200px; /* Кнопка не слишком широкая на мобиле */
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .pf-btn {
+    width: 100%;
+    height: 48px;
+    border: none;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.1s;
+  }
+  
+  .pf-btn:active {
+    transform: scale(0.96);
+  }
+  
+  .blik-btn { background: #d32f2f; color: white; }
+  .card-btn { background: #111827; color: white; }
+  
+  .pf-details {
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .pf-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+    color: #4b5563;
+  }
+  
+  .pf-divider {
+    height: 1px;
+    background: #e5e7eb;
+    margin-top: 1rem;
+  }
+  
+  /* ========================
+     DESKTOP STYLES (Modification)
+     ======================== */
+  @media (min-width: 1052px) {
+    .pf-overlay { display: none; }
+    
+    /* Отключаем фиксированное позиционирование */
+    .payment-footer {
+      position: static; /* Становится обычным блоком */
+      box-shadow: none;
+      border-radius: 0;
+      border-top: 2px solid #f3f4f6; /* Легкая линия сверху */
+      margin-top: 1.5rem;
+      padding: 0;
+      width: 100%;
+      z-index: 1;
+    }
+  
+    .pf-main-bar {
+      padding: 1rem 0 0 0; /* Убираем боковые отступы */
+      height: auto;
+      flex-direction: column; /* Элементы друг под другом */
+      align-items: stretch;
+      gap: 1.5rem;
+    }
+  
+    .pf-total-info {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      cursor: default;
+    }
+  
+    .pf-chevron { display: none; } /* Скрываем стрелку на десктопе */
+  
+    .pf-actions {
+      max-width: 100%; /* Кнопка на всю ширину контейнера */
+    }
+    
+    /* Детали показываем всегда над итогом, но переделаем их вид */
+    .pf-details {
+      display: block; /* Показываем детали */
+      background: transparent;
+      padding: 0;
+      border: none;
+      margin-bottom: 1rem;
+    }
+  }

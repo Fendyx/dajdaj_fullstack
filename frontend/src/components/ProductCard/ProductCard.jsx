@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { FiShoppingCart, FiHeart, FiCheck } from "react-icons/fi"; // Added FiCheck
-import { FaHeart } from "react-icons/fa";
+import { FiShoppingCart, FiHeart, FiCheck, FiStar } from "react-icons/fi";
+import { FaHeart, FaStar } from "react-icons/fa"; // Используем FaStar для залитых звезд
 import { useTranslation } from "react-i18next";
 import "./ProductCard.css";
 
@@ -8,17 +8,17 @@ export const ProductCard = ({
   product,
   favorites,
   toggleFavorite,
-  handleAddToCart, // RENAMED: Was handleBuyNow
+  handleAddToCart,
   handleViewProduct
 }) => {
   const { t } = useTranslation();
 
-  // 1. Favorites Logic
+  // Логика избранного
   const isOriginallyFavorited = favorites?.some((f) => f.id === product.id);
   const [isFavLocal, setIsFavLocal] = useState(isOriginallyFavorited);
   const [isAnimating, setIsAnimating] = useState(false);
 
-  // 2. NEW: Add to Cart Logic (Visual Feedback)
+  // Логика корзины
   const [isAdded, setIsAdded] = useState(false);
 
   useEffect(() => {
@@ -33,80 +33,78 @@ export const ProductCard = ({
     toggleFavorite(product.id);
   };
 
-  // NEW: Handle Cart Click
   const handleCartClick = (e) => {
     e.stopPropagation();
-    
-    // 1. Call the function passed from parent
-    handleAddToCart(product);
+    if (isAdded) return; // Защита от двойного клика
 
-    // 2. Show visual feedback (Green checkmark)
+    handleAddToCart(product);
     setIsAdded(true);
-    
-    // 3. Reset button after 2 seconds
     setTimeout(() => setIsAdded(false), 2000);
   };
 
+  // Фейковый генератор звезд для визуализации (можно заменить на product.rating)
+  const rating = product.rating || 4.5;
+  const reviewsCount = product.reviewsCount || Math.floor(Math.random() * 150) + 10;
+
+  // Логика скидки (визуальная симуляция, если нет в данных)
+  const hasDiscount = product.oldPrice || product.price > 100; // Пример условия
+  const oldPrice = product.oldPrice || (hasDiscount ? (product.price * 1.2).toFixed(2) : null);
+
   return (
     <div className="product-card" onClick={() => handleViewProduct(product)}>
-      <div className="product-image-container">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="product-image"
-        />
-
-        <div className="badges">
-          {product.isNew && (
-            <span className="badge new">{t("productGrid.badges.new")}</span>
-          )}
-          {product.isPopular && (
-            <span className="badge popular">{t("productGrid.badges.popular")}</span>
-          )}
+      
+      {/* --- ИЗОБРАЖЕНИЕ --- */}
+      <div className="product-image-wrapper">
+        <div className="badges-container">
+          {product.isNew && <span className="badge badge-new">NEW</span>}
+          {hasDiscount && <span className="badge badge-sale">-20%</span>}
         </div>
 
         <button
-          className={`favorite-btn ${isFavLocal ? "active" : ""} ${isAnimating ? "animating" : ""}`}
+          className={`fav-btn ${isFavLocal ? "active" : ""} ${isAnimating ? "pop" : ""}`}
           onClick={handleFavoriteClick}
-          aria-label="Add to favorites"
         >
-          {isFavLocal ? (
-            <FaHeart className="heart-icon filled" />
-          ) : (
-            <FiHeart className="heart-icon outline" />
-          )}
+          {isFavLocal ? <FaHeart /> : <FiHeart />}
         </button>
+
+        <img src={product.image} alt={product.name} className="product-img" />
       </div>
 
-      <div className="product-info">
-        <div>
-           <h3>{product.name}</h3>
-           <p>{product.description}</p>
+      {/* --- ИНФОРМАЦИЯ --- */}
+      <div className="product-details">
+        
+        {/* Цена (самое важное) */}
+        <div className="price-block">
+          <span className="current-price">{product.price} zł</span>
+          {oldPrice && <span className="old-price">{oldPrice} zł</span>}
         </div>
 
-        <div className="product-footer">
-          <span className="price">{product.price} PLN</span>
+        {/* Название */}
+        <h3 className="product-title" title={product.name}>{product.name}</h3>
 
-          {/* UPDATED BUTTON */}
+        {/* Рейтинг */}
+        <div className="rating-row">
+          <FaStar className="star-icon filled" />
+          <span className="rating-value">{rating}</span>
+          <span className="reviews-count">({reviewsCount})</span>
+        </div>
+
+        {/* Кнопка (Прибита к низу) */}
+        <div className="action-row">
           <button
             onClick={handleCartClick}
-            className={`product-cart-btn ${isAdded ? "added-success" : ""}`}
-            disabled={isAdded} // Prevent double clicking while "Added" is shown
-            style={{ 
-              backgroundColor: isAdded ? "#4CAF50" : "", 
-              borderColor: isAdded ? "#4CAF50" : "" 
-            }}
+            className={`add-to-cart-btn ${isAdded ? "success" : ""}`}
+            disabled={isAdded}
           >
             {isAdded ? (
               <>
-                <FiCheck size={18} color="white" />
-                <span style={{ color: "white" }}>{t("Added")}</span> 
+                <FiCheck size={18} />
+                <span>{t("Added")}</span>
               </>
             ) : (
               <>
                 <FiShoppingCart size={18} />
-                {/* Change translation key if needed, or hardcode "Add to Cart" */}
-                <span>{t("productGrid.actions.addToCart") || "Add to Cart"}</span>
+                <span>{t("productGrid.actions.addToCart") || "Add"}</span>
               </>
             )}
           </button>

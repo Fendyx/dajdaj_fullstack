@@ -1,105 +1,68 @@
+import React from "react";
 import { CardNumberElement, CardExpiryElement, CardCvcElement } from "@stripe/react-stripe-js";
-import { FaCreditCard } from "react-icons/fa";
+import "./PaymentMethods.css"; // Подключаем новый файл стилей
+
+// Стили внутри самого iframe Stripe, чтобы текст совпадал с твоим сайтом
+const stripeElementOptions = {
+  style: {
+    base: {
+      fontSize: "16px",
+      color: "#1f2937",
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      "::placeholder": {
+        color: "#9ca3af",
+      },
+      iconColor: "#6b7280",
+    },
+    invalid: {
+      color: "#ef4444",
+      iconColor: "#ef4444",
+    },
+  },
+};
 
 const CardPayment = ({
-  cardFields,
   handleCardFieldChange,
-  handleCardFieldFocus,
-  handleCardFieldBlur,
+  // handleCardFieldFocus/Blur больше не нужны для стилей, 
+  // так как CSS делает это автоматически через классы Stripe
 }) => {
   return (
-    <div className="stripe-card-form">
-      <div className="stripe-form-group">
-        <label htmlFor="cardNumber" className="stripe-label-with-icon">
-          <FaCreditCard className="stripe-icon" />
+    <div className="pm-card-wrapper">
+      
+      {/* Номер карты */}
+      <div style={{ marginBottom: "16px" }}>
+        <label htmlFor="cardNumber" className="pm-input-label">
           Card Number
         </label>
-        <div
-          className={`stripe-card-input-container ${
-            cardFields.number.focused ? "stripe-card-input-focused" : ""
-          } ${cardFields.number.complete ? "stripe-card-input-complete" : ""}`}
-        >
-          <CardNumberElement
-            id="cardNumber"
-            options={{
-              showIcon: true,
-              style: {
-                base: {
-                  fontSize: "16px",
-                  color: "#374151",
-                  "::placeholder": {
-                    color: "#9CA3AF",
-                  },
-                },
-              },
-            }}
-            className="stripe-card-input"
-            onChange={handleCardFieldChange("number")}
-            onFocus={handleCardFieldFocus("number")}
-            onBlur={handleCardFieldBlur("number")}
-          />
-        </div>
+        <CardNumberElement
+          id="cardNumber"
+          options={{ ...stripeElementOptions, showIcon: true }}
+          onChange={handleCardFieldChange("number")}
+        />
       </div>
 
-      <div className="stripe-card-grid">
-        <div className="stripe-form-group">
-          <label htmlFor="cardExpiry" className="stripe-label-with-icon">
+      {/* Срок действия и CVC в один ряд */}
+      <div className="pm-card-row">
+        <div className="pm-col">
+          <label htmlFor="cardExpiry" className="pm-input-label">
             Expiry Date
           </label>
-          <div
-            className={`stripe-card-input-container ${
-              cardFields.expiry.focused ? "stripe-card-input-focused" : ""
-            } ${cardFields.expiry.complete ? "stripe-card-input-complete" : ""}`}
-          >
-            <CardExpiryElement
-              id="cardExpiry"
-              options={{
-                style: {
-                  base: {
-                    fontSize: "16px",
-                    color: "#374151",
-                    "::placeholder": {
-                      color: "#9CA3AF",
-                    },
-                  },
-                },
-              }}
-              className="stripe-card-input"
-              onChange={handleCardFieldChange("expiry")}
-              onFocus={handleCardFieldFocus("expiry")}
-              onBlur={handleCardFieldBlur("expiry")}
-            />
-          </div>
+          <CardExpiryElement
+            id="cardExpiry"
+            options={stripeElementOptions}
+            onChange={handleCardFieldChange("expiry")}
+          />
         </div>
 
-        <div className="stripe-form-group">
-          <label htmlFor="cardCvc" className="stripe-label-with-icon">
+        <div className="pm-col">
+          <label htmlFor="cardCvc" className="pm-input-label">
             CVC
           </label>
-          <div
-            className={`stripe-card-input-container ${
-              cardFields.cvc.focused ? "stripe-card-input-focused" : ""
-            } ${cardFields.cvc.complete ? "stripe-card-input-complete" : ""}`}
-          >
-            <CardCvcElement
-              id="cardCvc"
-              options={{
-                style: {
-                  base: {
-                    fontSize: "16px",
-                    color: "#374151",
-                    "::placeholder": {
-                      color: "#9CA3AF",
-                    },
-                  },
-                },
-              }}
-              className="stripe-card-input"
-              onChange={handleCardFieldChange("cvc")}
-              onFocus={handleCardFieldFocus("cvc")}
-              onBlur={handleCardFieldBlur("cvc")}
-            />
-          </div>
+          <CardCvcElement
+            id="cardCvc"
+            options={stripeElementOptions}
+            onChange={handleCardFieldChange("cvc")}
+          />
         </div>
       </div>
     </div>

@@ -1,12 +1,12 @@
+import React from "react";
 import { FaCreditCard, FaGoogle, FaApple, FaBolt } from "react-icons/fa";
-import GoogleApplePayButton from "./GoogleApplePayButton";
 import BlikPayment from "./BlikPayment";
 import CardPayment from "./CardPayment";
+import "./PaymentMethods.css"; // Подключаем новый файл стилей
 
 const PaymentMethods = ({
   selected,
   setSelected,
-  paymentRequest,
   blikCode,
   setBlikCode,
   cardFields,
@@ -15,127 +15,95 @@ const PaymentMethods = ({
   handleCardFieldBlur,
   canMakePaymentResult,
 }) => {
-  return (
-    <div className="payment-card">
-      {/* <div className="stripe-card-header">
-        <h2 className="stripe-card-title">Payment Methods</h2>
-      </div> */}
-
-      <div className="stripe-card-content">
-        <div className="stripe-radio-group">
-
-          {/* Google Pay */}
-          {canMakePaymentResult?.googlePay && (
-            <div
-              className={`stripe-radio-option ${
-                selected === "googlepay" ? "stripe-option-selected" : ""
-              }`}
-              onClick={() => setSelected("googlepay")}
-            >
-              <input
-                type="radio"
-                name="payment"
-                id="googlepay"
-                checked={selected === "googlepay"}
-                readOnly
-              />
-              <label htmlFor="googlepay" className="stripe-label">
-                <div className="stripe-logo-box stripe-google">
-                  <FaGoogle className="stripe-payment-icon" />
-                </div>
-                <span>Google Pay</span>
-              </label>
+  
+  // Вспомогательная функция для рендера опции
+  const renderOption = (id, label, icon, iconClass, children = null) => {
+    const isSelected = selected === id;
+    
+    return (
+      <div className={`pm-option-container ${isSelected ? "selected" : ""}`}>
+        <div 
+          className="pm-option-header" 
+          onClick={() => setSelected(id)}
+        >
+          {/* Левая часть: Радио + Иконка + Текст */}
+          <div className="pm-label-group">
+            {/* Кастомная радио-кнопка */}
+            <div className={`pm-radio-circle ${isSelected ? "active" : ""}`}>
+               {isSelected && <div className="pm-radio-dot" />}
             </div>
-          )}
 
-          {/* Apple Pay */}
-          {canMakePaymentResult?.applePay && (
-            <div
-              className={`stripe-radio-option ${
-                selected === "applepay" ? "stripe-option-selected" : ""
-              }`}
-              onClick={() => setSelected("applepay")}
-            >
-              <input
-                type="radio"
-                name="payment"
-                id="applepay"
-                checked={selected === "applepay"}
-                readOnly
-              />
-              <label htmlFor="applepay" className="stripe-label">
-                <div className="stripe-logo-box stripe-apple">
-                  <FaApple className="stripe-payment-icon" />
-                </div>
-                <span>Apple Pay</span>
-              </label>
+            <div className={`pm-icon-box ${iconClass}`}>
+              {icon}
             </div>
-          )}
-
-          {/* Unified PaymentRequestButton */}
-          {/* {canMakePaymentResult?.googlePay || canMakePaymentResult?.applePay ? (
-            <GoogleApplePayButton paymentRequest={paymentRequest} />
-          ) : null} */}
-
-
-          {/* BLIK */}
-          <div
-            className={`stripe-radio-option ${
-              selected === "blik" ? "stripe-option-selected" : ""
-            }`}
-            onClick={() => setSelected("blik")}
-          >
-            <input
-              type="radio"
-              name="payment"
-              id="blik"
-              checked={selected === "blik"}
-              readOnly
-            />
-            <label htmlFor="blik" className="stripe-label">
-              <div className="stripe-logo-box stripe-blik">
-                <FaBolt className="stripe-payment-icon" />
-              </div>
-              <span>BLIK</span>
-            </label>
+            
+            <span className="pm-label-text">{label}</span>
           </div>
-          {selected === "blik" && (
-            <BlikPayment blikCode={blikCode} setBlikCode={setBlikCode} />
-          )}
 
-          {/* Card */}
-          <div className="stripe-radio-option-column">
-            <div
-              className={`stripe-radio-option ${
-                selected === "card" ? "stripe-option-selected" : ""
-              }`}
-              onClick={() => setSelected("card")}
-            >
-              <input
-                type="radio"
-                name="payment"
-                id="card"
-                checked={selected === "card"}
-                readOnly
-              />
-              <label htmlFor="card" className="stripe-label">
-                <div className="stripe-logo-box stripe-card-icon">
-                  <FaCreditCard className="stripe-payment-icon" />
-                </div>
-                <span>Credit / Debit Card</span>
-              </label>
+          {/* Правая часть: Брендовые иконки карт (декор) */}
+          {id === "card" && (
+            <div className="pm-card-brands">
+               <span className="brand-dot mastercard"></span>
+               <span className="brand-dot visa"></span>
             </div>
-
-            {selected === "card" && (
-              <CardPayment
-                cardFields={cardFields}
-                handleCardFieldChange={handleCardFieldChange}
-                handleCardFieldFocus={handleCardFieldFocus}
-                handleCardFieldBlur={handleCardFieldBlur}
-              />
-            )}
-          </div>
+          )}
         </div>
+
+        {/* Раскрывающийся контент (форма карты или BLIK) */}
+        {isSelected && children && (
+          <div className="pm-option-content">
+            {children}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  return (
+    <div className="pm-container">
+      <h3 className="pm-title">Choose payment method</h3>
+      
+      <div className="pm-list">
+        
+        {/* Google Pay */}
+        {canMakePaymentResult?.googlePay && renderOption(
+          "googlepay", 
+          "Google Pay", 
+          <FaGoogle />, 
+          "pm-google"
+        )}
+
+        {/* Apple Pay */}
+        {canMakePaymentResult?.applePay && renderOption(
+          "applepay", 
+          "Apple Pay", 
+          <FaApple />, 
+          "pm-apple"
+        )}
+
+        {/* BLIK */}
+        {renderOption(
+          "blik", 
+          "BLIK", 
+          <FaBolt />, 
+          "pm-blik",
+          <BlikPayment blikCode={blikCode} setBlikCode={setBlikCode} />
+        )}
+
+        {/* Credit Card */}
+        {renderOption(
+          "card", 
+          "Credit or Debit Card", 
+          <FaCreditCard />, 
+          "pm-card",
+          <CardPayment
+            cardFields={cardFields}
+            handleCardFieldChange={handleCardFieldChange}
+            handleCardFieldFocus={handleCardFieldFocus}
+            handleCardFieldBlur={handleCardFieldBlur}
+          />
+        )}
+
       </div>
     </div>
   );

@@ -1,5 +1,6 @@
 import { PaymentRequestButtonElement } from "@stripe/react-stripe-js";
 import { useEffect, useState } from "react";
+import "./PaymentMethods.css"; // Подключаем новый файл стилей
 
 const GoogleApplePayButton = ({ paymentRequest }) => {
   const [canPay, setCanPay] = useState(null);
@@ -8,30 +9,28 @@ const GoogleApplePayButton = ({ paymentRequest }) => {
   useEffect(() => {
     if (!paymentRequest) return;
 
-    console.log("🧪 Checking canMakePayment...");
     paymentRequest.canMakePayment().then((result) => {
-      console.log("🔍 canMakePayment result:", result);
       setCanPay(result);
       setShouldRender(!!result);
     });
   }, [paymentRequest]);
 
-  // ✅ Stripe элемент создаётся один раз, не пересоздаётся
-  return shouldRender && canPay ? (
-    <div className="stripe-payment-request-wrapper">
+  if (!shouldRender || !canPay) return null;
+
+  return (
+    <div style={{ width: "100%", marginTop: "10px" }}>
       <PaymentRequestButtonElement
-        key="payment-request-button"
         options={{ paymentRequest }}
         style={{
           paymentRequestButton: {
             type: "default",
             theme: "light",
-            height: "44px",
+            height: "48px", // Чуть выше для удобства нажатия
           },
         }}
       />
     </div>
-  ) : null;
+  );
 };
 
 export default GoogleApplePayButton;

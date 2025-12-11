@@ -32,9 +32,9 @@ const MainProductGrid = () => {
 
   const categories = [
     { name: 'Figurines', items: products.filter(p => +p.id >= 1 && +p.id <= 8) },
+    { name: 'Interior maps', items: products.filter(p => +p.id >= 18 && +p.id <= 21) },
     { name: 'EasyLife', items: products.filter(p => +p.id >= 9 && +p.id <= 12) },
     { name: 'Gifts', items: products.filter(p => +p.id >= 13 && +p.id <= 16) },
-    { name: 'Interiar maps', items: products.filter(p => +p.id >= 18 && +p.id <= 21) },
   ];
 
   const toggleFavorite = async (productId) => {
@@ -77,7 +77,7 @@ const MainProductGrid = () => {
     }
   
     // Все остальные — обычная страница продукта
-    navigate(`/products/${product.slug}`);
+    navigate(`${product.link}`);
   };
   
 

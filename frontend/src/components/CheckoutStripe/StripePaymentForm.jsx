@@ -289,87 +289,85 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const isSubmitting = submittingRef.current;
 
   return (
-    <form onSubmit={handleSubmit} className="stripe-form">
-      {paymentError && (
-        <div className="payment-error-message">
-          ❌ {paymentError}
-        </div>
-      )}
+    <form id="payment-form" onSubmit={handleSubmit} className="stripe-form">
+      {paymentError && <div className="payment-error-message">❌ {paymentError}</div>}
       
       <div className="stripe-layout">
-        {isDesktop ? (
-          <>
-            <div className="stripe-left">
-              <SelectedCartItem />
-              <SelectDeliveryMethod
-                onSelectDelivery={setSelectedDelivery}
-                formData={formData}
-                handleChange={(e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
-              />
-            </div>
-            <div className="stripe-right">
-              <PaymentMethods
-                selected={selected}
-                setSelected={setSelected}
-                paymentRequest={paymentRequest}
-                blikCode={blikCode}
-                setBlikCode={setBlikCode}
-                cardFields={cardFields}
-                handleCardFieldChange={handleCardFieldChange}
-                handleCardFieldFocus={handleCardFieldFocus}
-                handleCardFieldBlur={handleCardFieldBlur}
-                canMakePaymentResult={canMakePaymentResult}
-              />
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="stripe-left">
-              <SelectedCartItem />
-              <SelectDeliveryMethod
-                onSelectDelivery={setSelectedDelivery}
-                formData={formData}
-                handleChange={(e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
-              />
+        
+        {/* === LEFT COLUMN (Summary & Forms) === */}
+        <div className="stripe-left">
+          <SelectedCartItem />
+          
+          {/* Если SelectDeliveryMethod использует PersonalInformationForm внутри, 
+              то стили подтянутся. Если нет - убедись, что форма выглядит как карточка */}
+          <SelectDeliveryMethod
+            onSelectDelivery={setSelectedDelivery}
+            formData={formData}
+            handleChange={(e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
+          />
+          
+          {/* Мобильная кнопка-триггер (ЗАФИКСИРОВАНА СНИЗУ) */}
+          {!isDesktop && (
+             <div className="mobile-sticky-footer">
+               <button type="button" className="mobile-pay-trigger" onClick={handleDrawerOpen}>
+                  Proceed to Payment
+               </button>
+             </div>
+          )}
 
-              <DrawerTrigger open={drawerOpen} onClick={handleDrawerOpen} onDragState={setDragState} />
-              <Drawer open={drawerOpen && userInitiated} onOpenChange={handleDrawerClose} dragState={dragState}>
-                <DrawerContent className="stripe-drawer-content">
-                  <PaymentMethods
-                    selected={selected}
-                    setSelected={setSelected}
-                    paymentRequest={paymentRequest}
-                    blikCode={blikCode}
-                    setBlikCode={setBlikCode}
-                    cardFields={cardFields}
-                    handleCardFieldChange={handleCardFieldChange}
-                    handleCardFieldFocus={handleCardFieldFocus}
-                    handleCardFieldBlur={handleCardFieldBlur}
-                    canMakePaymentResult={canMakePaymentResult}
-                  />
-                  <PaymentFooter
-                    selected={selected}
-                    paymentRequest={paymentRequest}
-                    blikCode={blikCode}
-                    canMakePaymentResult={canMakePaymentResult}
-                    disabled={isCreating || isSubmitting}
-                  />
-                </DrawerContent>
-              </Drawer>
-            </div>
-          </>
+          {/* Drawer для мобилки */}
+          {!isDesktop && (
+            <Drawer open={drawerOpen && userInitiated} onOpenChange={handleDrawerClose} dragState={dragState}>
+              <DrawerContent className="stripe-drawer-content">
+                <PaymentMethods
+                  selected={selected} setSelected={setSelected}
+                  paymentRequest={paymentRequest}
+                  blikCode={blikCode} setBlikCode={setBlikCode}
+                  cardFields={cardFields}
+                  handleCardFieldChange={handleCardFieldChange}
+                  handleCardFieldFocus={handleCardFieldFocus}
+                  handleCardFieldBlur={handleCardFieldBlur}
+                  canMakePaymentResult={canMakePaymentResult}
+                />
+                <PaymentFooter
+                  selected={selected}
+                  paymentRequest={paymentRequest}
+                  blikCode={blikCode}
+                  canMakePaymentResult={canMakePaymentResult}
+                  disabled={isCreating || isSubmitting}
+                />
+              </DrawerContent>
+            </Drawer>
+          )}
+        </div>
+
+        {/* === RIGHT COLUMN (Payment Methods - DESKTOP) === */}
+        {isDesktop && (
+          <div className="stripe-right">
+            <PaymentMethods
+              selected={selected}
+              setSelected={setSelected}
+              paymentRequest={paymentRequest}
+              blikCode={blikCode}
+              setBlikCode={setBlikCode}
+              cardFields={cardFields}
+              handleCardFieldChange={handleCardFieldChange}
+              handleCardFieldFocus={handleCardFieldFocus}
+              handleCardFieldBlur={handleCardFieldBlur}
+              canMakePaymentResult={canMakePaymentResult}
+            />
+            
+            {/* ВАЖНО: Footer теперь внутри правой колонки для десктопа */}
+            <PaymentFooter
+              selected={selected}
+              paymentRequest={paymentRequest}
+              blikCode={blikCode}
+              canMakePaymentResult={canMakePaymentResult}
+              disabled={isCreating || isSubmitting}
+            />
+          </div>
         )}
       </div>
-
-      {isDesktop && (
-        <PaymentFooter
-          selected={selected}
-          paymentRequest={paymentRequest}
-          blikCode={blikCode}
-          canMakePaymentResult={canMakePaymentResult}
-          disabled={isCreating || isSubmitting}
-        />
-      )}
     </form>
   );
 };

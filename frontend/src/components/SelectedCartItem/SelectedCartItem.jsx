@@ -1,4 +1,3 @@
-// src/components/SelectedCartItem.js
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import i18n from "../../i18n";
@@ -7,19 +6,10 @@ import "./SelectedCartItem.css";
 
 const SelectedCartItem = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
+  // Мы используем локальный стейт только для персонализации, если она длинная
   const [openItems, setOpenItems] = useState({});
 
-  if (cartItems.length === 0) {
-    return (
-      <div className="selected-items-container">
-        <div className="cart-header">
-          <FaShoppingCart className="cart-icon" />
-          <h2 className="cart-title">Cart</h2>
-        </div>
-        <p className="empty-cart-message">В корзине пока нет товаров</p>
-      </div>
-    );
-  }
+  if (cartItems.length === 0) return null; // Или пустой блок, как у тебя было
 
   const toggleItem = (id) => {
     setOpenItems((prev) => ({
@@ -28,68 +18,80 @@ const SelectedCartItem = () => {
     }));
   };
 
+  // Подсчет итоговой суммы для визуального подтверждения (опционально, но полезно)
+  const totalAmount = cartItems.reduce((acc, item) => acc + (item.price * item.cartQuantity), 0);
+
   return (
-    <div className="selected-items-container">
-      <div className="cart-header">
-        <FaShoppingCart className="cart-icon" />
-        <h2 className="cart-title">Cart</h2>
+    <div className="summary-container">
+      <div className="summary-header">
+        <div className="header-title-row">
+          <FaShoppingCart className="cart-icon" />
+          <h2 className="cart-title">Order Summary</h2>
+        </div>
+        <span className="header-total-amount">{totalAmount.toFixed(2)} PLN</span>
       </div>
       
-      {cartItems.map((item) => (
-        <div className="selected-item" key={item.id}>
-          <div 
-            className="selected-item-header"
-            onClick={() => toggleItem(item.id)}
-          >
-            <div className="selected-item-price">{item.price} PLN</div>
-            <img
-              src={item.image}
-              alt={
-                typeof item.name === "object"
-                  ? item.name[i18n.language]
-                  : item.name
-              }
-              className="selected-item-image"
-            />
-            <button
-              type="button"
-              className="toggle-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleItem(item.id);
-              }}
-            >
-              {openItems[item.id] ? <FaChevronUp /> : <FaChevronDown />}
-            </button>
-          </div>
+      <div className="summary-list">
+        {cartItems.map((item) => {
+          const hasPersonalization = !!item.personalization;
+          const isOpen = openItems[item.id];
 
-          {openItems[item.id] && (
-            <div className="selected-item-info">
-              <h3>
-                {typeof item.name === "object"
-                  ? item.name[i18n.language]
-                  : item.name}
-              </h3>
+          return (
+            <div className="summary-item" key={item.id}>
+              {/* Верхняя часть: Всегда видна */}
+              <div className="summary-item-main">
+                
+                {/* 1. Картинка (Визуальный якорь) */}
+                <div className="item-image-wrapper">
+                  <img
+                    src={item.image}
+                    alt={typeof item.name === "object" ? item.name[i18n.language] : item.name}
+                    className="item-image"
+                  />
+                  <span className="item-qty-badge">{item.cartQuantity}</span>
+                </div>
 
-              <p>
-                <strong>Количество:</strong> {item.cartQuantity}
-              </p>
+                {/* 2. Информация (Название) */}
+                <div className="item-info">
+                  <h3 className="item-name">
+                    {typeof item.name === "object" ? item.name[i18n.language] : item.name}
+                  </h3>
+                  
+                  {/* Если есть персонализация, показываем кнопку "Детали" */}
+                  {hasPersonalization && (
+                    <button 
+                      className="details-toggle-btn" 
+                      onClick={() => toggleItem(item.id)}
+                    >
+                      {isOpen ? "Hide details" : "Show details"} 
+                      {isOpen ? <FaChevronUp size={10}/> : <FaChevronDown size={10}/>}
+                    </button>
+                  )}
+                </div>
 
-              {item.personalization && (
-                <div className="selected-item-personalization">
-                  <h4>Персонализация:</h4>
-                  <p>
-                    <strong>Фраза:</strong> {item.personalization.phrase}
-                  </p>
-                  <p>
-                    <strong>Имя:</strong> {item.personalization.customName}
-                  </p>
+                {/* 3. Цена (Справа) */}
+                <div className="item-price">
+                  {(item.price * item.cartQuantity).toFixed(2)} PLN
+                </div>
+              </div>
+
+              {/* Выпадающая часть: Только для персонализации */}
+              {hasPersonalization && isOpen && (
+                <div className="item-personalization-drawer">
+                  <div className="pers-row">
+                    <span className="pers-label">Phrase:</span>
+                    <span className="pers-value">{item.personalization.phrase}</span>
+                  </div>
+                  <div className="pers-row">
+                    <span className="pers-label">Name:</span>
+                    <span className="pers-value">{item.personalization.customName}</span>
+                  </div>
                 </div>
               )}
             </div>
-          )}
-        </div>
-      ))}
+          );
+        })}
+      </div>
     </div>
   );
 };

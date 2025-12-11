@@ -1,452 +1,135 @@
-/* StripePaymentForm.css */
+/* =========================================
+   STRIPE PAYMENT FORM STYLES
+   ========================================= */
+
+/* Основной контейнер формы */
 .stripe-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  max-width: 600px;
+  width: 100%;
   margin: 0 auto;
   padding: 1rem;
-  margin-bottom: 200px;
-}
-
-.stripe-card {
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: all 0.3s ease;
-}
-
-.payment-card {
-  border: 2px solid #e5e7eb;
-  border-radius: 12px;
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
-  transition: all 0.3s ease;
-  margin-bottom: 100px;
-}
-
-.stripe-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
-.stripe-card-header {
-  padding: 1.25rem 1.5rem;
-  border-bottom: 2px solid #f3f4f6;
-  background: #f8fafc;
-}
-
-.stripe-card-title {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
-}
-
-.stripe-card-content {
-  padding: 1.5rem;
-}
-
-.stripe-card-footer {
-  display: flex;
-  justify-content: center;
-  padding: 1rem 1.5rem;
-  border-top: 2px solid #f3f4f6;
-  background: #f8fafc;
-}
-
-.stripe-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-}
-
-.stripe-card-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-}
-
-@media (min-width: 640px) {
-  .stripe-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-  }
-}
-
-.stripe-form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-.stripe-label-with-icon {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 500;
-  font-size: 0.875rem;
-  color: #374151;
-}
-
-.stripe-icon {
-  color: #2563eb;
-  font-size: 0.875rem;
-}
-
-.stripe-payment-icon {
-  font-size: 1.25rem;
-}
-
-input, select {
-  padding: 0.75rem 1rem;
-  border: 2px solid #d1d5db;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  transition: all 0.2s ease;
-  background: #ffffff;
-}
-
-input:focus, select:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.stripe-disabled-input {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background: #f9fafb;
-}
-
-/* Стили для карточных полей */
-.stripe-card-input-container {
-  padding: 0.75rem 1rem;
-  border: 2px solid #d1d5db;
-  border-radius: 8px;
-  background: #ffffff;
-  transition: all 0.3s ease;
-  min-height: 48px;
-  display: flex;
-  align-items: center;
-}
-
-.stripe-card-input-focused {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  background: #f8fafc;
-}
-
-.stripe-card-input-complete {
-  border-color: #10b981;
-  background: #f0fdf4;
-}
-
-.stripe-card-input {
-  width: 100%;
-  background: transparent;
-  border: none;
-  outline: none;
-  font-size: 16px;
-  color: #374151;
-}
-
-.stripe-card-input::placeholder {
-  color: #9CA3AF;
-}
-
-/* Индикаторы статуса полей */
-.stripe-field-status {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
-}
-
-.stripe-field-complete {
-  color: #10b981;
-  font-weight: 500;
-}
-
-.stripe-field-error {
-  color: #ef4444;
-  font-weight: 500;
-}
-
-.stripe-toggle-btn {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: #2563eb;
-  color: #ffffff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.stripe-toggle-btn:hover {
-  background: #1d4ed8;
-  transform: translateY(-1px);
-}
-
-.stripe-radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.stripe-radio-option {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.25rem;
-  border: 2px solid #e5e7eb;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background: #ffffff;
-}
-
-.stripe-radio-option:hover {
-  border-color: #2563eb;
-  background: #f8fafc;
-}
-
-.stripe-option-selected {
-  border-color: #2563eb;
-  background: #eff6ff;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.stripe-radio-option input[type="radio"] {
-  margin: 0;
-  accent-color: #2563eb;
-}
-
-.stripe-label {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex: 1;
-  cursor: pointer;
-  font-weight: 500;
-  color: #1f2937;
-}
-
-.stripe-logo-box {
-  width: 3rem;
-  height: 2.5rem;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #e5e7eb;
-  transition: all 0.2s ease;
-}
-
-.stripe-google {
-  background: #ffffff;
-  border-color: #e5e7eb;
-}
-
-.stripe-apple {
-  background: #000000;
-  border-color: #000000;
-  color: #ffffff;
-}
-
-.stripe-blik {
-  background: #dc2626;
-  border-color: #dc2626;
-  color: #ffffff;
-}
-
-.stripe-card-icon {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
-}
-
-.stripe-radio-option-column {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.stripe-card-form {
-  margin-left: 0;
-  padding: 1.25rem;
-  border-radius: 10px;
-  background: #f8fafc;
-  border: 2px solid #e5e7eb;
-}
-
-@media (min-width: 640px) {
-  .stripe-card-form {
-    margin-left: 2rem;
-  }
-}
-
-.stripe-card-element-wrapper {
-  padding: 1rem;
-  border: 2px solid #d1d5db;
-  border-radius: 8px;
-  background: #ffffff;
-}
-
-.stripe-card-actions {
-  margin-top: 1.5rem;
-  padding: 0 1.5rem 1.5rem;
-}
-
-.stripe-pay-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  width: 100%;
-  padding: 1rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.stripe-blik-btn {
-  background: #dc2626;
-  color: #ffffff;
-}
-
-.stripe-blik-btn:hover {
-  background: #b91c1c;
-  transform: translateY(-1px);
-}
-
-.stripe-card-btn {
-  background: #2563eb;
-  color: #ffffff;
-}
-
-.stripe-card-btn:hover {
-  background: #1d4ed8;
-  transform: translateY(-1px);
-}
-
-.stripe-payment-request-wrapper {
-  margin-top: 1rem;
-}
-
-/* Анимации для плавных переходов */
-@keyframes stripe-field-success {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); }
-}
-
-.stripe-card-input-complete {
-  animation: stripe-field-success 0.3s ease;
-}
-
-
-/* Responsive adjustments */
-@media (max-width: 480px) {
-  .stripe-form {
-    padding: 0.5rem;
-    gap: 1rem;
-  }
   
-  .stripe-card-content {
-    padding: 1rem;
-  }
-  
-  .stripe-radio-option {
-    padding: 0.75rem 1rem;
-  }
-  
-  .stripe-logo-box {
-    width: 2.5rem;
-    height: 2rem;
-  }
-  
-  .stripe-payment-icon {
-    font-size: 1rem;
-  }
-  
-  .stripe-card-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-  
-  .stripe-card-input-container {
-    padding: 0.5rem 0.75rem;
-    min-height: 44px;
-  }
+  /* ВАЖНО: Большой отступ снизу для мобильного, 
+     чтобы фиксированная кнопка "Proceed" не перекрывала контент,
+     когда пользователь скроллит до конца */
+  padding-bottom: 140px; 
 }
 
-/* Loading states */
-.stripe-pay-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* Success states */
-.stripe-option-selected .stripe-logo-box {
-  transform: scale(1.05);
-}
-
-/* Визуальные подсказки для пользователя */
-.stripe-card-hint {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-top: 0.25rem;
-  font-style: italic;
-}
-
+/* Контейнер сетки (Flex для мобилки, Grid/Flex-row для десктопа) */
 .stripe-layout {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
   width: 100%;
 }
 
+/* Колонки */
+.stripe-left, 
+.stripe-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* Сообщение об ошибке */
+.payment-error-message {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+  text-align: center;
+  border: 1px solid #fecaca;
+}
+
+/* Контент внутри Drawer (Мобильная шторка выбора оплаты) */
+.stripe-drawer-content {
+  padding: 1.5rem;
+  padding-bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+/* =========================================
+   MOBILE STICKY FOOTER (Кнопка "Proceed")
+   ========================================= */
+
+/* Контейнер, который прилипает к низу экрана */
+.mobile-sticky-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  
+  /* Тень вверх, чтобы отделить от контента */
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  
+  /* Отступы внутри плашки */
+  padding: 1rem 1.5rem;
+  
+  /* Учитываем "челку" iPhone снизу */
+  padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+  
+  /* Z-index чтобы быть поверх контента */
+  z-index: 40; 
+}
+
+/* Сама кнопка внутри футера */
+.mobile-pay-trigger {
+  width: 100%;
+  padding: 1rem;
+  background: #111827; /* Черный премиум */
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.1s ease;
+}
+
+.mobile-pay-trigger:active {
+  transform: scale(0.98);
+}
+
+/* =========================================
+   DESKTOP LAYOUT (min-width: 1052px)
+   ========================================= */
+
 @media (min-width: 1052px) {
+  .stripe-form {
+    max-width: 1200px;
+    padding: 2rem;
+    
+    /* На десктопе футер не фиксирован, убираем огромный отступ */
+    padding-bottom: 4rem; 
+  }
+
   .stripe-layout {
-    flex-direction: row;
-    align-items: flex-start;
-    gap: 2rem;
+    flex-direction: row; /* Две колонки */
+    align-items: flex-start; /* Выравнивание по верху */
+    gap: 3rem;
   }
 
   .stripe-left {
-    flex: 0 0 50%;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    flex: 6; /* 60% ширины */
   }
 
   .stripe-right {
-    flex: 0 0 50%;
-    position: sticky;
-    top: 1rem;
+    flex: 4; /* 40% ширины */
+    position: sticky; /* Правая колонка "липнет" при скролле */
+    top: 2rem;
     align-self: flex-start;
   }
 
-  .stripe-form {
-    width: 100%;
-    margin: 0;
-    max-width: none;
-    padding: 1rem;
+  /* Скрываем мобильный футер на десктопе */
+  .mobile-sticky-footer {
+    display: none;
   }
 }
-
-
-

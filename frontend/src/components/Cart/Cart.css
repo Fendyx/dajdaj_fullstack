@@ -449,6 +449,10 @@
       box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
       border-top: 1px solid #e5e7eb;
       margin: 0;
+      
+      /* !!! ВАЖНОЕ ИСПРАВЛЕНИЕ !!! */
+      top: auto;   /* Отменяем верхний отступ десктопа */
+      height: auto; /* На всякий случай, чтобы блок не растягивался */
     }
   
     .cart-checkout {

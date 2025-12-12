@@ -11,6 +11,7 @@ import { addToCart } from '../../slices/cartSlice';
 import { logoutUser } from '../../slices/authSlice';
 import { PersonalizationModal } from '../PersonalizationModal/PersonalizationModal';
 import { ProductCard } from '../ProductCard/ProductCard';
+import { HeroPersonalFigurine } from '../HeroPersonalFigurine/HeroPersonalFigurine';
 import { useTranslation } from 'react-i18next';
 import './MainProductGrid.css';
 
@@ -98,47 +99,10 @@ const MainProductGrid = () => {
     <div className="product-grid-container">
       
       {/* === HERO BLOCK (ID 17) === */}
-      {heroProduct && (
-        <section className="hero-product-section" onClick={handleHeroClick}>
-          <div className="hero-card">
-            <div className="hero-content">
-              <div className="hero-tags">
-                <span className="hero-badge highlight">HIT</span>
-                <span className="hero-badge">Custom 3D</span>
-              </div>
-              <h2 className="hero-title">
-                Your exact copy <br/>
-                <span>from a photo</span>
-              </h2>
-              <p className="hero-description">
-                A unique handmade figurine. Upload your photo and we will create a personalized 3D model just for you.
-              </p>
-              <div className="hero-action-row">
-                <div className="hero-price-container">
-                  <span className="hero-label">Price</span>
-                  <span className="hero-price">
-                    {heroProduct.price} {heroProduct.currency || 'pln'}
-                  </span>
-                </div>
-                <div className="hero-cta">
-                  Create a figurine
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <div className="hero-image-wrapper">
-              <div className="hero-circle"></div>
-              <img 
-                src={heroProduct.image || heroProduct.img} 
-                alt={heroProduct.name} 
-                className="hero-image" 
-              />
-            </div>
-          </div>
-        </section>
-      )}
+      <HeroPersonalFigurine 
+        heroProduct={heroProduct} 
+        handleHeroClick={handleHeroClick}
+      />
 
       {/* === CATEGORIES === */}
       {categories.map(category => (

@@ -3,36 +3,53 @@ import {
   useElements,
   CardNumberElement,
 } from "@stripe/react-stripe-js";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./StripePaymentForm.css";
+
+// Импорт компонентов
 import SelectDeliveryMethod from "../../Pages/ShippingInfo/components/selectDeliveryMethod/SelectDeliveryMethod";
 import SelectedCartItem from "../SelectedCartItem/SelectedCartItem";
 import PaymentMethods from "./PaymentMethods/PaymentMethods";
 import PaymentFooter from "./PaymentFooter";
 import Drawer, { DrawerTrigger, DrawerContent } from "../Drawer/Drawer";
 
-const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
+const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const location = useLocation(); // 1. Хук для получения данных из "Buy Now"
   const { token } = useSelector((state) => state.auth);
+
+  // --- ЛОГИКА ОПРЕДЕЛЕНИЯ ТОВАРОВ ДЛЯ ПОКУПКИ ---
+  // Если пришли через "Купить сейчас" (есть buyNowItem в state) — используем только его.
+  // Иначе — используем корзину, переданную через пропсы (Redux).
+  const itemsToPurchase = useMemo(() => {
+    if (location.state?.buyNowItem) {
+      return [location.state.buyNowItem];
+    }
+    return propCartItems;
+  }, [location.state, propCartItems]);
+  // ----------------------------------------------
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userInitiated, setUserInitiated] = useState(false);
   const [dragState, setDragState] = useState({ dragging: false, translateY: 0 });
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1052);
+
+  // Данные доставки
   const [selectedDelivery, setSelectedDelivery] = useState(deliveryInfo || null);
-  
+
+  // Данные для оплаты
   const [paymentRequest, setPaymentRequest] = useState(null);
   const [canMakePaymentResult, setCanMakePaymentResult] = useState(null);
-  
   const [blikCode, setBlikCode] = useState("");
   const [selected, setSelected] = useState("card");
   const [paymentError, setPaymentError] = useState("");
 
+  // Поля карты
   const [cardFields, setCardFields] = useState({
     number: { complete: false, focused: false },
     expiry: { complete: false, focused: false },
@@ -44,20 +61,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
   const creatingPIRef = useRef(false);
   const submittingRef = useRef(false);
 
-  const handleCardFieldFocus = (fieldName) => () => {
-    setCardFields((prev) => ({
-      ...prev,
-      [fieldName]: { ...prev[fieldName], focused: true },
-    }));
-  };
-  
-  const handleCardFieldBlur = (fieldName) => () => {
-    setCardFields((prev) => ({
-      ...prev,
-      [fieldName]: { ...prev[fieldName], focused: false },
-    }));
-  };
-
+  // Форма данных пользователя (заполняется из deliveryInfo)
   const [formData, setFormData] = useState({
     name: deliveryInfo?.name || "",
     surname: deliveryInfo?.surname || "",
@@ -67,6 +71,22 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     method: deliveryInfo?.method || "",
   });
 
+  // Хендлеры фокуса полей карты
+  const handleCardFieldFocus = (fieldName) => () => {
+    setCardFields((prev) => ({
+      ...prev,
+      [fieldName]: { ...prev[fieldName], focused: true },
+    }));
+  };
+
+  const handleCardFieldBlur = (fieldName) => () => {
+    setCardFields((prev) => ({
+      ...prev,
+      [fieldName]: { ...prev[fieldName], focused: false },
+    }));
+  };
+
+  // Ресайз (Desktop/Mobile)
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1052px)");
     const handleResize = (e) => setIsDesktop(e.matches);
@@ -75,6 +95,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
 
+  // Синхронизация formData при выборе метода доставки
   useEffect(() => {
     if (selectedDelivery) {
       setFormData({
@@ -88,51 +109,46 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     }
   }, [selectedDelivery]);
 
-  // --- 1. ПРАВИЛЬНЫЙ ПОДСЧЕТ ЦЕНЫ ---
+  // --- 2. РАСЧЕТ ИТОГОВОЙ СУММЫ (использует itemsToPurchase) ---
   const calculateTotalAmount = () => {
-    // Защита: если корзины нет
-    if (!cartItems || !Array.isArray(cartItems)) return 0;
+    if (!itemsToPurchase || !Array.isArray(itemsToPurchase)) return 0;
 
-    const itemsTotal = cartItems.reduce((sum, item) => {
-      // Защита: превращаем строки в числа и берем 0 если что-то не так
+    const itemsTotal = itemsToPurchase.reduce((sum, item) => {
       const price = Number(item.price) || 0;
-      // Внимание: используем cartQuantity (как в вашем Redux), а не qty
+      // В PostersProductDetails мы задали cartQuantity: 1, здесь его читаем
       const qty = Number(item.cartQuantity) || 0;
       return sum + (price * qty);
     }, 0);
 
-    // Доставка
     const deliveryCost = 9.99;
     const total = itemsTotal + deliveryCost;
 
-    // Stripe принимает сумму в грошах (целое число), поэтому * 100
+    // Stripe требует сумму в минимальных единицах валюты (гроши/центы)
     const totalInCents = Math.round(total * 100);
 
-    // Лог для проверки в консоли
-    // console.log("💰 Calculated Total for Stripe:", totalInCents, "cents");
-    
     return isNaN(totalInCents) ? 0 : totalInCents;
   };
 
-  // --- 2. ИНИЦИАЛИЗАЦИЯ ЗАПРОСА ---
+  // --- 3. GOOGLE PAY / APPLE PAY (Payment Request) ---
   useEffect(() => {
     if (!stripe) return;
 
     const amount = calculateTotalAmount();
-    // Не создаем кнопку, если сумма 0 (это вызывает ошибку NaN)
+    // Если сумма 0, кнопку не создаем
     if (amount <= 0) return;
 
     const pr = stripe.paymentRequest({
       country: "PL",
       currency: "pln",
-      total: { 
-        label: "Total (incl. delivery)", // Красивая надпись в Google Pay
-        amount: amount 
+      total: {
+        label: "Total (incl. delivery)",
+        amount: amount,
       },
       requestPayerName: true,
       requestPayerEmail: true,
     });
 
+    // Проверяем возможность оплаты (есть ли карта в браузере)
     pr.canMakePayment().then((result) => {
       setCanMakePaymentResult(result);
       if (result) {
@@ -140,6 +156,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
       }
     });
 
+    // Обработка оплаты через Google/Apple Pay
     pr.on("paymentmethod", async (ev) => {
       if (submittingRef.current) {
         ev.complete("fail");
@@ -150,37 +167,39 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         const pi = await getOrCreatePaymentIntent();
         const { clientSecret } = pi;
 
-        const { error } = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: ev.paymentMethod.id,
-        }, { handleActions: false }); 
+        const { error } = await stripe.confirmCardPayment(
+          clientSecret,
+          {
+            payment_method: ev.paymentMethod.id,
+          },
+          { handleActions: false }
+        );
 
         if (error) {
           ev.complete("fail");
-          console.error("❌ Google Pay confirm error:", error);
+          console.error("Google Pay confirm error:", error);
         } else {
           ev.complete("success");
           if (pi.orderToken) {
-             window.location.href = `${window.location.origin}/checkout-success?orderToken=${pi.orderToken}`;
+            window.location.href = `${window.location.origin}/checkout-success?orderToken=${pi.orderToken}`;
           }
         }
       } catch (err) {
-        console.error("❌ Google Pay processing failed:", err);
+        console.error("Google Pay processing failed:", err);
         ev.complete("fail");
       } finally {
         submittingRef.current = false;
       }
     });
+  }, [stripe, itemsToPurchase]); // Пересоздаем, если изменился список товаров
 
-  }, [stripe]); // Запускается 1 раз при старте
-
-  // --- 3. ОБНОВЛЕНИЕ ЦЕНЫ В GOOGLE PAY ПРИ ИЗМЕНЕНИИ КОРЗИНЫ ---
-  // Вот этого, скорее всего, не хватало или оно не срабатывало
+  // --- 4. ОБНОВЛЕНИЕ СУММЫ В GOOGLE PAY ---
+  // Если товары изменились, обновляем ценник в уже открытом виджете (если поддерживается)
   useEffect(() => {
     if (paymentRequest) {
       const newAmount = calculateTotalAmount();
-      
+
       if (newAmount > 0) {
-        console.log("🔄 Updating Google Pay price to:", newAmount);
         paymentRequest.update({
           total: {
             label: "Total (incl. delivery)",
@@ -189,12 +208,14 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         });
       }
     }
-  }, [cartItems, paymentRequest]); // Срабатывает каждый раз, когда меняется корзина
+  }, [itemsToPurchase, paymentRequest]);
 
-
+  // --- 5. СОЗДАНИЕ PAYMENT INTENT НА БЭКЕНДЕ ---
   const getOrCreatePaymentIntent = async () => {
+    // Если уже есть intent, возвращаем его (чтобы не дублировать)
     if (paymentIntentRef.current) return paymentIntentRef.current;
-    
+
+    // Блокировка повторных вызовов
     if (creatingPIRef.current) {
       while (creatingPIRef.current) await new Promise((r) => setTimeout(r, 50));
       return paymentIntentRef.current;
@@ -204,10 +225,13 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     try {
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
-        { cartItems, deliveryInfo: formData },
+        {
+          cartItems: itemsToPurchase, // <--- ВАЖНО: Отправляем правильный список (BuyNow или Корзина)
+          deliveryInfo: formData,
+        },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+
       paymentIntentRef.current = data;
       return data;
     } catch (err) {
@@ -227,6 +251,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
         error: event.error,
       },
     }));
+    // Автофокус на CVC после даты
     if (event.complete && fieldName === "expiry") cardCvcRef.current?.focus();
   };
 
@@ -234,12 +259,13 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
     setUserInitiated(true);
     setDrawerOpen(true);
   };
-  
+
   const handleDrawerClose = () => {
     setUserInitiated(false);
     setDrawerOpen(false);
   };
 
+  // --- SUBMIT ФОРМЫ (ОПЛАТА КАРТОЙ ИЛИ BLIK) ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setPaymentError("");
@@ -252,7 +278,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
       const { clientSecret, orderToken } = pi;
 
       if (selected === "blik") {
-        await stripe.confirmPayment({
+        const { error } = await stripe.confirmPayment({
           clientSecret,
           confirmParams: {
             payment_method_data: {
@@ -269,30 +295,36 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
             return_url: `${window.location.origin}/checkout-success?orderToken=${orderToken}`,
           },
         });
-
+        if (error) throw error;
       } else if (selected === "card") {
         const cardElement = elements.getElement(CardNumberElement);
         if (!cardElement) throw new Error("Card element not found");
 
-        const { error } = await stripe.confirmCardPayment(clientSecret, {
-          payment_method: {
-            card: cardElement,
-            billing_details: {
-              name: `${formData.name} ${formData.surname}`,
-              email: formData.email,
-              phone: formData.phone,
+        const { error } = await stripe.confirmCardPayment(
+          clientSecret,
+          {
+            payment_method: {
+              card: cardElement,
+              billing_details: {
+                name: `${formData.name} ${formData.surname}`,
+                email: formData.email,
+                phone: formData.phone,
+              },
             },
-          },
-          return_url: `${window.location.origin}/checkout-success?orderToken=${orderToken}`,
-        });
+            return_url: `${window.location.origin}/checkout-success?orderToken=${orderToken}`,
+          }
+        );
 
         if (error) {
           setPaymentError(`Payment failed: ${error.message}`);
           throw error;
+        } else {
+          // Успех -> Редирект
+          window.location.href = `${window.location.origin}/checkout-success?orderToken=${orderToken}`;
         }
       }
     } catch (err) {
-      console.error("❌ Payment submission error:", err);
+      console.error("Payment submission error:", err);
       if (!err.message?.includes("abort")) {
         setPaymentError(err.message || "Payment failed. Please try again.");
       }
@@ -306,49 +338,72 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit} className="stripe-form">
-      {paymentError && <div className="payment-error-message">❌ {paymentError}</div>}
-      
+      {paymentError && (
+        <div className="payment-error-message">❌ {paymentError}</div>
+      )}
+
       <div className="stripe-layout">
-        
         <div className="stripe-left">
+          {/* SelectedCartItem теперь самодостаточен.
+              Мы не передаем ему items={...}, он сам берет их из useLocation или Redux.
+          */}
           <SelectedCartItem />
-          
+
           <SelectDeliveryMethod
             onSelectDelivery={setSelectedDelivery}
             formData={formData}
-            handleChange={(e) => setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))}
+            handleChange={(e) =>
+              setFormData((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.value,
+              }))
+            }
           />
-          
+
           {!isDesktop && (
-             <div className="mobile-sticky-footer">
-               <button type="button" className="mobile-pay-trigger" onClick={handleDrawerOpen}>
-                  Proceed to Payment
-               </button>
-             </div>
+            <div className="mobile-sticky-footer">
+              <button
+                type="button"
+                className="mobile-pay-trigger"
+                onClick={handleDrawerOpen}
+              >
+                Proceed to Payment
+              </button>
+            </div>
           )}
 
           {!isDesktop && (
-            <Drawer open={drawerOpen && userInitiated} onOpenChange={handleDrawerClose} dragState={dragState}>
+            <Drawer
+              open={drawerOpen && userInitiated}
+              onOpenChange={handleDrawerClose}
+              dragState={dragState}
+            >
               <DrawerContent className="stripe-drawer-content">
                 <PaymentMethods
-                  selected={selected} setSelected={setSelected}
+                  selected={selected}
+                  setSelected={setSelected}
                   paymentRequest={paymentRequest}
-                  blikCode={blikCode} setBlikCode={setBlikCode}
+                  blikCode={blikCode}
+                  setBlikCode={setBlikCode}
                   cardFields={cardFields}
                   handleCardFieldChange={handleCardFieldChange}
                   handleCardFieldFocus={handleCardFieldFocus}
                   handleCardFieldBlur={handleCardFieldBlur}
                   canMakePaymentResult={canMakePaymentResult}
                 />
-                <PaymentFooter
+               
+              </DrawerContent>
+              <div className="drawer-footer">
+              <PaymentFooter
                   selected={selected}
                   paymentRequest={paymentRequest}
                   blikCode={blikCode}
                   canMakePaymentResult={canMakePaymentResult}
                   disabled={isCreating || isSubmitting}
                 />
-              </DrawerContent>
+              </div>
             </Drawer>
+            
           )}
         </div>
 
@@ -366,7 +421,7 @@ const StripePaymentForm = ({ cartItems, deliveryInfo }) => {
               handleCardFieldBlur={handleCardFieldBlur}
               canMakePaymentResult={canMakePaymentResult}
             />
-            
+
             <PaymentFooter
               selected={selected}
               paymentRequest={paymentRequest}

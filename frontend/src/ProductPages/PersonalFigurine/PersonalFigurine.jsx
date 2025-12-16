@@ -3,7 +3,7 @@ import { FaStar, FaUpload, FaImage } from 'react-icons/fa';
 import './PersonalFigurine.css';
 
 // Заменим массив изображений на путь к видео
-const videoSrc = '/video_2025-12-07_02-49-16.mp4'; // Путь к видео в папке public
+const videoSrc = 'https://www.youtube.com/watch?embeds_referring_euri=https%3A%2F%2Frandom-ize.com%2F&source_ve_path=Mjg2NjQsMTY0NTAz&v=zONW46d50A0&feature=youtu.be'; // Путь к видео в папке public
 
 function VideoPlayer({ src }) {
   const videoRef = useRef(null);

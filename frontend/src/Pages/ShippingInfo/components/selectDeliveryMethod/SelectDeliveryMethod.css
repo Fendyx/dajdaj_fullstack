@@ -1,168 +1,84 @@
 .shipping-card-wrapper {
-  /* можно добавить max-width для центра */
-}
-
-.shipping-title {
-  text-align: center;
-  margin-bottom: 1.5rem;
+  width: 100%;
+  max-width: 500px; /* Ограничиваем ширину для лучшей читаемости */
+  margin: 0 auto;
 }
 
 /* ============================
-   SHIPPING OPTIONS
+   HEADER & CHANGE BUTTON
 ============================ */
 
-.shipping-options {
-  width: 100%;
-  max-width: 400px;
-  margin: 2rem auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.shipping-option {
-  padding: 1rem;
-  border-radius: 12px;
-  cursor: pointer;
+.shipping-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: 0.3s;
+  margin-bottom: 1.25rem;
+  padding: 0 0.5rem; /* Небольшой отступ, чтобы выровнять с краями карточки */
 }
 
-.shipping-option.select-another {
-  border: 2px dashed #ccc;
-}
-
-.shipping-option.select-another:hover {
-  border-color: #3399ff;
-}
-
-.shipping-option.add-new {
-  border: 1px solid #a0d6a0;
-  background-color: #f0fff0;
-}
-
-.shipping-option.add-new:hover {
-  background-color: #e6ffe6;
-}
-
-.shipping-option-left {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-/* ============================
-   ICONS
-============================ */
-
-.icon-circle {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-circle.blue {
-  background-color: #e0f0ff;
-}
-
-.icon-circle.green {
-  background-color: #d4f4d4;
-}
-
-.icon.blue {
-  color: #3399ff;
-  font-size: 20px;
-}
-
-.icon.green {
-  color: #339933;
-  font-size: 20px;
-}
-
-.option-title {
-  font-weight: 500;
-  color: #333;
+.shipping-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
   margin: 0;
+  text-align: left; /* Важно: выравнивание по левому краю смотрится профессиональнее */
 }
 
-.option-subtitle {
-  font-size: 14px;
-  color: #777;
-  margin: 0;
-}
-
-.arrow-icon {
-  color: #999;
-  font-size: 18px;
-}
-
-/* ============================
-   PROCEED BUTTON (если есть)
-============================ */
-
-.proceed-wrapper {
-  width: 100%;
-  background-color: #3399ff;
-  color: #fff;
-  padding: 0.75rem 1rem;
-  font-size: 16px;
-  font-weight: 500;
+.change-btn {
+  background: transparent;
   border: none;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  color: #3399ff; /* Твой акцентный цвет */
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: 0.2s ease;
+  transition: color 0.2s ease;
+  padding: 0.5rem;
+  margin-right: -0.5rem; /* Компенсация паддинга для визуального выравнивания */
 }
 
-.proceed-wrapper:hover {
-  background-color: #267acc;
-}
-
-.proceed-wrapper button {
-  background-color: #3399ff;
-  color: #fff;
-  border: none;
-}
-
-/* credit card icon */
-.credit-icon {
-  margin-right: 8px;
-  font-size: 18px;
+.change-btn:hover {
+  color: #267acc;
+  text-decoration: underline;
 }
 
 /* ============================
-   BACK BUTTON (новый стиль)
+   SELECTED CARD CONTAINER
+============================ */
+
+.selected-card-container {
+  /* Если карточка сама по себе имеет тени, здесь можно ничего не добавлять.
+     Если нет - можно добавить легкий hover эффект на весь контейнер */
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+/* Опционально: центрирование формы добавления, если она узкая */
+.personal-info-form-section {
+  width: 100%;
+}
+
+/* ============================
+   BACK BUTTON (для режима формы)
 ============================ */
 
 .back-btn-container {
   display: flex;
-  justify-content: flex-end;
-  margin-top: 2rem;
+  justify-content: flex-start; /* Кнопка назад обычно слева */
+  margin-bottom: 1rem;
 }
 
 .back-btn {
-  background: #f5f5f5;
-  border: 1px solid #ddd;
-  padding: 0.7rem 1.2rem;
-  border-radius: 10px;
-  font-size: 15px;
-  color: #333;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #555;
+  font-size: 0.9rem;
   cursor: pointer;
-  transition: 0.25s ease;
+  padding: 0;
 }
 
 .back-btn:hover {
-  background: #e8e8e8;
-  border-color: #ccc;
-}
-
-.back-btn:active {
-  background: #dcdcdc;
+  color: #000;
 }

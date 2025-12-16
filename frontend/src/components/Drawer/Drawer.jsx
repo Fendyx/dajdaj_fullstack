@@ -247,7 +247,9 @@ export const DrawerContent = ({ children, className = "" }) => {
       className={`drawer-content ${className}`}
       onTouchMove={handleTouchMove}
     >
-      {children}
+      <div className="drawer-content-inner">
+        {children}
+      </div>
     </div>
   );
 };

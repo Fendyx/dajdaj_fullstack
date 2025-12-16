@@ -8,7 +8,6 @@
     border-radius: 16px;
     width: 100%;
     max-width: 600px;
-    margin: 0 auto 2rem auto;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     /* Тень убрана, так как часто контейнер лежит внутри другой карточки */
   }
@@ -232,4 +231,15 @@
     
     /* На узких экранах Expiry и CVC друг под другом */
     .pm-card-row { flex-direction: column; gap: 12px; }
+  }
+
+  .pm-mobile-spacer {
+    display: none;
+  }
+  
+  @media (max-width: 768px) {
+    .pm-mobile-spacer {
+      display: block;
+      height: 150px;
+    }
   }

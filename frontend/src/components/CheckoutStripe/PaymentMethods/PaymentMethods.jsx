@@ -61,9 +61,7 @@ const PaymentMethods = ({
       <h3 className="pm-title">Choose payment method</h3>
       
       <div className="pm-list">
-        
         {/* Google Pay */}
-        {/* Кнопка удалена отсюда, чтобы не конфликтовать с Футером */}
         {canMakePaymentResult?.googlePay && renderOption(
           "googlepay", 
           "Google Pay", 
@@ -107,7 +105,9 @@ const PaymentMethods = ({
             handleCardFieldBlur={handleCardFieldBlur}
           />
         )}
-
+        
+        {/* Добавьте отступ внизу для лучшего скролла */}
+        <div className="pm-mobile-spacer"></div>
       </div>
     </div>
   );

@@ -267,17 +267,6 @@
     opacity: 0.9;
   }
   
-  .cart-login {
-    width: 100%;
-    padding: 1rem;
-    background: #fbbf24;
-    color: #111827;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  
   /* --- TRUST BADGES --- */
   .trust-badges {
     margin-top: 1.5rem;
@@ -304,26 +293,94 @@
     color: #9ca3af;
   }
   
-  /* --- EMPTY CART --- */
-  .cart-empty {
+  /* =========================================
+     EMPTY CART STATE (Professional)
+     ========================================= */
+  
+  .cart-empty-state {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 4rem 1rem;
+    min-height: 60vh;
     text-align: center;
+    animation: fadeIn 0.5s ease;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 1rem;
   }
   
-  .empty-icon-bg {
-    width: 100px;
-    height: 100px;
-    background: #f3f4f6;
+  .empty-illustration {
+    font-size: 4rem; 
+    color: #d1d5db; 
+    margin-bottom: 1.5rem;
+    background: #f9fafb;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1.5rem;
-    color: #9ca3af;
+  }
+  
+  .empty-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+  
+  .empty-subtitle {
+    font-size: 1rem;
+    color: #6b7280;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+    max-width: 400px;
+  }
+  
+  /* Кнопка "Start Shopping" - Черная */
+  .start-shopping-btn {
+    background-color: #111827; 
+    color: #ffffff;
+    padding: 1rem 2.5rem;
+    border-radius: 50px; 
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .start-shopping-btn:hover {
+    background-color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .start-shopping-btn:active {
+    transform: translateY(0);
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Адаптив для пустой корзины */
+  @media (max-width: 768px) {
+    .cart-empty-state {
+      min-height: 50vh;
+    }
+    
+    .empty-illustration {
+      width: 100px;
+      height: 100px;
+      font-size: 3rem;
+    }
+  
+    .empty-title {
+      font-size: 1.5rem;
+    }
   }
   
   /* =========================================
@@ -333,20 +390,20 @@
   /* Tablet & Mobile (Less than 1024px) */
   @media (max-width: 1024px) {
     .cart-content-wrapper {
-      flex-direction: column; /* Саммари уходит вниз */
+      flex-direction: column;
       gap: 2rem;
     }
     
     .cart-summary {
-      width: 100%; /* Саммари на всю ширину */
-      position: static; /* Убираем липкость */
+      width: 100%;
+      position: static;
     }
   }
   
   /* Mobile (Less than 768px) */
   @media (max-width: 768px) {
     .cart-container {
-      padding-top: 80px; /* Меньше отступ сверху */
+      padding-top: 80px; 
       padding-bottom: 0;
     }
   
@@ -361,20 +418,17 @@
       gap: 0;
     }
   
-    /* Скрываем заголовки таблицы и десктопные колонки */
     .desktop-only, 
     .cart-container .titles {
       display: none !important;
     }
   
-    /* Показываем мобильные элементы */
     .mobile-only {
       display: flex !important;
     }
   
-    /* Изменяем стиль карточки товара */
     .cart-item {
-      display: flex; /* Флекс вместо Грида */
+      display: flex;
       align-items: flex-start;
       gap: 1rem;
       padding: 1.25rem 0;
@@ -389,7 +443,6 @@
       align-items: flex-start;
     }
   
-    /* Картинка меньше на мобилке */
     .cart-product img {
       width: 70px;
       height: 70px;
@@ -405,7 +458,6 @@
       margin-bottom: 0.25rem;
     }
   
-    /* Блок цены и управления (нижняя строка карточки) */
     .quantity-and-delete {
       display: flex;
       justify-content: space-between;
@@ -414,14 +466,6 @@
       width: 100%;
     }
   
-    /* Цена на мобильном внутри info */
-    .mobile-price {
-      font-weight: 700;
-      font-size: 1rem;
-      color: #111827;
-    }
-    
-    /* Персонализация на мобильном: сброс марджина */
     .personalization-info {
       margin-left: 0;
       margin-top: 0.5rem;
@@ -433,7 +477,6 @@
       box-sizing: border-box;
     }
   
-    /* Отступ снизу для списка товаров, чтобы не перекрывал Footer */
     .cart-items-section {
       padding-bottom: 200px;
     }
@@ -449,10 +492,8 @@
       box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
       border-top: 1px solid #e5e7eb;
       margin: 0;
-      
-      /* !!! ВАЖНОЕ ИСПРАВЛЕНИЕ !!! */
-      top: auto;   /* Отменяем верхний отступ десктопа */
-      height: auto; /* На всякий случай, чтобы блок не растягивался */
+      top: auto;   
+      height: auto;
     }
   
     .cart-checkout {
@@ -463,8 +504,6 @@
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      
-      /* Учет Safe Area для iPhone X+ */
       padding-bottom: calc(1rem + env(safe-area-inset-bottom));
     }
   
@@ -487,12 +526,11 @@
       color: #111827;
     }
   
-    .cart-proceed, .cart-login {
+    .cart-proceed {
       margin: 0;
       padding: 1rem;
     }
   
-    /* Скрываем лишние элементы в мобильном саммари */
     .shipping-note, 
     .trust-badges {
       display: none;

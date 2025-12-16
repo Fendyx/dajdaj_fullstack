@@ -1,165 +1,230 @@
 /* ========================
-   MOBILE & GLOBAL STYLES
+   GLOBAL & MOBILE STYLES
    ======================== */
-   .pf-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 49;
-    backdrop-filter: blur(2px);
-  }
-  
-  /* Container */
+
+/* Сам контейнер футера */
+.payment-footer {
+  position: fixed;
+  bottom: 0; left: 0; width: 100%;
+  background: #ffffff;
+  z-index: 50;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.12);
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  padding-bottom: env(safe-area-inset-bottom);
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Основная строка: Цена слева, Кнопка справа */
+.pf-main-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  gap: 1rem;
+  min-height: 85px;
+}
+
+/* --- Left Side: Total Info --- */
+.pf-total-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+  user-select: none;
+  min-width: 120px; /* Фиксируем ширину, чтобы не прыгало */
+}
+
+.pf-total-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pf-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pf-chevron {
+  color: #3b82f6;
+  font-size: 0.7rem;
+  display: flex;
+  align-items: center;
+  transition: transform 0.2s;
+}
+
+.pf-total-amount {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+  letter-spacing: -0.5px;
+  margin-top: 2px;
+}
+
+.currency {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-left: 3px;
+}
+
+.pf-micro-text {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* --- Right Side: Actions --- */
+.pf-actions {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* Прижимаем кнопку вправо */
+  gap: 6px;
+}
+
+.pf-btn, .pf-wallet-wrapper {
+  width: 100%;
+  max-width: 220px; /* Не даем кнопке стать слишком широкой на планшетах */
+  height: 52px;
+  border: none;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.pf-btn:active {
+  transform: scale(0.98);
+}
+
+.blik-btn { background: linear-gradient(135deg, #e33e3e 0%, #d32f2f 100%); color: white; }
+.card-btn { background: linear-gradient(135deg, #1f2937 0%, #111827 100%); color: white; }
+
+/* Security Badge */
+.pf-security {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  color: #9ca3af;
+  white-space: nowrap;
+  margin-right: 10px; /* Центрируем относительно кнопки */
+}
+
+/* --- Details Section (Mobile) --- */
+.pf-details {
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.pf-mobile-only {
+  animation: slideDown 0.3s ease-out;
+}
+
+.pf-desktop-only {
+  display: none; /* Скрыто на мобильном по умолчанию */
+}
+
+.pf-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  font-size: 0.95rem;
+}
+
+.pf-row-label { color: #64748b; }
+.pf-row-value { color: #1e293b; font-weight: 500; }
+
+.pf-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin-top: 1rem;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================
+   DESKTOP STYLES
+   ======================== */
+@media (min-width: 1052px) {
+
   .payment-footer {
-    /* По умолчанию (Мобильный) - Фиксирован снизу */
-    position: fixed;
-    bottom: 0;
-    left: 0;
+    position: static; /* Становится обычным блоком */
+    box-shadow: none;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+    background: #f8fafc;
+    margin-top: 2rem;
+    padding: 1.5rem;
     width: 100%;
-    background: #ffffff;
-    z-index: 50;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
-    border-top-left-radius: 16px;
-    border-top-right-radius: 16px;
-    padding-bottom: env(safe-area-inset-bottom);
+    /* Максимальная ширина чтобы выглядело как чек */
+    /* Если у тебя PaymentForm узкий, можно поставить 100% */
+    /* max-width: 420px;  <-- Раскомментируй, если нужно ограничить ширину */ 
   }
-  
+
   .pf-main-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    gap: 1rem;
-    height: 80px;
+    padding: 0;
+    height: auto;
+    /* На десктопе меняем порядок: Кнопка внизу, Цена в середине, Детали вверху */
+    flex-direction: column-reverse; 
+    align-items: stretch;
+    gap: 1.5rem;
   }
+
+  /* Показываем desktop детали, прячем мобильные */
+  .pf-mobile-only { display: none; }
   
-  /* Left side (Total) */
-  .pf-total-info {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    cursor: pointer;
-  }
-  
-  .pf-total-label {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.85rem;
-    color: #6b7280;
-    text-transform: uppercase;
-    font-weight: 600;
-  }
-  
-  .pf-total-amount {
-    font-size: 1.25rem;
-    font-weight: 800;
-    color: #111827;
-  }
-  
-  .pf-chevron {
-    color: #2563eb;
-    font-size: 0.75rem;
-  }
-  
-  /* Right side (Buttons) */
-  .pf-actions {
-    flex: 1;
-    max-width: 200px; /* Кнопка не слишком широкая на мобиле */
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .pf-btn {
-    width: 100%;
-    height: 48px;
+  .pf-desktop-only {
+    display: block;
+    background: transparent;
     border: none;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    font-size: 1rem;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.1s;
+    padding: 0;
+    margin-bottom: 0.5rem;
   }
-  
-  .pf-btn:active {
-    transform: scale(0.96);
-  }
-  
-  .blik-btn { background: #d32f2f; color: white; }
-  .card-btn { background: #111827; color: white; }
-  
-  .pf-details {
-    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
-    background: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
-  }
-  
-  .pf-row {
-    display: flex;
+
+  .pf-total-info {
+    flex-direction: row;
     justify-content: space-between;
-    margin-bottom: 0.75rem;
-    color: #4b5563;
+    align-items: center;
+    border-top: 2px dashed #cbd5e1; /* Пунктирная линия как в чеке */
+    padding-top: 1.2rem;
+    cursor: default;
   }
-  
-  .pf-divider {
-    height: 1px;
-    background: #e5e7eb;
-    margin-top: 1rem;
+
+  /* Прячем мобильные элементы на десктопе */
+  .pf-chevron, .pf-micro-text { display: none; }
+
+  .pf-actions {
+    max-width: 100%;
+    align-items: center; /* Центрируем кнопку */
   }
-  
-  /* ========================
-     DESKTOP STYLES (Modification)
-     ======================== */
-  @media (min-width: 1052px) {
-    .pf-overlay { display: none; }
-    
-    /* Отключаем фиксированное позиционирование */
-    .payment-footer {
-      position: static; /* Становится обычным блоком */
-      box-shadow: none;
-      border-radius: 0;
-      border-top: 2px solid #f3f4f6; /* Легкая линия сверху */
-      margin-top: 1.5rem;
-      padding: 0;
-      width: 100%;
-      z-index: 1;
-    }
-  
-    .pf-main-bar {
-      padding: 1rem 0 0 0; /* Убираем боковые отступы */
-      height: auto;
-      flex-direction: column; /* Элементы друг под другом */
-      align-items: stretch;
-      gap: 1.5rem;
-    }
-  
-    .pf-total-info {
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      cursor: default;
-    }
-  
-    .pf-chevron { display: none; } /* Скрываем стрелку на десктопе */
-  
-    .pf-actions {
-      max-width: 100%; /* Кнопка на всю ширину контейнера */
-    }
-    
-    /* Детали показываем всегда над итогом, но переделаем их вид */
-    .pf-details {
-      display: block; /* Показываем детали */
-      background: transparent;
-      padding: 0;
-      border: none;
-      margin-bottom: 1rem;
-    }
+
+  .pf-btn, .pf-wallet-wrapper {
+    max-width: 100%; /* Кнопка во всю ширину */
+    height: 56px;
   }
+
+  .pf-security {
+    margin-right: 0;
+    margin-top: 8px;
+  }
+}

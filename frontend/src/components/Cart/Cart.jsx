@@ -3,7 +3,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addToCart,
-  clearCart,
   decreaseCart,
   getTotals,
   removeFromCart,
@@ -12,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
 import { 
   FiPlus, FiMinus, FiChevronDown, FiChevronUp, FiTrash2, 
-  FiShield, FiLock, FiTruck 
+  FiShield, FiLock, FiShoppingBag 
 } from "react-icons/fi";
 import { FaCcVisa, FaCcMastercard, FaApple, FaGoogle } from "react-icons/fa";
 import "./Cart.css";
@@ -20,7 +19,8 @@ import "./Cart.css";
 const Cart = () => {
   const { t } = useTranslation();
   const cart = useSelector((state) => state.cart);
-  const auth = useSelector((state) => state.auth);
+  // auth нам все еще нужен, чтобы мб показать имя, но не для блокировки
+  const auth = useSelector((state) => state.auth); 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -34,16 +34,9 @@ const Cart = () => {
   const handleDecreaseCart = (product) => dispatch(decreaseCart(product));
   const handleRemoveFromCart = (product) => dispatch(removeFromCart(product));
 
+  // --- ОБНОВЛЕННАЯ ЛОГИКА ---
   const handleProceedToCheckout = () => {
-    if (!auth._id) {
-      navigate("/login?redirect=/cart");
-      return;
-    }
-    const deliveryList = auth.deliveryDatas || [];
-    if (deliveryList.length === 0) {
-      navigate("/shipping-info", { state: { fromCart: true } });
-      return;
-    }
+    // Больше никаких проверок. Гость или не гость - идем платить.
     navigate("/checkout-stripe");
   };
 
@@ -51,8 +44,8 @@ const Cart = () => {
     setExpandedPersonalization(prev => ({ ...prev, [itemId]: !prev[itemId] }));
   };
 
-  // --- ЛОГИКА FREE SHIPPING BAR ---
-  const FREE_SHIPPING_THRESHOLD = 100; // Например, 100 PLN
+  // Logic for Free Shipping Bar
+  const FREE_SHIPPING_THRESHOLD = 100;
   const currentTotal = cart.cartTotalAmount;
   const isFreeShipping = currentTotal >= FREE_SHIPPING_THRESHOLD;
   const amountToFreeShipping = FREE_SHIPPING_THRESHOLD - currentTotal;
@@ -60,27 +53,32 @@ const Cart = () => {
 
   return (
     <div className="cart-container">
-      <h2>{t("cart.title")}</h2>
+      {/* Заголовок */}
+      {cart.cartItems.length > 0 && <h2>{t("cart.title")}</h2>}
 
       {cart.cartItems.length === 0 ? (
-        <div className="cart-empty">
-          <div className="empty-icon-bg">
-            <FiTruck size={40} />
+        // --- ПУСТАЯ КОРЗИНА ---
+        <div className="cart-empty-state">
+          <div className="empty-illustration">
+            <FiShoppingBag />
           </div>
-          <p>{t("cart.emptyMessage")}</p>
-          <div className="start-shopping">
-            <Link to="/" className="btn-primary">
-              <span>{t("cart.startShopping")}</span>
-            </Link>
-          </div>
+          <h2 className="empty-title">{t("cart.emptyMessage") || "Your cart is empty"}</h2>
+          <p className="empty-subtitle">
+            Looks like you haven't added anything to your cart yet.
+            <br />
+            Explore our products and find something you love.
+          </p>
+          <Link to="/" className="start-shopping-btn">
+            {t("cart.startShopping")}
+          </Link>
         </div>
       ) : (
         <div className="cart-content-wrapper">
           
-          {/* Секция товаров */}
+          {/* СЕКЦИЯ ТОВАРОВ */}
           <div className="cart-items-section">
             
-            {/* --- FREE SHIPPING BAR (GAMIFICATION) --- */}
+            {/* Free Shipping Bar */}
             <div className="free-shipping-bar-container">
               <div className="fs-text">
                 {isFreeShipping ? (
@@ -102,6 +100,7 @@ const Cart = () => {
               </div>
             </div>
 
+            {/* Заголовки таблицы (Desktop) */}
             <div className="titles desktop-only">
               <h3 className="product-title">{t("cart.columns.product")}</h3>
               <h3 className="price">{t("cart.columns.price")}</h3>
@@ -109,10 +108,10 @@ const Cart = () => {
               <h3 className="total">{t("cart.columns.total")}</h3>
             </div>
 
+            {/* Список товаров */}
             <div className="cart-items">
               {cart.cartItems.map((cartItem) => (
                 <div className="cart-item" key={cartItem.id}>
-                  {/* ... (Ваш код товара остался почти таким же, структура хорошая) ... */}
                   <div className="cart-product">
                     <div className="img-with-name-of-product">
                       <img src={cartItem.image} alt={cartItem.name[i18n.language]} />
@@ -124,7 +123,6 @@ const Cart = () => {
                         </h3>
                         {/* Mobile controls */}
                         <div className="quantity-and-delete mobile-only">
-                           {/* ... (ваш код) ... */}
                            <div className="cart-product-quantity">
                             <button onClick={() => handleDecreaseCart(cartItem)}><FiMinus /></button>
                             <div className="count">{cartItem.cartQuantity}</div>
@@ -136,7 +134,7 @@ const Cart = () => {
                         </div>
                       </div>
                     </div>
-                    {/* Personalization (ваш код) */}
+                    {/* Personalization */}
                     {cartItem.personalization && (
                       <div className="personalization-info">
                         <div className="personalization-header" onClick={() => togglePersonalization(cartItem.id)}>
@@ -153,17 +151,16 @@ const Cart = () => {
                     )}
                   </div>
 
-                  {/* Desktop Columns */}
+                  {/* Desktop columns */}
                   <div className="cart-product-price desktop-only">PLN{cartItem.price}</div>
                   <div className="cart-product-quantity desktop-only">
                     <button onClick={() => handleDecreaseCart(cartItem)}><FiMinus /></button>
                     <div className="count">{cartItem.cartQuantity}</div>
                     <button onClick={() => handleAddToCart(cartItem)}><FiPlus /></button>
                   </div>
-                  <div className="cart-product-total-price desktop-only"> {/* Исправил класс для Desktop */}
+                  <div className="cart-product-total-price desktop-only">
                     PLN{(cartItem.price * cartItem.cartQuantity).toFixed(2)}
                   </div>
-                   {/* Desktop Delete Btn - можно добавить отдельно справа */}
                    <div className="desktop-only remove-col">
                       <button className="delete-btn" onClick={() => handleRemoveFromCart(cartItem)}>
                         <FiTrash2 />
@@ -186,17 +183,12 @@ const Cart = () => {
                 <p>{t("cart.summary.taxesShipping")}</p>
               </div>
 
-              {auth._id ? (
-                <button className="cart-proceed" onClick={handleProceedToCheckout}>
-                  {t("cart.summary.proceedToDelivery")}
-                </button>
-              ) : (
-                <button className="cart-login" onClick={() => navigate("/login?redirect=/cart")}>
-                  {t("cart.summary.loginToCheckout")}
-                </button>
-              )}
+              {/* КНОПКА ТЕПЕРЬ ВСЕГДА ОДНА */}
+              <button className="cart-proceed" onClick={handleProceedToCheckout}>
+                {t("cart.summary.proceedToDelivery") || "Proceed to Checkout"}
+              </button>
 
-              {/* --- TRUST SIGNALS (PSYCHOLOGY) --- */}
+              {/* Trust Signals */}
               <div className="trust-badges">
                 <div className="secure-checkout">
                   <FiLock size={14} /> 

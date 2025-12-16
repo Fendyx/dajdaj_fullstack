@@ -60,14 +60,16 @@ export function PostersProductDetails({ product: externalProduct, show3D, on3DTo
   };
 
   const handlePayNow = () => {
+    // ВАЖНО: Используем cartQuantity: 1, чтобы структура совпадала с элементами в Redux корзине
     const buyNowItem = {
       ...product,
       id: product._id || product.id,
-      qty: 1,
+      cartQuantity: 1, // Было qty: 1, меняем на cartQuantity
     };
 
     if (!auth._id) {
-      navigate(`/login?redirect=/posters/${slug}`);
+      // Передаем state даже при редиректе на логин, чтобы не потерять товар
+      navigate(`/login?redirect=/posters/${slug}`, { state: { buyNowItem } }); 
       return;
     }
 
@@ -76,12 +78,13 @@ export function PostersProductDetails({ product: externalProduct, show3D, on3DTo
       navigate("/shipping-info", {
         state: {
           fromPayNow: true,
-          productToBuy: buyNowItem,
+          productToBuy: buyNowItem, // Передаем дальше
         },
       });
       return;
     }
 
+    // Переход на оплату с передачей объекта в state
     navigate("/checkout-stripe", { state: { buyNowItem } });
   };
 

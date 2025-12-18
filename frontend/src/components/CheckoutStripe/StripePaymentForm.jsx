@@ -20,12 +20,10 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
-  const location = useLocation(); // 1. Хук для получения данных из "Buy Now"
+  const location = useLocation();
   const { token } = useSelector((state) => state.auth);
 
   // --- ЛОГИКА ОПРЕДЕЛЕНИЯ ТОВАРОВ ДЛЯ ПОКУПКИ ---
-  // Если пришли через "Купить сейчас" (есть buyNowItem в state) — используем только его.
-  // Иначе — используем корзину, переданную через пропсы (Redux).
   const itemsToPurchase = useMemo(() => {
     if (location.state?.buyNowItem) {
       return [location.state.buyNowItem];
@@ -39,17 +37,14 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const [dragState, setDragState] = useState({ dragging: false, translateY: 0 });
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1052);
 
-  // Данные доставки
   const [selectedDelivery, setSelectedDelivery] = useState(deliveryInfo || null);
 
-  // Данные для оплаты
   const [paymentRequest, setPaymentRequest] = useState(null);
   const [canMakePaymentResult, setCanMakePaymentResult] = useState(null);
   const [blikCode, setBlikCode] = useState("");
   const [selected, setSelected] = useState("card");
   const [paymentError, setPaymentError] = useState("");
 
-  // Поля карты
   const [cardFields, setCardFields] = useState({
     number: { complete: false, focused: false },
     expiry: { complete: false, focused: false },
@@ -61,7 +56,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const creatingPIRef = useRef(false);
   const submittingRef = useRef(false);
 
-  // Форма данных пользователя (заполняется из deliveryInfo)
   const [formData, setFormData] = useState({
     name: deliveryInfo?.name || "",
     surname: deliveryInfo?.surname || "",
@@ -71,7 +65,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     method: deliveryInfo?.method || "",
   });
 
-  // Хендлеры фокуса полей карты
   const handleCardFieldFocus = (fieldName) => () => {
     setCardFields((prev) => ({
       ...prev,
@@ -86,7 +79,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     }));
   };
 
-  // Ресайз (Desktop/Mobile)
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 1052px)");
     const handleResize = (e) => setIsDesktop(e.matches);
@@ -95,7 +87,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
 
-  // Синхронизация formData при выборе метода доставки
   useEffect(() => {
     if (selectedDelivery) {
       setFormData({
@@ -109,32 +100,26 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     }
   }, [selectedDelivery]);
 
-  // --- 2. РАСЧЕТ ИТОГОВОЙ СУММЫ (использует itemsToPurchase) ---
   const calculateTotalAmount = () => {
     if (!itemsToPurchase || !Array.isArray(itemsToPurchase)) return 0;
 
     const itemsTotal = itemsToPurchase.reduce((sum, item) => {
       const price = Number(item.price) || 0;
-      // В PostersProductDetails мы задали cartQuantity: 1, здесь его читаем
       const qty = Number(item.cartQuantity) || 0;
       return sum + (price * qty);
     }, 0);
 
     const deliveryCost = 9.99;
     const total = itemsTotal + deliveryCost;
-
-    // Stripe требует сумму в минимальных единицах валюты (гроши/центы)
     const totalInCents = Math.round(total * 100);
 
     return isNaN(totalInCents) ? 0 : totalInCents;
   };
 
-  // --- 3. GOOGLE PAY / APPLE PAY (Payment Request) ---
   useEffect(() => {
     if (!stripe) return;
 
     const amount = calculateTotalAmount();
-    // Если сумма 0, кнопку не создаем
     if (amount <= 0) return;
 
     const pr = stripe.paymentRequest({
@@ -148,7 +133,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
       requestPayerEmail: true,
     });
 
-    // Проверяем возможность оплаты (есть ли карта в браузере)
     pr.canMakePayment().then((result) => {
       setCanMakePaymentResult(result);
       if (result) {
@@ -156,7 +140,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
       }
     });
 
-    // Обработка оплаты через Google/Apple Pay
     pr.on("paymentmethod", async (ev) => {
       if (submittingRef.current) {
         ev.complete("fail");
@@ -191,14 +174,11 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
         submittingRef.current = false;
       }
     });
-  }, [stripe, itemsToPurchase]); // Пересоздаем, если изменился список товаров
+  }, [stripe, itemsToPurchase]);
 
-  // --- 4. ОБНОВЛЕНИЕ СУММЫ В GOOGLE PAY ---
-  // Если товары изменились, обновляем ценник в уже открытом виджете (если поддерживается)
   useEffect(() => {
     if (paymentRequest) {
       const newAmount = calculateTotalAmount();
-
       if (newAmount > 0) {
         paymentRequest.update({
           total: {
@@ -210,12 +190,10 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     }
   }, [itemsToPurchase, paymentRequest]);
 
-  // --- 5. СОЗДАНИЕ PAYMENT INTENT НА БЭКЕНДЕ ---
+  // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ ---
   const getOrCreatePaymentIntent = async () => {
-    // Если уже есть intent, возвращаем его (чтобы не дублировать)
     if (paymentIntentRef.current) return paymentIntentRef.current;
 
-    // Блокировка повторных вызовов
     if (creatingPIRef.current) {
       while (creatingPIRef.current) await new Promise((r) => setTimeout(r, 50));
       return paymentIntentRef.current;
@@ -223,13 +201,21 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
 
     creatingPIRef.current = true;
     try {
+      // 1. Создаем конфигурацию заголовков
+      const config = {};
+      
+      // 2. Добавляем Authorization ТОЛЬКО если токен существует
+      if (token) {
+        config.headers = { Authorization: `Bearer ${token}` };
+      }
+
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
         {
-          cartItems: itemsToPurchase, // <--- ВАЖНО: Отправляем правильный список (BuyNow или Корзина)
+          cartItems: itemsToPurchase,
           deliveryInfo: formData,
         },
-        { headers: { Authorization: `Bearer ${token}` } }
+        config // 3. Передаем конфиг (с заголовком или без)
       );
 
       paymentIntentRef.current = data;
@@ -241,6 +227,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
       creatingPIRef.current = false;
     }
   };
+  // -----------------------------
 
   const handleCardFieldChange = (fieldName) => (event) => {
     setCardFields((prev) => ({
@@ -251,7 +238,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
         error: event.error,
       },
     }));
-    // Автофокус на CVC после даты
     if (event.complete && fieldName === "expiry") cardCvcRef.current?.focus();
   };
 
@@ -265,7 +251,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     setDrawerOpen(false);
   };
 
-  // --- SUBMIT ФОРМЫ (ОПЛАТА КАРТОЙ ИЛИ BLIK) ---
   const handleSubmit = async (e) => {
     e.preventDefault();
     setPaymentError("");
@@ -319,13 +304,15 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
           setPaymentError(`Payment failed: ${error.message}`);
           throw error;
         } else {
-          // Успех -> Редирект
           window.location.href = `${window.location.origin}/checkout-success?orderToken=${orderToken}`;
         }
       }
     } catch (err) {
       console.error("Payment submission error:", err);
-      if (!err.message?.includes("abort")) {
+      // Если ошибка связана с авторизацией, можно вывести конкретное сообщение
+      if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+         setPaymentError("Session expired or unauthorized. Please refresh or login.");
+      } else if (!err.message?.includes("abort")) {
         setPaymentError(err.message || "Payment failed. Please try again.");
       }
     } finally {
@@ -344,11 +331,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
 
       <div className="stripe-layout">
         <div className="stripe-left">
-          {/* SelectedCartItem теперь самодостаточен.
-              Мы не передаем ему items={...}, он сам берет их из useLocation или Redux.
-          */}
           <SelectedCartItem />
-
           <SelectDeliveryMethod
             onSelectDelivery={setSelectedDelivery}
             formData={formData}
@@ -403,7 +386,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
                 />
               </div>
             </Drawer>
-            
           )}
         </div>
 

@@ -1,8 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux"; // 1. Добавлен useSelector
 import { clearCart } from "../../slices/cartSlice";
 import { FaCheckCircle, FaBoxOpen, FaArrowRight, FaSpinner } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // 2. Добавлен useNavigate
 import "./CheckoutSuccess.css";
 
 function ImageWithFallback({ src, alt }) {
@@ -19,6 +20,9 @@ function ImageWithFallback({ src, alt }) {
 
 export default function CheckoutSuccess() {
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // 3. Инициализация навигации
+  const { token } = useSelector((state) => state.auth); // 4. Получаем токен из Redux
+
   const [order, setOrder] = useState(null);
   const [status, setStatus] = useState("idle"); // idle, waiting, paid, timeout, not_found, error
   const mountedRef = useRef(true);
@@ -32,100 +36,118 @@ export default function CheckoutSuccess() {
   const orderToken = params.get("orderToken");
   const API = process.env.REACT_APP_API_URL || "";
 
-// В CheckoutSuccess.js - обновите часть с проверкой платежа
-useEffect(() => {
-  if (!orderToken) return;
+  useEffect(() => {
+    if (!orderToken) return;
 
-  let attempts = 0;
-  const maxAttempts = 40;
-  mountedRef.current = true;
-  setStatus("waiting");
+    let attempts = 0;
+    const maxAttempts = 40;
+    mountedRef.current = true;
+    setStatus("waiting");
 
-  const attemptFetch = async () => {
-    if (!mountedRef.current) return;
-    attempts += 1;
-
-    try {
-      console.log(`🔄 Polling attempt ${attempts} for order: ${orderToken}`);
-      const res = await axios.get(
-        `${API}/api/orders/token/${encodeURIComponent(orderToken)}`,
-        { timeout: 10000 }
-      );
-
+    const attemptFetch = async () => {
       if (!mountedRef.current) return;
-      const data = res.data;
-      console.log(`✅ Order found:`, { status: data.status, orderId: data.orderId });
-      setOrder(data);
+      attempts += 1;
 
-      if (data.status === "paid") {
-        setStatus("paid");
-        return;
-      }
+      try {
+        console.log(`🔄 Polling attempt ${attempts} for order: ${orderToken}`);
 
-      // Если заказ все еще pending после 5 попыток, проверяем статус платежа в Stripe
-      if (attempts >= 5 && data.status === "pending") {
-        console.log("🔍 Checking payment status directly with Stripe...");
-        try {
-          const paymentCheck = await axios.post(
-            `${API}/api/orders/${orderToken}/check-payment`,
-            {},
-            { timeout: 15000 }
-          );
-          console.log("💰 Payment check result:", paymentCheck.data);
+        // 5. Конфигурация заголовков (отправляем токен, если он есть)
+        const config = {};
+        if (token) {
+          config.headers = { Authorization: `Bearer ${token}` };
+        }
 
-          // Если статус обновился, делаем еще один запрос
-          if (paymentCheck.data.orderStatus === "paid") {
-            const updatedOrder = await axios.get(
-              `${API}/api/orders/token/${encodeURIComponent(orderToken)}`,
-              { timeout: 10000 }
-            );
-            setOrder(updatedOrder.data);
-            setStatus("paid");
-            return;
+        // ВАЖНО: Убедись, что путь совпадает с твоим backend (обычно api/stripe/order-status)
+        const res = await axios.get(
+          `${API}/api/stripe/order-status/${encodeURIComponent(orderToken)}`,
+          { 
+            timeout: 10000,
+            ...config // 6. Передаем конфиг с токеном
           }
-        } catch (paymentErr) {
-          console.log("⚠️ Payment check failed:", paymentErr.message);
+        );
+
+        if (!mountedRef.current) return;
+        const data = res.data;
+        console.log(`✅ Order found:`, { status: data.status, orderId: data.orderId });
+        setOrder(data);
+
+        if (data.status === "paid") {
+          setStatus("paid");
+          return;
+        }
+
+        // Если заказ все еще pending после 5 попыток, проверяем статус платежа в Stripe
+        if (attempts >= 5 && data.status === "pending") {
+          console.log("🔍 Checking payment status directly with Stripe...");
+          try {
+            const paymentCheck = await axios.post(
+              `${API}/api/stripe/sync-payment-status`, // Убедись в правильности пути
+              { orderToken },
+              { timeout: 15000, ...config } // Тоже передаем токен
+            );
+            console.log("💰 Payment check result:", paymentCheck.data);
+
+            if (paymentCheck.data.orderStatus === "paid") {
+              // Повторный запрос за обновленным заказом
+              const updatedOrder = await axios.get(
+                `${API}/api/stripe/order-status/${encodeURIComponent(orderToken)}`,
+                { timeout: 10000, ...config }
+              );
+              setOrder(updatedOrder.data);
+              setStatus("paid");
+              return;
+            }
+          } catch (paymentErr) {
+            console.log("⚠️ Payment check failed:", paymentErr.message);
+          }
+        }
+
+        // Продолжаем опрос
+        if (attempts < maxAttempts) {
+          const delay = Math.min(5000, 1000 * Math.floor(attempts / 3));
+          console.log(`⏳ Order not paid yet, waiting ${delay}ms for next attempt`);
+          setTimeout(attemptFetch, delay);
+        } else {
+          console.log(`⏰ Timeout after ${maxAttempts} attempts`);
+          setStatus("timeout");
+        }
+      } catch (err) {
+        if (!mountedRef.current) return;
+
+        const statusCode = err.response?.status;
+        console.log(`❌ Polling attempt ${attempts} failed:`, {
+          statusCode,
+          error: err.message
+        });
+
+        // 7. ОБРАБОТКА ОШИБКИ ДОСТУПА (403)
+        if (statusCode === 403) {
+          console.warn("🔒 Access denied. Redirecting to login.");
+          const returnUrl = `/checkout-success?orderToken=${orderToken}`;
+          // Редирект на логин, чтобы после входа вернуть пользователя сюда
+          navigate(`/login?redirect=${encodeURIComponent(returnUrl)}`);
+          return; // Останавливаем поллинг
+        }
+
+        if (statusCode === 404 && attempts < 10) { 
+          const delay = Math.min(2000, 300 * attempts);
+          console.log(`🔄 Order not found yet, retrying in ${delay}ms`);
+          setTimeout(attemptFetch, delay);
+        } else if (statusCode === 404) {
+          console.log(`🔍 Order not found after ${attempts} attempts`);
+          setStatus("not_found");
+        } else if (attempts < maxAttempts) {
+          setTimeout(attemptFetch, 1500);
+        } else {
+          console.log(`💥 Final error after ${attempts} attempts:`, err);
+          setStatus("error");
         }
       }
+    };
 
-      // Продолжаем опрос
-      if (attempts < maxAttempts) {
-        const delay = Math.min(5000, 1000 * Math.floor(attempts / 3)); // Более агрессивные задержки
-        console.log(`⏳ Order not paid yet, waiting ${delay}ms for next attempt`);
-        setTimeout(attemptFetch, delay);
-      } else {
-        console.log(`⏰ Timeout after ${maxAttempts} attempts`);
-        setStatus("timeout");
-      }
-    } catch (err) {
-      if (!mountedRef.current) return;
-
-      const statusCode = err.response?.status;
-      console.log(`❌ Polling attempt ${attempts} failed:`, {
-        statusCode,
-        error: err.message
-      });
-
-      if (statusCode === 404 && attempts < 10) { // Даем меньше попыток для 404
-        const delay = Math.min(2000, 300 * attempts);
-        console.log(`🔄 Order not found yet, retrying in ${delay}ms`);
-        setTimeout(attemptFetch, delay);
-      } else if (statusCode === 404) {
-        console.log(`🔍 Order not found after ${attempts} attempts`);
-        setStatus("not_found");
-      } else if (attempts < maxAttempts) {
-        setTimeout(attemptFetch, 1500);
-      } else {
-        console.log(`💥 Final error after ${attempts} attempts:`, err);
-        setStatus("error");
-      }
-    }
-  };
-
-  // Даем небольшую задержку перед первым запросом чтобы заказ успел создатьсь
-  setTimeout(attemptFetch, 1000);
-  return () => { mountedRef.current = false; };
-}, [orderToken, API]);
+    setTimeout(attemptFetch, 1000);
+    return () => { mountedRef.current = false; };
+  }, [orderToken, API, token, navigate]); // Добавлены зависимости
 
   if (!orderToken) {
     return (

@@ -45,12 +45,11 @@ import SpecialGirl from "./ProductPages/SpecialGirl/SpecialGirl";
 import PersonalFigurine from "./ProductPages/PersonalFigurine/PersonalFigurine";
 import Posters from "./ProductPages/Posters/Posters";
 
-
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
 function AppContent() {
   const location = useLocation();
-  const auth = useSelector((state) => state.auth); // ✅ always called
+  const auth = useSelector((state) => state.auth);
 
   const footerPages = ["/", "/about", "/contacts"];
   const showFooter = footerPages.includes(location.pathname);
@@ -85,6 +84,8 @@ function AppContent() {
               <Route path="/checkout-success" element={<CheckoutSuccess />} />
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
+              
+              {/* Профиль остается защищенным */}
               <Route
                 path="/profile"
                 element={
@@ -93,22 +94,12 @@ function AppContent() {
                   </PrivateRoute>
                 }
               />
-              <Route
-                path="/shipping-info"
-                element={
-                  <PrivateRoute>
-                    <ShippingInfo />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path="/checkout-stripe"
-                element={
-                  <PrivateRoute>
-                    <CheckoutStripe />
-                  </PrivateRoute>
-                }
-              />
+
+              {/* --- ИЗМЕНЕНИЯ: Эти маршруты теперь публичные для гостей --- */}
+              <Route path="/shipping-info" element={<ShippingInfo />} />
+              <Route path="/checkout-stripe" element={<CheckoutStripe />} />
+              {/* ----------------------------------------------------------- */}
+
               <Route
                 path="/products/male-bodybuilder"
                 element={<MaleBodybuilder />}

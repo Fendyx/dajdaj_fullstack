@@ -1,14 +1,38 @@
 const express = require("express");
 const Stripe = require("stripe");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken"); // ✅ Добавили для ручной проверки токена
 const products = require("../products");
-const auth = require("../middleware/auth");
+const auth = require("../middleware/auth"); // Оставляем для защищенных роутов, если понадобятся
 const Order = require("../models/order");
 const sendOrderEmail = require("../utils/sendEmail");
 require("dotenv").config();
 
 const router = express.Router();
 const stripe = Stripe(process.env.STRIPE_KEY);
+
+// ✅ NEW: Middleware "Мягкой" авторизации
+// Если токен есть и валиден -> req.user = user
+// Если токена нет или он кривой -> req.user = null (но не 401 ошибка!)
+const optionalAuth = (req, res, next) => {
+  const token = req.header("Authorization")?.replace("Bearer ", ""); // или x-auth-token, смотря как шлешь
+  
+  if (!token) {
+    req.user = null;
+    return next();
+  }
+
+  try {
+    // Убедись, что имя переменной секрета совпадает с тем, что в .env (обычно JWT_SECRET)
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+    req.user = decoded;
+    next();
+  } catch (err) {
+    // Если токен протух, считаем юзера гостем, а не блокируем
+    req.user = null; 
+    next();
+  }
+};
 
 // простой генератор токена заказа
 function generateOrderToken() {
@@ -46,7 +70,8 @@ async function createPendingOrder({ userId, cartItems, deliveryInfo, orderToken,
   const parsedAddress = parseAddress(deliveryInfo?.address || "");
 
   const order = new Order({
-    userId: mongoose.Types.ObjectId.isValid(userId) ? mongoose.Types.ObjectId(userId) : undefined,
+    // ✅ Исправлено: если userId null/undefined, mongoose это проигнорирует или запишет null
+    userId: (userId && mongoose.Types.ObjectId.isValid(userId)) ? mongoose.Types.ObjectId(userId) : undefined,
     orderToken,
     orderNumber,
     paymentIntentId,
@@ -71,14 +96,12 @@ async function createPendingOrder({ userId, cartItems, deliveryInfo, orderToken,
 // Функция для проверки существующего заказа с такими же данными
 async function findExistingOrder({ userId, cartItems, deliveryInfo }) {
   try {
-    // Создаем хеш корзины для сравнения
     const cartHash = JSON.stringify(cartItems.map(item => ({
       id: item.id,
       qty: item.qty,
       price: item.price
     })).sort((a, b) => a.id.localeCompare(b.id)));
 
-    // Создаем хеш данных доставки
     const deliveryHash = JSON.stringify({
       name: deliveryInfo?.name,
       email: deliveryInfo?.email,
@@ -86,24 +109,22 @@ async function findExistingOrder({ userId, cartItems, deliveryInfo }) {
       address: deliveryInfo?.address
     });
 
-    // Ищем заказы за последние 10 минут с такими же данными
     const tenMinutesAgo = new Date(Date.now() - 10 * 60 * 1000);
     
     const existingOrders = await Order.find({
-      userId: mongoose.Types.ObjectId.isValid(userId) ? mongoose.Types.ObjectId(userId) : undefined,
+      // ✅ Исправлено: поиск учитывает гостей (userId: undefined/null)
+      userId: (userId && mongoose.Types.ObjectId.isValid(userId)) ? mongoose.Types.ObjectId(userId) : { $exists: false },
       status: { $in: ["pending", "processing"] },
       createdAt: { $gte: tenMinutesAgo }
     }).exec();
 
     for (const order of existingOrders) {
-      // Сравниваем корзину
       const orderCartHash = JSON.stringify(order.products.map(item => ({
         id: item.id,
         qty: item.quantity,
         price: item.price
       })).sort((a, b) => a.id.localeCompare(b.id)));
 
-      // Сравниваем доставку
       const orderDeliveryHash = JSON.stringify({
         name: order.deliveryInfo?.name,
         email: order.deliveryInfo?.email,
@@ -125,8 +146,8 @@ async function findExistingOrder({ userId, cartItems, deliveryInfo }) {
   }
 }
 
-// Эндпоинт для проверки статуса заказа
-router.get("/order-status/:orderToken", auth, async (req, res) => {
+// ✅ ИЗМЕНЕНО: Умная проверка прав доступа
+router.get("/order-status/:orderToken", optionalAuth, async (req, res) => {
   try {
     const { orderToken } = req.params;
     const order = await Order.findOne({ orderToken }).exec();
@@ -135,18 +156,37 @@ router.get("/order-status/:orderToken", auth, async (req, res) => {
       return res.status(404).json({ error: "Order not found" });
     }
 
-    // Если заказ pending, проверяем статус в Stripe
+    // --- 🔒 ЛОГИКА БЕЗОПАСНОСТИ ---
+
+    // 1. Если заказ принадлежит зарегистрированному пользователю (есть userId)
+    if (order.userId) {
+      // Проверяем, авторизован ли тот, кто делает запрос
+      if (!req.user) {
+        // Если не залогинен -> 403 (Frontend должен перекинуть на логин)
+        return res.status(403).json({ error: "Please login to view this order", requiresLogin: true });
+      }
+      
+      // Если залогинен, но ID не совпадают (попытка подсмотреть чужой заказ)
+      if (req.user._id !== order.userId.toString()) {
+        return res.status(403).json({ error: "Access denied" });
+      }
+    }
+
+    // 2. Если order.userId === undefined (Заказ Гостя)
+    // Мы пропускаем к просмотру любого, у кого есть правильный orderToken.
+    // OrderToken выступает в роли "ключа".
+    
+    // -------------------------------
+
+    // Синхронизация статуса (оставляем как было)
     if (order.status === "pending" && order.paymentIntentId) {
       try {
         const paymentIntent = await stripe.paymentIntents.retrieve(order.paymentIntentId);
-        console.log(`🔄 Checking Stripe status for ${orderToken}: ${paymentIntent.status}`);
         
         if (paymentIntent.status === 'succeeded' && order.status !== 'paid') {
           order.status = 'paid';
           await order.save();
-          console.log(`✅ Order ${orderToken} updated to paid from Stripe status`);
           
-          // Отправляем email
           if (order.deliveryInfo?.email) {
             try {
               await sendOrderEmail(order);
@@ -176,8 +216,8 @@ router.get("/order-status/:orderToken", auth, async (req, res) => {
   }
 });
 
-// Эндпоинт для синхронизации статуса платежа
-router.post("/sync-payment-status", auth, async (req, res) => {
+// ✅ ИЗМЕНЕНО: optionalAuth, так как запрос может идти с фронта гостя
+router.post("/sync-payment-status", optionalAuth, async (req, res) => {
   try {
     const { paymentIntentId, orderToken } = req.body;
     
@@ -187,7 +227,6 @@ router.post("/sync-payment-status", auth, async (req, res) => {
       return res.status(400).json({ error: "paymentIntentId or orderToken required" });
     }
 
-    // Проверяем статус в Stripe
     let paymentIntent;
     if (paymentIntentId) {
       paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
@@ -197,14 +236,12 @@ router.post("/sync-payment-status", auth, async (req, res) => {
     if (orderToken) {
       order = await Order.findOne({ orderToken }).exec();
     } else if (paymentIntentId) {
-      // Ищем заказ по paymentIntentId
       order = await Order.findOne({ paymentIntentId }).exec();
     }
 
     console.log("📊 Payment Intent status:", paymentIntent?.status);
     console.log("📊 Order status:", order?.status);
 
-    // Синхронизируем статус
     let updated = false;
     if (order && paymentIntent) {
       if (paymentIntent.status === 'succeeded' && order.status !== 'paid') {
@@ -222,7 +259,6 @@ router.post("/sync-payment-status", auth, async (req, res) => {
         await order.save();
         console.log(`✅ Order ${order.orderToken} synced to ${order.status}`);
         
-        // Отправляем email если платеж успешен
         if (order.status === 'paid' && order.deliveryInfo?.email) {
           try {
             await sendOrderEmail(order);
@@ -247,35 +283,33 @@ router.post("/sync-payment-status", auth, async (req, res) => {
   }
 });
 
-// POST /create-payment-intent
-router.post("/create-payment-intent", auth, async (req, res) => {
+// ✅ POST /create-payment-intent
+// ИЗМЕНЕНО: Заменили 'auth' на 'optionalAuth'
+router.post("/create-payment-intent", optionalAuth, async (req, res) => {
   try {
     console.log("📨 Incoming request to /create-payment-intent");
     const { cartItems, deliveryInfo } = req.body;
-    const userId = req.user?._id;
+    
+    // ✅ ИЗМЕНЕНО: Если юзера нет, userId будет undefined (или null)
+    const userId = req.user?._id; 
+    console.log("👤 User ID:", userId || "Guest");
 
-    if (!userId || typeof userId !== "string" || userId.length !== 24) {
-      console.warn("⚠️ Invalid or missing userId from token");
-      return res.status(401).json({ error: "Unauthorized or invalid userId" });
-    }
+    // ❌ УДАЛЕНО: Блок проверки if (!userId ...), который блокировал гостей
 
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
       console.warn("⚠️ cartItems is missing or empty");
       return res.status(400).json({ error: "Missing or empty cartItems" });
     }
 
-    // Сначала проверяем, нет ли уже существующего заказа с такими же данными
     const existingOrder = await findExistingOrder({ userId, cartItems, deliveryInfo });
     
     if (existingOrder && existingOrder.paymentIntentId) {
       console.log(`🔄 Reusing existing order: ${existingOrder._id} with paymentIntent: ${existingOrder.paymentIntentId}`);
       
       try {
-        // Проверяем статус существующего PaymentIntent в Stripe
         const existingPaymentIntent = await stripe.paymentIntents.retrieve(existingOrder.paymentIntentId);
         
         if (existingPaymentIntent.status === 'succeeded') {
-          // Если платеж уже прошел, обновляем статус заказа
           existingOrder.status = 'paid';
           await existingOrder.save();
           console.log(`✅ Existing order marked as paid: ${existingOrder._id}`);
@@ -289,13 +323,11 @@ router.post("/create-payment-intent", auth, async (req, res) => {
         });
       } catch (stripeError) {
         console.warn(`⚠️ Existing payment intent not found or invalid: ${stripeError.message}`);
-        // Если старый PaymentIntent невалиден, продолжаем создавать новый
       }
     }
 
     const orderToken = existingOrder ? existingOrder.orderToken : generateOrderToken();
 
-    // build products and total
     const productsFull = (cartItems || []).map((item) => {
       const p = products.find((pp) => pp.id === item.id);
       return {
@@ -308,13 +340,12 @@ router.post("/create-payment-intent", auth, async (req, res) => {
 
     const parsed = parseAddress(deliveryInfo?.address || "");
 
-    // create PaymentIntent
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(totalAmount * 100),
       currency: "pln",
       payment_method_types: ["card", "blik"],
       metadata: {
-        userId,
+        userId: userId ? userId.toString() : "guest", // ✅ Сохраняем "guest" если нет ID
         orderToken,
         delivery_name: `${deliveryInfo?.name || ""} ${deliveryInfo?.surname || ""}`.trim(),
         delivery_email: deliveryInfo?.email || "",
@@ -330,14 +361,12 @@ router.post("/create-payment-intent", auth, async (req, res) => {
     console.log("✅ PaymentIntent created:", paymentIntent.id);
 
     if (existingOrder) {
-      // Обновляем существующий заказ с новым paymentIntentId
       existingOrder.paymentIntentId = paymentIntent.id;
       await existingOrder.save();
       console.log(`✅ Existing order ${existingOrder._id} updated with new payment intent`);
     } else {
-      // Создаем новый заказ в статусе pending
       await createPendingOrder({
-        userId,
+        userId, // здесь может быть null
         cartItems,
         deliveryInfo,
         orderToken,
@@ -357,7 +386,6 @@ router.post("/create-payment-intent", auth, async (req, res) => {
   }
 });
 
-// Тестовый эндпоинт
 router.get("/test", (req, res) => {
   console.log("🧪 /create-payment-intent test route hit");
   res.send("✅ /create-payment-intent route is alive and responding");

@@ -1,44 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom"; // navigate больше не нужен здесь для блокировки
 
 import { UserCard } from "../../../../components/UserProfile/components/UserCard/UserCard";
 import { FlippableDeliveryCard } from "../../../../components/UserProfile/components/FlippableDeliveryCard/FlippableDeliveryCard";
 import AnotherShippingInfoModal from "./AnotherShippingInfoModal";
-// Импортируем твой НОВЫЙ компонент формы
 import PersonalInformationForm from "../../../../components/CheckoutStripe/PersonalInformationForm"; 
 import "./SelectDeliveryMethod.css";
 
 export default function SelectDeliveryMethod({ onSelectDelivery, formData, handleChange }) {
   const auth = useSelector((state) => state.auth);
-  const navigate = useNavigate();
+  // const navigate = useNavigate(); // Можно убрать
 
   const [flipStates, setFlipStates] = useState({});
   const [selectedKey, setSelectedKey] = useState(null);
   const [showModal, setShowModal] = useState(false);
   
-  // Состояние: показываем форму добавления или нет
   const [isAddingNew, setIsAddingNew] = useState(false);
 
-  // Проверяем, есть ли сохраненные данные доставки
   const deliveryDatas = auth?.deliveryDatas || [];
   const hasSavedAddresses = deliveryDatas.length > 0;
 
-  // --- ГЛАВНАЯ ЛОГИКА ---
-  // Если у пользователя НЕТ адресов, мы принудительно включаем режим "isAddingNew"
+  // --- ИСПРАВЛЕННАЯ ЛОГИКА ---
   useEffect(() => {
-    if (!auth.token) {
-      navigate("/login");
-      return;
-    }
+    // УБРАЛИ ПРОВЕРКУ (!auth.token) -> navigate("/login")
 
-    if (!hasSavedAddresses) {
+    // Логика теперь такая:
+    // 1. Если это гость (нет токена) -> isAddingNew = true (показываем форму)
+    // 2. Если юзер залогинен, но нет адресов -> isAddingNew = true (показываем форму)
+    // 3. Если юзер залогинен и есть адреса -> isAddingNew = false (показываем карточку)
+    
+    if (!auth.token || !hasSavedAddresses) {
       setIsAddingNew(true);
     } else {
-      // Если адреса есть, по дефолту показываем карточку
       setIsAddingNew(false);
     }
-  }, [auth, hasSavedAddresses, navigate]);
+  }, [auth.token, hasSavedAddresses]); 
 
   // --- ЛОГИКА КАРТОЧЕК ---
   const [mainDelivery, ...extraDeliveries] = deliveryDatas;
@@ -47,13 +44,11 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
   const handleEditProfile = (profileId) => console.log("Edit profile", profileId);
   const handleLogOut = () => console.log("Logging out");
 
-  // Кнопка "Add New" из модалки
   const handleAddNewProfile = () => {
     setShowModal(false);
     setIsAddingNew(true);
   };
 
-  // Логика "Назад" (работает только если есть куда возвращаться)
   const handleBack = () => {
     if (hasSavedAddresses) {
       setIsAddingNew(false);
@@ -67,9 +62,9 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
     }));
   };
 
-  // Авто-выбор основного адреса при загрузке (если он есть)
   useEffect(() => {
-    if (mainDelivery && onSelectDelivery && !isAddingNew) {
+    // Добавили проверку auth.token, чтобы не крашилось у гостей при попытке прочитать auth.id
+    if (auth.token && mainDelivery && onSelectDelivery && !isAddingNew) {
       setSelectedKey(mainKey);
       onSelectDelivery({
         userId: auth?.id,
@@ -90,7 +85,6 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
     }
   };
 
-  // Рендер выбранной карточки
   const selectedDeliveryCard = (() => {
     if (!hasSavedAddresses) return null;
 
@@ -138,13 +132,11 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
     <div className="shipping-card-wrapper">
       <div className="shipping-header">
         <h2 className="shipping-title">
-          {/* Меняем заголовок в зависимости от контекста */}
           {isAddingNew && !hasSavedAddresses 
-            ? "Enter Shipping Details" 
+            ? "Enter Shipping Details" // Для гостей будет этот заголовок
             : "Shipping info"}
         </h2>
         
-        {/* Показываем кнопку Change ТОЛЬКО если мы в режиме просмотра карточки */}
         {!isAddingNew && hasSavedAddresses && (
           <button 
             className="change-btn" 
@@ -155,7 +147,6 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
           </button>
         )}
         
-        {/* Показываем кнопку Cancel/Back ТОЛЬКО если мы добавляем новый, но старые ЕСТЬ */}
         {isAddingNew && hasSavedAddresses && (
            <button 
            className="change-btn" 
@@ -169,7 +160,6 @@ export default function SelectDeliveryMethod({ onSelectDelivery, formData, handl
 
       {isAddingNew ? (
         <div className="personal-info-form-section">
-          {/* Вставляем твой новый красивый компонент формы */}
           <PersonalInformationForm
             formData={formData}
             handleChange={handleChange}

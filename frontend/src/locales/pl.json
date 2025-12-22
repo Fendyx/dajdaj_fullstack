@@ -24,6 +24,7 @@
       "error": "Błąd",
       "loginAgain": "Proszę zalogować się ponownie",
       "loginBtn": "Zaloguj się ponownie",
+      "logout": "Wyloguj się",
       "clearToken": "Wyczyść token i przeładuj",
 
       "greetingTitle": "Cieszymy się, że Cię widzimy!",

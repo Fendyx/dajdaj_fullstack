@@ -55,28 +55,62 @@
 }
 
 /* Sign in */
-.nav-icon.sign-in {
-  color: #4a4a4a;
-}
-.nav-icon.sign-in:hover {
-  color: #1a1a1a;
-}
-.nav-icon.sign-in i {
-  font-size: 18px;
+.auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px; /* Расстояние между кнопками */
+  margin-left: 0.5rem;
+  padding-left: 1.5rem;
+  border-left: 1px solid rgba(0, 0, 0, 0.1); /* Вертикальный разделитель как в маркетплейсах */
+  height: 32px; /* Высота для выравнивания разделителя */
 }
 
-/* Join us */
-.nav-icon.join-us {
-  border: 2px solid #4b70e2;
-  border-radius: 24px;
-  padding: 0.5rem 1rem;
-  color: #4b70e2;
-  transition: all 0.3s ease;
+/* Общий стиль для обеих кнопок */
+.auth-btn {
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px; /* Современное скругление (не полный круг) */
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  letter-spacing: 0.3px;
 }
-.nav-icon.join-us:hover {
-  background-color: rgba(75, 112, 226, 0.1);
+
+/* Стиль кнопки "Sign In" (Вторичная) */
+.sign-in {
+  color: #555;
+  background: transparent;
+}
+
+.sign-in:hover {
+  color: #1a1a1a;
+  background: rgba(0, 0, 0, 0.04); /* Легкая подложка при наведении */
+}
+
+/* Стиль кнопки "Join Us" (Первичная - Акцент) */
+.join-us {
+  background-color: #1a1a1a; /* Черный цвет (или используй свой синий #4b70e2) */
+  color: #ffffff;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Вариант с твоим синим цветом (если хочешь синюю кнопку, раскомментируй ниже): */
+/* .join-us {
+  background-color: #4b70e2;
+  color: #ffffff;
+} 
+*/
+
+.join-us:hover {
   transform: translateY(-1px);
-  box-shadow: 0 2px 8px rgba(75, 112, 226, 0.2);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background-color: #333; /* Или #3a56c1 для синего варианта */
+}
+
+.join-us:active {
+  transform: translateY(0);
 }
 
 /* Cart */
@@ -459,10 +493,6 @@
   margin-left: 0.5rem;
 }
 
-/* Адаптивность */
-@media (max-width: 768px) {
-
-}
 
 /* ========== АДАПТИВНОСТЬ ========== */
 @media (max-width: 768px) {
@@ -470,6 +500,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .auth-actions {
+    display: none;
   }
 
   .nav-right {

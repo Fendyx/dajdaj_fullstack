@@ -195,7 +195,7 @@ export default function PersonalFigurine() {
             </div>
 
             <div className="personal-fi-description-card">
-              <h3>Available Options:</h3>
+              <h3>Perfect for:</h3>
               
               <div className="personal-fi-options-list">
                 <div className="personal-fi-option-item">

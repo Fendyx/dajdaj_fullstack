@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -11,24 +11,36 @@ import {
   userApi,
 } from "../../slices/userApi";
 import { logoutUser } from "../../slices/authSlice";
-import AccordionItem from "./AccordionItem";
+
 import { CardGallery } from "./components/CardGallery/CardGallery";
 import "./UserProfile.css";
 
-function ImageWithFallback({ src, alt }) {
+// --- Вспомогательные компоненты ---
+
+function ImageWithFallback({ src, alt, className }) {
   const [error, setError] = useState(false);
   return (
     <img
-      src={!error ? src : "https://via.placeholder.com/150?text=Image+not+available"}
+      className={className}
+      src={!error && src ? src : "https://via.placeholder.com/150?text=No+Image"}
       alt={alt}
       onError={() => setError(true)}
     />
   );
 }
 
+const TabButton = ({ active, label, icon, onClick, count }) => (
+  <button className={`up-tab-btn ${active ? "active" : ""}`} onClick={onClick}>
+    <span className="tab-icon">{icon}</span>
+    <span className="tab-label">{label}</span>
+    {count > 0 && <span className="tab-count">{count}</span>}
+  </button>
+);
+
 export function UserProfile() {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language || "en";
+  
   const auth = useSelector((state) => state.auth);
   const { token, name, email } = auth;
 
@@ -36,25 +48,19 @@ export function UserProfile() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log("🔍 [UserProfile] auth:", auth);
-  console.log("🔍 [UserProfile] token:", token);
+  const [activeTab, setActiveTab] = useState("orders");
 
-  // Если токена нет → сразу редиректим на логин
   useEffect(() => {
-    console.log("📦 [useEffect] token:", token);
-    if (!token) {
-      console.log("🚪 [useEffect] Redirecting to /login");
-      navigate("/login");
-    }
+    if (!token) navigate("/login");
   }, [token, navigate]);
 
-  // ---- 🔹 Все RTK Query запросы ----
-  const {
-    data: userProfile,
-    isLoading: loadingProfile,
-    refetch: refetchProfile,
+  // ✅ 1. Достаем isLoading и переименовываем в loadingProfile
+  const { 
+    data: userProfile, 
+    isLoading: loadingProfile, // <--- Вернули лоадер
+    refetch: refetchProfile 
   } = useGetUserProfileQuery(undefined, { skip: !token });
-
+  
   const {
     data: orders,
     isLoading: loadingOrders,
@@ -76,10 +82,8 @@ export function UserProfile() {
     refetch: refetchFavorites,
   } = useGetUserFavoritesQuery(undefined, { skip: !token });
 
-  // ---- 🔹 Форсим обновление при смене токена ----
   useEffect(() => {
     if (token) {
-      console.log("🔄 Token changed — refetching user data...");
       refetchProfile();
       refetchOrders();
       refetchDiscounts();
@@ -87,285 +91,199 @@ export function UserProfile() {
     }
   }, [token, refetchProfile, refetchOrders, refetchDiscounts, refetchFavorites]);
 
-  // ---- 🔹 UI состояния ----
-  const [expandedSection, setExpandedSection] = useState(null);
-  const [showGallery, setShowGallery] = useState(false);
-
   useEffect(() => {
-    if (location.state?.openSection === "favorites") setExpandedSection("favorites");
-    if (location.state?.showGallery) setShowGallery(true);
+    if (location.state?.openSection) setActiveTab(location.state.openSection);
   }, [location.state]);
 
-  const hasAuthError =
-    errorOrders?.originalStatus === 401 ||
-    errorOrders?.originalStatus === 400 ||
-    errorDiscounts?.originalStatus === 401 ||
-    errorDiscounts?.originalStatus === 400 ||
-    errorFavorites?.originalStatus === 401 ||
-    errorFavorites?.originalStatus === 400;
+  const sortedOrders = useMemo(() => {
+    if (!orders) return [];
+    return [...orders].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }, [orders]);
 
-  console.log("🛑 [UserProfile] hasAuthError:", hasAuthError);
-
-  const handleReLogin = () => {
+  // --- Handlers ---
+  const handleLogout = () => {
+    dispatch(userApi.util.resetApiState());
     dispatch(logoutUser());
     navigate("/login");
   };
 
-  
+  const handleGoShopping = () => navigate("/products");
+
+  const handleEditProfile = (id) => console.log("Edit profile:", id);
+  const handleAddNewProfile = () => console.log("Add new profile");
+
+  const hasAuthError = errorOrders?.originalStatus === 401 || errorOrders?.originalStatus === 400;
 
   if (hasAuthError) {
     return (
       <div className="up-container">
-        <div className="up-card">
-          <div className="up-error-auth">
-            <h3>🔐 {t("userProfile.authError")}</h3>
-            <p>
-              {t("userProfile.status")}:{" "}
-              {errorOrders?.originalStatus ||
-                errorDiscounts?.originalStatus ||
-                errorFavorites?.originalStatus}
-            </p>
-            <p>
-              {t("userProfile.error")}:{" "}
-              {errorOrders?.data?.message ||
-                errorDiscounts?.data?.message ||
-                errorFavorites?.data?.message}
-            </p>
-            <p>{t("userProfile.loginAgain")}</p>
-            <button className="up-login-btn" onClick={handleReLogin}>
-              {t("userProfile.loginBtn")}
-            </button>
-            <button
-              className="up-login-btn"
-              onClick={() => {
-                localStorage.removeItem("token");
-                window.location.reload();
-              }}
-              style={{ marginTop: "10px", backgroundColor: "#666" }}
-            >
-              {t("userProfile.clearToken")}
-            </button>
-          </div>
+        <div className="up-error-auth">
+          <h3>🔐 {t("userProfile.authError")}</h3>
+          <button className="up-login-btn" onClick={handleLogout}>{t("userProfile.loginBtn")}</button>
         </div>
       </div>
     );
   }
 
-    const handleLogOutProfile = () => {
-      // 💥 сбрасываем кэш RTK Query и стейт при logout
-      dispatch(userApi.util.resetApiState());
-      dispatch(logoutUser());
-      navigate("/login");
-    };
-
-    const handleEditProfile = (profileId) => {
-      console.log(`Editing profile: ${profileId}`);
-    };
-
-    const handleAddNewProfile = () => {
-      console.log("Adding new profile");
-    };
-
-    // 1️⃣ ДОБАВЛЯЕМ ФИЛЬТРАЦИЮ (перед return)
-  // Оставляем только те, где статус НЕ pending (без учета регистра)
-  const visibleOrders = orders?.filter(
-    (order) => order.status?.toLowerCase() !== "pending"
-  );
-
   return (
     <div className="up-container">
-       <div className="up-greeting-text">
-        <h1>
-          <span className="wave-hand">👋</span> {t("userProfile.greetingTitle")}
-        </h1>
-        <p>{t("userProfile.greetingSubtitle", { name: name || t("userProfile.user") })}</p>
+      {/* Приветствие */}
+      <div className="up-greeting-section">
+        <div className="up-text-content">
+          <h1>{t("userProfile.greetingTitle")} <span className="wave-hand">👋</span></h1>
+          <p className="up-subtitle">{t("userProfile.greetingSubtitle", { name: name || "User" })}</p>
+          <p className="up-email">{email}</p>
+        </div>
+        <button onClick={handleLogout} className="up-logout-mini-btn">
+          {t("userProfile.logout")}
+        </button>
       </div>
 
-      {loadingProfile ? (
-  <div className="up-loading-state">
-    <div className="up-loading-spinner"></div>
-    <span>Loading profile...</span>
-  </div>
-) : (
-  <CardGallery
-    profiles={userProfile ? [userProfile] : []}
-    onEditProfile={handleEditProfile}
-    onLogOut={handleLogOutProfile}
-    onAddNewProfile={handleAddNewProfile}
-  />
-)}
-
-
-
-      <div className="up-card">
-        <div className="up-header">
-          <div className="up-avatar">
-            <span>{name?.charAt(0)?.toUpperCase()}</span>
+      {/* ✅ 2. Логика загрузки CardGallery */}
+      <div className="up-gallery-wrapper">
+        {loadingProfile ? (
+          <div className="up-loading-state" style={{ height: "150px" }}> {/* Чуть меньше высота для этого блока */}
+            <div className="up-spinner"></div>
+            <span style={{ marginLeft: "10px" }}>Loading profiles...</span>
           </div>
-          <div>
-            <h2>{name}</h2>
-            <p>{email}</p>
-          </div>
+        ) : (
+          <CardGallery
+            profiles={userProfile ? [userProfile] : []}
+            onEditProfile={handleEditProfile}
+            onLogOut={handleLogout}
+            onAddNewProfile={handleAddNewProfile}
+          />
+        )}
+      </div>
+
+      {/* Dashboard */}
+      <div className="up-dashboard">
+        <div className="up-tabs-header">
+          <TabButton 
+            active={activeTab === "orders"} 
+            onClick={() => setActiveTab("orders")} 
+            label={t("userProfile.orders")}
+            icon="📦"
+            count={loadingOrders ? 0 : sortedOrders?.length}
+          />
+          <TabButton 
+            active={activeTab === "favorites"} 
+            onClick={() => setActiveTab("favorites")} 
+            label={t("userProfile.favorites")}
+            icon="❤️"
+            count={loadingFavorites ? 0 : favorites?.length}
+          />
+          <TabButton 
+            active={activeTab === "discounts"} 
+            onClick={() => setActiveTab("discounts")} 
+            label={t("userProfile.discounts")}
+            icon="🎫"
+            count={loadingDiscounts ? 0 : discounts?.length}
+          />
         </div>
 
-        <div className="up-accordion">
-          {/* Orders */}
-          <AccordionItem
-          title={t("userProfile.orders")}
-          // 2️⃣ ИСПОЛЬЗУЕМ visibleOrders ДЛЯ СЧЕТЧИКА
-          count={loadingOrders ? "..." : visibleOrders?.length || 0}
-        >
-          {loadingOrders ? (
-            <div className="up-loading-state">
-              <div className="up-loading-spinner"></div>
-              <span>{t("userProfile.loadingOrders")}</span>
-            </div>
-          ) : errorOrders ? (
-             {/* ... (код ошибки без изменений) */}
-          ) : visibleOrders && visibleOrders.length > 0 ? ( // 3️⃣ ПРОВЕРЯЕМ visibleOrders
-            <div className="up-orders-list">
-              {/* 4️⃣ РЕНДЕРИМ visibleOrders ВМЕСТО orders */}
-              {visibleOrders.map((order) => (
-                <div key={order._id} className="up-order-card">
-                  <div className="up-order-header">
-                    <span className="up-order-id">
-                      {t("userProfile.order")} #{order._id}
-                    </span>
-                    <span className={`up-order-status ${order.status.toLowerCase()}`}>
-                      {order.status}
-                    </span>
-                  </div>
-
-                  <div className="up-order-details">
-                    <span> {new Date(order.createdAt).toLocaleDateString()}</span>
-                    <span className="up-order-total">{order.totalPrice} PLN</span>
-                  </div>
-
-                  {/* 5️⃣ УЛУЧШЕННАЯ СТРУКТУРА ТОВАРОВ */}
-                  <div className="up-order-products-divider"></div>
-                  <div className="up-order-products">
-                    {order.products.map((p, idx) => (
-                      <div key={idx} className="up-order-product">
-                        <div className="up-product-img-wrapper">
-                           {/* Используем fallback если картинки нет */}
-                           <img src={p.image || "https://via.placeholder.com/50"} alt={p.name} />
+        <div className="up-tab-content">
+          {/* ORDERS */}
+          {activeTab === "orders" && (
+            <div className="up-fade-in">
+              {loadingOrders ? (
+                <div className="up-loading-state"><div className="up-spinner"></div> Loading...</div>
+              ) : sortedOrders?.length > 0 ? (
+                <div className="up-orders-list">
+                  {sortedOrders.map((order) => (
+                    <div key={order._id} className="up-order-card">
+                      <div className="up-order-header">
+                        <div className="up-order-meta">
+                          <span className="up-order-id">#{order._id.slice(-6).toUpperCase()}</span>
+                          <span className="up-order-date">{new Date(order.createdAt).toLocaleDateString()}</span>
                         </div>
-                        <div className="up-order-product-info">
-                          <span className="up-product-name">{p.name}</span>
-                          <span className="up-product-meta">
-                            {p.quantity} × {p.price} PLN
-                          </span>
-                        </div>
+                        <span className={`up-status-badge ${order.status.toLowerCase()}`}>{order.status}</span>
                       </div>
-                    ))}
-                  </div>
+                      <div className="up-order-products-preview">
+                         {order.products.map((p, idx) => (
+                           <div key={idx} className="up-mini-product">
+                             <ImageWithFallback src={p.image} alt={p.name} />
+                             <div className="up-mini-info">
+                               <span className="name">{p.name}</span>
+                               <span className="qty">x{p.quantity}</span>
+                             </div>
+                           </div>
+                         ))}
+                      </div>
+                      <div className="up-order-footer">
+                        <span className="up-total-label">Total:</span>
+                        <span className="up-total-price">{order.totalPrice} PLN</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          ) : (
-            <div className="up-empty-state">
-              <div className="up-empty-icon">📦</div>
-              <p>{t("userProfile.noOrders")}</p>
-              <p className="up-empty-description">{t("userProfile.ordersDesc")}</p>
+              ) : (
+                <div className="up-empty-state">
+                  <div className="up-empty-icon">📦</div>
+                  <h3>{t("userProfile.noOrders")}</h3>
+                  <button className="up-cta-btn" onClick={handleGoShopping}>{t("userProfile.goShopping")}</button>
+                </div>
+              )}
             </div>
           )}
-        </AccordionItem>
 
+          {/* FAVORITES */}
+          {activeTab === "favorites" && (
+            <div className="up-fade-in">
+              {loadingFavorites ? (
+                <div className="up-loading-state"><div className="up-spinner"></div> Loading...</div>
+              ) : favorites?.length > 0 ? (
+                <div className="up-favorites-grid">
+                  {favorites.map((product) => (
+                    <div key={product.id} className="up-favorite-card" onClick={() => navigate(`/product/${product.id}`)}>
+                      <div className="up-fav-img-wrapper">
+                        <ImageWithFallback src={product.image} alt={product.name[currentLang]} />
+                      </div>
+                      <div className="up-fav-info">
+                        <span className="up-fav-name">{product.name[currentLang]}</span>
+                        <span className="up-fav-price">{product.price} PLN</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="up-empty-state">
+                  <div className="up-empty-icon">❤️</div>
+                  <h3>{t("userProfile.noFavorites")}</h3>
+                  <button className="up-cta-btn" onClick={handleGoShopping}>{t("userProfile.findFavorites")}</button>
+                </div>
+              )}
+            </div>
+          )}
 
-          {/* Discounts */}
-          <AccordionItem
-            title={t("userProfile.discounts")}
-            count={loadingDiscounts ? "..." : discounts?.length || 0}
-          >
-            {loadingDiscounts ? (
-              <div className="up-loading-state">
-                <div className="up-loading-spinner"></div>
-                <span>{t("userProfile.loadingDiscounts")}</span>
-              </div>
-            ) : errorDiscounts ? (
-              <div>
-                <p className="up-error-message">{t("userProfile.failedDiscounts")}</p>
-                <p style={{ color: "#666", fontSize: "12px" }}>
-                  {t("userProfile.status")}: {errorDiscounts?.originalStatus}
-                  <br />
-                  {t("userProfile.error")}: {errorDiscounts?.data?.message}
-                </p>
-              </div>
-            ) : discounts && discounts.length > 0 ? (
-              <div className="up-discounts-list">
-                {discounts.map((discount, idx) => (
-                  <div key={idx} className="up-discount-card">
-                    <div className="up-discount-header">
-                      <span className="up-discount-code">{discount.code}</span>
-                      <span className="up-discount-value">{discount.value}% OFF</span>
+          {/* DISCOUNTS */}
+          {activeTab === "discounts" && (
+            <div className="up-fade-in">
+              {loadingDiscounts ? (
+                <div className="up-loading-state"><div className="up-spinner"></div> Loading...</div>
+              ) : discounts?.length > 0 ? (
+                <div className="up-discounts-grid">
+                  {discounts.map((discount, idx) => (
+                    <div key={idx} className="up-discount-ticket">
+                      <div className="up-discount-left">
+                        <span className="up-discount-amount">{discount.value}%</span>
+                        <span className="up-discount-label">OFF</span>
+                      </div>
+                      <div className="up-discount-right">
+                        <span className="up-code-value">{discount.code}</span>
+                        <span className="up-expires">Exp: {new Date(discount.expiresAt).toLocaleDateString()}</span>
+                      </div>
                     </div>
-                    <div className="up-discount-details">
-                      <span>
-                        {t("userProfile.expires")}:{" "}
-                        {new Date(discount.expiresAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="up-empty-state">
-                <div className="up-empty-icon">🎁</div>
-                <p>{t("userProfile.noDiscounts")}</p>
-                <p className="up-empty-description">
-                  {t("userProfile.discountsDesc")}
-                </p>
-              </div>
-            )}
-          </AccordionItem>
-
-          {/* Favorites */}
-          <AccordionItem
-            title={t("userProfile.favorites")}
-            count={loadingFavorites ? "..." : favorites?.length || 0}
-            isOpen={expandedSection === "favorites"}
-          >
-            {loadingFavorites ? (
-              <div className="up-loading-state">
-                <div className="up-loading-spinner"></div>
-                <span>{t("userProfile.loadingFavorites")}</span>
-              </div>
-            ) : errorFavorites ? (
-              <div>
-                <p className="up-error-message">{t("userProfile.failedFavorites")}</p>
-                <p style={{ color: "#666", fontSize: "12px" }}>
-                  {t("userProfile.status")}: {errorFavorites?.originalStatus}
-                  <br />
-                  {t("userProfile.error")}: {errorFavorites?.data?.message}
-                </p>
-              </div>
-            ) : favorites && favorites.length > 0 ? (
-              <div className="up-favorites-grid">
-                {favorites.map((product) => (
-                  <div key={product.id} className="up-favorite-card">
-                    <ImageWithFallback
-                      src={product.image}
-                      alt={product.name[currentLang]}
-                    />
-                    <div className="up-favorite-info">
-                      <span className="up-favorite-name">
-                        {product.name[currentLang]}
-                      </span>
-                      <span className="up-favorite-price">{product.price}pln</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="up-empty-state">
-                <div className="up-empty-icon">❤️</div>
-                <p>{t("userProfile.noFavorites")}</p>
-                <p className="up-empty-description">
-                  {t("userProfile.favoritesDesc")}
-                </p>
-              </div>
-            )}
-          </AccordionItem>
+                  ))}
+                </div>
+              ) : (
+                <div className="up-empty-state">
+                  <div className="up-empty-icon">🎫</div>
+                  <h3>{t("userProfile.noDiscounts")}</h3>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

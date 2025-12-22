@@ -458,7 +458,7 @@
   }
   
   .personal-fi-main-video {
-    aspect-ratio: 3/4;
+    aspect-ratio: 1/1;
     overflow: hidden;
     border-radius: 12px;
     background-color: #000;

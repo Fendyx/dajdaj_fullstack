@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCreditCard, FaGoogle, FaApple, FaBolt } from "react-icons/fa";
+import { FaCreditCard, FaGoogle, FaApple } from "react-icons/fa";
 import BlikPayment from "./BlikPayment";
 import CardPayment from "./CardPayment";
 import "./PaymentMethods.css"; 
@@ -14,8 +14,6 @@ const PaymentMethods = ({
   handleCardFieldFocus,
   handleCardFieldBlur,
   canMakePaymentResult,
-  // paymentRequest здесь больше не обязателен для рендера, 
-  // так как кнопка переехала в Footer, но оставим, если понадобится логика
 }) => {
   
   const renderOption = (id, label, icon, iconClass, children = null) => {
@@ -67,7 +65,7 @@ const PaymentMethods = ({
           "Google Pay", 
           <FaGoogle />, 
           "pm-google",
-          <div style={{ fontSize: "14px", color: "#666", padding: "5px 0" }}>
+          <div className="pm-helper-text">
             Click the button below to pay with Google Pay
           </div>
         )}
@@ -78,7 +76,7 @@ const PaymentMethods = ({
           "Apple Pay", 
           <FaApple />, 
           "pm-apple",
-          <div style={{ fontSize: "14px", color: "#666", padding: "5px 0" }}>
+          <div className="pm-helper-text">
             Click the button below to pay with Apple Pay
           </div>
         )}
@@ -87,7 +85,11 @@ const PaymentMethods = ({
         {renderOption(
           "blik", 
           "BLIK", 
-          <FaBolt />, 
+          <img 
+            src="/blik.svg" 
+            alt="BLIK" 
+            className="pm-icon-img"
+          />, 
           "pm-blik",
           <BlikPayment blikCode={blikCode} setBlikCode={setBlikCode} />
         )}
@@ -106,7 +108,6 @@ const PaymentMethods = ({
           />
         )}
         
-        {/* Добавьте отступ внизу для лучшего скролла */}
         <div className="pm-mobile-spacer"></div>
       </div>
     </div>

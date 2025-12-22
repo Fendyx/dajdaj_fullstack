@@ -24,6 +24,7 @@
       "error": "Error",
       "loginAgain": "Please log in again.",
       "loginBtn": "Login Again",
+      "logout": "Logout",
       "clearToken": "Clear Token & Reload",
 
       "greetingTitle": "We are happy to see you!",

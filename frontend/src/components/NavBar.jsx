@@ -99,14 +99,14 @@ const NavBar = () => {
 
           {/* Desktop Icons */}
           {!auth._id && (
-            <Link to="/login" className="nav-icon sign-in">
-              <i className="fa-solid fa-user"></i> {t("navbar.signIn")}
-            </Link>
-          )}
-          {!auth._id && (
-            <Link to="/register" className="nav-icon join-us">
-              <i className="fa-solid fa-user-plus"></i> {t("navbar.joinUs")}
-            </Link>
+            <div className="auth-actions">
+              <Link to="/login" className="auth-btn sign-in">
+                {t("navbar.signIn")}
+              </Link>
+              <Link to="/register" className="auth-btn join-us">
+                {t("navbar.joinUs")}
+              </Link>
+            </div>
           )}
           {auth._id && (
             <Link to="/profile" className="nav-icon favorites-link">

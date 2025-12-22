@@ -312,4 +312,44 @@ router.get("/webhook-test-endpoint", (req, res) => {
   });
 });
 
+
+// ✅ НОВЫЙ РОУТ: Тест отправки почты (без покупки)
+// Вызови в браузере: http://localhost:3000/api/webhook/test-email?email=tvoy@email.com
+router.get("/test-email", async (req, res) => {
+  const targetEmail = req.query.email;
+
+  if (!targetEmail) {
+    return res.status(400).send("❌ Укажите email в параметрах. Пример: /test-email?email=test@test.com");
+  }
+
+  console.log(`📧 Testing email sending to: ${targetEmail}`);
+
+  // Создаем фейковый объект заказа для теста
+  const fakeOrder = {
+    _id: "TEST-ID-123",
+    orderNumber: "TEST-ORDER-001",
+    totalPrice: 999,
+    products: [
+      { name: "Test Product A", quantity: 1, price: 500 },
+      { name: "Test Product B", quantity: 2, price: 249.5 }
+    ],
+    deliveryInfo: {
+      name: "Test User",
+      method: "Courier",
+      phone: "123-456-789",
+      address: { city: "Warsaw", street: "Testowa 1" },
+      email: targetEmail // 👈 Используем email из запроса
+    }
+  };
+
+  try {
+    // Пробуем отправить
+    await sendOrderEmail(fakeOrder);
+    res.send(`✅ Письмо успешно отправлено на ${targetEmail}. Проверь папку Спам!`);
+  } catch (err) {
+    console.error("❌ Email Test Failed:", err);
+    res.status(500).send(`❌ Ошибка отправки: ${err.message}. Смотри консоль сервера.`);
+  }
+});
+
 module.exports = router;

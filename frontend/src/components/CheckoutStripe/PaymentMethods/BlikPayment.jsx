@@ -1,7 +1,5 @@
 import React from "react";
-import "./PaymentMethods.css"; // Подключаем новый файл стилей
-// Иконка тут не обязательна, так как она уже есть в заголовке метода оплаты,
-// но если хочешь оставить в лейбле — можно. Я сделал дизайн чище.
+import "./PaymentMethods.css"; 
 
 const BlikPayment = ({ blikCode, setBlikCode }) => {
   return (
@@ -16,7 +14,6 @@ const BlikPayment = ({ blikCode, setBlikCode }) => {
         placeholder="000 000"
         value={blikCode}
         onChange={(e) => {
-          // Разрешаем только цифры
           const val = e.target.value.replace(/\D/g, "");
           setBlikCode(val);
         }}
@@ -24,7 +21,7 @@ const BlikPayment = ({ blikCode, setBlikCode }) => {
         autoComplete="one-time-code"
         required
       />
-      <p style={{ fontSize: "0.8rem", color: "#6b7280", marginTop: "8px" }}>
+      <p className="pm-input-hint">
         Open your banking app to generate the code.
       </p>
     </div>

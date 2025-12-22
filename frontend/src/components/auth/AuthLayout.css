@@ -1,85 +1,24 @@
 .auth-container {
-    display: flex;
-    height: 100vh;
-    margin-top: 80px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f6f8;
+  padding: 1rem;
+  padding-top: 80px;
   
-  .auth-image, .auth-form {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-  }
+  /* Добавляем box-sizing, чтобы padding не увеличивал ширину сверх меры */
+  box-sizing: border-box; 
   
-  .auth-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .image-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-  
-  .image-text {
-    color: white;
-    text-align: center;
-    padding: 20px;
-    z-index: 2;
-  }
-  
-  .image-text h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    font-weight: bold;
-  }
-  
-  .image-text p {
-    font-size: 1.5rem;
-  }
-  
-  /* Мобильная версия */
-  .mobile-image {
-    display: none;
-  }
+  /* Если контент больше экрана, разрешаем скролл */
+  overflow-y: auto; 
+}
 
-
-  
-  @media (max-width: 768px) {
-    .auth-container {
-      flex-direction: column;
-    }
-  
-    .desktop-image {
-      display: none !important;
-    }
-  
-    .mobile-image {
-      display: flex;
-      height: 40vh;
-      order: -1; /* Всегда сверху */
-    }
-  
-    .auth-form {
-      height: 60vh;
-      padding: 1rem;
-    }
-  
-    .image-text h1 {
-      font-size: 2rem;
-    }
-  
-    .image-text p {
-      font-size: 1.2rem;
-    }
+/* Фикс для очень низких экранов (ландшафтная ориентация телефона и т.д.) */
+@media (max-height: 600px) {
+  .auth-container {
+    align-items: flex-start; /* Прижимаем к верху, чтобы было удобно скроллить */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
   }
+}

@@ -6,7 +6,6 @@ import logo from "../../assets/img/dajdaj_180.png";
 import { 
   AiFillInstagram, 
   AiFillFacebook, 
-  AiOutlineTwitter, 
   AiOutlineMail, 
   AiOutlineHeart, 
   AiOutlineDown, 
@@ -47,10 +46,7 @@ export default function Footer() {
                 <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="icon-button">
                   <AiFillFacebook size={24} color="black" />
                 </a>
-                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="icon-button">
-                  <AiOutlineTwitter size={24} color="black" />
-                </a>
-                <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer" className="icon-button">
+                <a href="https://tiktok.com/@dajdaj_shop" target="_blank" rel="noopener noreferrer" className="icon-button">
                   <SiTiktok size={24} color="black" />
                 </a>
               </div>

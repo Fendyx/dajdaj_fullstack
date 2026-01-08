@@ -8,20 +8,22 @@ require("dotenv").config();
 
 console.log("🚀 Starting Dajdaj backend...");
 
+// --- ИМПОРТЫ РОУТОВ ---
 const register = require("./routes/register");
 const login = require("./routes/login");
 const stripeRoutes = require("./routes/stripe");
 const stripeWebhook = require("./routes/webhook");
 const profile = require("./routes/profile");
-const products = require("./products"); // <-- Ваш массив продуктов
+const products = require("./products");
 const oauth = require("./routes/oauth");
 const paymentIntent = require("./routes/paymentIntent");
 const orders = require("./routes/orders");
 const adminUsers = require("./routes/adminUsers");
+const personalOrders = require("./routes/personalOrders"); // <--- 1. НОВЫЙ ИМПОРТ
 
 const app = express();
 
-// CORS
+// 1. CORS
 const corsOptions = {
   origin: process.env.CLIENT_URL,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -31,34 +33,38 @@ app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 console.log("🌐 CORS configured for:", process.env.CLIENT_URL);
 
-// Webhook BEFORE express.json
+// 2. STRIPE WEBHOOK (Должен быть ДО express.json, так как ему нужен Raw Body)
 app.use("/api/stripe", stripeWebhook);
-console.log("📡 Stripe webhook route mounted");
+console.log("📡 Stripe webhook route mounted (before body parser)");
 
-// JSON parser
-app.use(express.json());
-console.log("📦 express.json middleware enabled");
+// 3. BODY PARSERS (ЗДЕСЬ МЫ УВЕЛИЧИВАЕМ ЛИМИТ ДО 50MB)
+// Это применится ко всем роутам НИЖЕ этой строчки
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+console.log("📦 express.json middleware enabled (limit: 50mb)");
 
-// Stripe routes
+// 4. ОСТАЛЬНЫЕ РОУТЫ STRIPE (Им нужен JSON, поэтому они идут ПОСЛЕ парсера)
 app.use("/api/stripe", paymentIntent);
 console.log("💳 Stripe paymentIntent route mounted");
 
 app.use("/api/stripe", stripeRoutes);
 console.log("🧾 Stripe checkout-session route mounted");
 
-// Static files
+// 5. СТАТИКА
 app.use("/images", express.static(path.join(__dirname, "images")));
 console.log("🖼️ Static image route mounted");
 
-// API routes
+// 6. API РОУТЫ
 app.use("/api/register", register);
 app.use("/api/login", login);
 app.use("/api/user", profile);
 app.use("/api/oauth", oauth);
 app.use("/api/orders", orders); 
 app.use("/api/users", adminUsers);
-console.log("📦 Admin users routes mounted");
+app.use("/api/personal-orders", personalOrders); // <--- ПОДКЛЮЧЕНИЕ ЗАГРУЗКИ ФОТО
 
+console.log("📦 Admin users routes mounted");
+console.log("📦 Personal orders routes mounted");
 console.log("📦 Orders routes mounted");
 console.log("🔐 Auth routes mounted");
 
@@ -149,7 +155,7 @@ app.get("/products", (req, res) => {
     const lang = req.query.lang === "pl" ? "pl" : "en";
     const localizedProducts = products.map((product) => ({
       id: product.id,
-      slug: product.slug, // Добавляем slug
+      slug: product.slug,
       name: product.name[lang],
       description: product.description[lang],
       descriptionProductPage: product.descriptionProductPage[lang],
@@ -171,8 +177,7 @@ app.get("/products", (req, res) => {
 });
 
 
-// -------------------------------------------------------------------
-// 🚀 НОВЫЙ МАРШРУТ: GET /api/products/slug/:slugName (Возвращает ОДИН продукт по SLUG)
+// GET /api/products/slug/:slugName (Возвращает ОДИН продукт по SLUG)
 app.get("/api/products/slug/:slugName", (req, res) => {
     const slugName = req.params.slugName; 
     console.log(`📥 GET /api/products/slug/${slugName}`);
@@ -182,7 +187,6 @@ app.get("/api/products/slug/:slugName", (req, res) => {
     }
 
     try {
-        // 1. Ищем продукт в массиве по полю 'slug'
         const product = products.find(p => p.slug === slugName);
 
         if (!product) {
@@ -192,7 +196,6 @@ app.get("/api/products/slug/:slugName", (req, res) => {
             });
         }
         
-        // 2. Локализация найденного продукта
         const lang = req.query.lang === "pl" ? "pl" : "en";
         const localizedProduct = {
             id: product.id,
@@ -207,12 +210,9 @@ app.get("/api/products/slug/:slugName", (req, res) => {
             isPopular: product.isPopular,
             phrases: product.phrases[lang],
             link: product.link,
-            // Дополнительные поля (например, 3D модель, если есть)
             threeDModelSrc: product.threeDModelSrc || null, 
-            // ... другие поля
         };
 
-        // 3. Возвращаем продукт
         res.status(200).json(localizedProduct);
 
     } catch (error) {
@@ -220,7 +220,6 @@ app.get("/api/products/slug/:slugName", (req, res) => {
         res.status(500).json({ message: "Ошибка сервера при загрузке продукта по slug" });
     }
 });
-// -------------------------------------------------------------------
 
 
 // MongoDB

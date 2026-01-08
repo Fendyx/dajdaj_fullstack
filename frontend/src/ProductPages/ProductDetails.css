@@ -9,68 +9,37 @@
   align-items: start;
 }
 
-/* --- Галерея --- */
-.prod-gallery-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.5rem;
-  width: 100%;
-}
-
-.prod-gallery {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.prod-3d-button-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.prod-viewer3d {
+/* --- Загрузка и ошибки --- */
+.prod-loading, .prod-not-found {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  height: 300px;
   width: 100%;
-  max-width: 31rem;
-  aspect-ratio: 1 / 1;
-  background: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 2rem;
-  text-align: center;
-}
-
-.prod-viewer3d-icon {
-  font-size: 4rem;
-  color: #9ca3af;
-  margin-bottom: 1rem;
-}
-
-.prod-viewer3d-title {
   color: #6b7280;
-  margin-bottom: 0.5rem;
+  font-size: 1.125rem;
 }
 
-.prod-viewer3d-subtitle {
-  font-size: 0.875rem;
-  color: #9ca3af;
+.prod-loading-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: #e5e7eb;
+  animation: spin 1s linear infinite;
 }
 
-/* --- Информация --- */
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* --- Основной блок информации --- */
 .prod-info {
   display: flex;
   flex-direction: column;
-  /* Убрали gap здесь, так как отступы будут регулироваться внутри prod-actions-sticky */
-  gap: 1.5rem; 
+  gap: 1.25rem;
   width: 100%;
   height: 100%;
-  max-width: none; 
 }
 
 .prod-header {
@@ -79,106 +48,232 @@
 
 .prod-title {
   font-size: 2.25rem;
+  font-weight: 800;
   color: #111827;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+}
+
+/* --- Social Proof (Новое) --- */
+.prod-rating-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   margin-bottom: 1rem;
-  width: 100%;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.prod-rating-summary:hover {
+  opacity: 0.8;
+}
+
+.prod-stars-row {
+  display: flex;
+  gap: 0.15rem;
+  font-size: 1.1rem;
+}
+
+.prod-rating-text {
+  font-size: 0.95rem;
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
 }
 
 .prod-description {
-  font-size: 1.125rem;
+  font-size: 1.05rem;
   color: #4b5563;
-  line-height: 1.7;
-  width: 100%;
+  line-height: 1.6;
+}
+
+/* --- Цена и наличие (Новое) --- */
+.prod-price-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 
 .prod-price {
   font-size: 2.25rem;
+  font-weight: 700;
   color: #111827;
-  width: 100%;
+  letter-spacing: -0.02em;
 }
 
-/* === STICKY WRAPPER ДЛЯ КНОПОК (ИЗМЕНЕНО) === */
-.prod-actions-sticky {
-  position: -webkit-sticky;
-  position: sticky;
-
-  /* --- ПОДНЯЛИ НА 20px --- */
-  bottom: 65px; 
-  z-index: 50;
-  
+.prod-stock-badge {
   display: flex;
-  flex-direction: row;
-  gap: 0.75rem;
-  
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #10b981; /* Зеленый цвет успеха */
+  font-weight: 600;
 }
 
-/* ОБЩИЕ СТИЛИ ДЛЯ ОБЕИХ КНОПОК (НОВОЕ) */
+.stock-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+}
+
+/* --- USP Grid (Новое) --- */
+.prod-usp-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  padding: 1rem 0.5rem;
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+}
+
+.prod-usp-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem;
+}
+
+.prod-usp-item span {
+  font-size: 0.75rem;
+  color: #374151;
+  line-height: 1.3;
+  font-weight: 500;
+}
+
+.usp-icon {
+  font-size: 1.5rem;
+  color: #3b82f6; /* Акцентный синий */
+}
+
+/* --- Кнопка 3D --- */
+.three-d-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 0.5rem;
+}
+
+.three-d-button:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+  background: #eff6ff;
+}
+
+/* --- Sticky Actions Wrapper --- */
+.prod-actions-sticky {
+  position: sticky;
+  bottom: 1rem; /* Отступ снизу */
+  z-index: 50;
+  display: flex;
+  gap: 0.75rem;
+  background: transparent;
+  padding-top: 0.5rem; /* Небольшой отступ сверху */
+}
+
 .prod-add-btn,
 .prod-buy-now-btn {
-    /* ИЗМЕНЕНИЕ: flex: 1 заставляет их делить пространство поровну */
     flex: 1;
-    /* ИЗМЕНЕНИЕ: width: auto вместо 100%, чтобы работал flex: 1 */
-    width: auto;
-
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem; /* Чуть меньше отступ до иконки */
+    gap: 0.5rem;
     border: none;
     border-radius: 0.75rem;
-    
-    /* ИЗМЕНЕНИЕ: Уменьшенные паддинги для компактности в ряду */
-    padding: 0.875rem 0.5rem; 
-    
-    /* ИЗМЕНЕНИЕ: Чуть меньше шрифт, чтобы текст влезал */
-    font-size: 0.9375rem; 
+    padding: 1rem 0.5rem;
+    font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: transform 0.1s, box-shadow 0.2s;
     color: white;
-    /* Запрещаем перенос текста на новую строку, чтобы не ломать высоту */
-    white-space: nowrap; 
+    white-space: nowrap;
 }
 
-/* Индивидуальные цвета кнопок */
+.prod-add-btn:active, .prod-buy-now-btn:active {
+    transform: scale(0.98);
+}
+
 .prod-add-btn {
   background: #3b82f6;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.2);
 }
 
 .prod-add-btn:hover {
   background: #2563eb;
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 6px 12px rgba(59, 130, 246, 0.3);
 }
 
 .prod-buy-now-btn {
-  background: #111827; /* Темный цвет (черный) */
-  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.2);
+  background: #111827; /* Темный (премиум/строгий) */
+  box-shadow: 0 4px 6px rgba(17, 24, 39, 0.2);
 }
 
 .prod-buy-now-btn:hover {
-  background: #374151; /* Чуть светлее при наведении */
-  box-shadow: 0 6px 16px rgba(17, 24, 39, 0.3);
+  background: #1f2937;
+  box-shadow: 0 6px 12px rgba(17, 24, 39, 0.3);
 }
 
 .prod-cart-icon {
-  /* ИЗМЕНЕНИЕ: Чуть меньше иконка */
   font-size: 1.1rem;
 }
 
-/* --- Аккордеоны --- */
+/* --- Trust Badges (Новое) --- */
+.prod-trust-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #e5e7eb;
+}
+
+.prod-secure-text {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.secure-icon {
+  color: #10b981;
+}
+
+.prod-payment-icons {
+  display: flex;
+  gap: 1rem;
+  font-size: 1.75rem;
+  color: #9ca3af;
+}
+
+/* --- Аккордеоны (без изменений) --- */
 .prod-accordion {
-  margin-top: 2rem;
+  margin-top: 1rem;
   background: white;
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
   overflow: hidden;
   width: 100%;
 }
 
 .prod-accordion-item {
-  border-bottom: 1px solid #f3f4f6;
-  width: 100%;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .prod-accordion-item:last-child {
@@ -190,12 +285,14 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
+  padding: 1rem 1.25rem;
   background: transparent;
   border: none;
   cursor: pointer;
   transition: background 0.2s ease;
   text-align: left;
+  font-weight: 500;
+  color: #374151;
 }
 
 .prod-accordion-trigger:hover {
@@ -204,7 +301,7 @@
 
 .prod-accordion-icon {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: #9ca3af;
   transition: transform 0.3s ease;
 }
 
@@ -216,16 +313,14 @@
   max-height: 0;
   overflow: hidden;
   transition: max-height 0.3s ease;
-  width: 100%;
 }
 
 .prod-accordion-content-open {
-  max-height: 1000px;
+  max-height: 1000px; /* Достаточно большое число */
 }
 
 .prod-accordion-inner {
-  padding: 0 1.5rem 1rem;
-  width: 100%;
+  padding: 0 1.25rem 1.25rem;
 }
 
 .prod-row {
@@ -234,27 +329,29 @@
   padding: 0.75rem 0;
   border-bottom: 1px solid #f3f4f6;
   color: #6b7280;
-  width: 100%;
+  font-size: 0.95rem;
 }
 
-.prod-row-last {
+.prod-row.last {
   border-bottom: none;
 }
 
 .prod-row-value {
   color: #111827;
+  font-weight: 500;
 }
 
+/* Отзывы */
 .prod-review {
   border-bottom: 1px solid #f3f4f6;
   padding-bottom: 1rem;
   margin-bottom: 1rem;
-  width: 100%;
 }
 
 .prod-review-last {
   border-bottom: none;
   margin-bottom: 0;
+  padding-bottom: 0;
 }
 
 .prod-review-header {
@@ -262,26 +359,24 @@
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 0.5rem;
-  width: 100%;
 }
 
 .prod-username {
   color: #111827;
+  font-weight: 600;
+  font-size: 0.95rem;
 }
 
 .prod-date {
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: 0.8rem;
+  color: #9ca3af;
 }
 
 .prod-stars {
   display: flex;
-  gap: 0.25rem;
-}
-
-.prod-star {
-  font-size: 1rem;
+  gap: 0.15rem;
   color: #d1d5db;
+  font-size: 0.9rem;
 }
 
 .prod-star-filled {
@@ -290,98 +385,30 @@
 
 .prod-comment {
   color: #4b5563;
-  line-height: 1.6;
-  width: 100%;
+  line-height: 1.5;
+  font-size: 0.95rem;
 }
 
 .prod-no-reviews {
   text-align: center;
-  color: #6b7280;
-  padding: 1rem 0;
-  width: 100%;
-}
-
-/* Loading States */
-.prod-loading {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-  width: 100%;
-  color: #6b7280;
-}
-
-.prod-loading-icon {
-  font-size: 3rem;
-  margin-bottom: 1rem;
   color: #9ca3af;
-}
-
-.prod-not-found {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-  width: 100%;
-  color: #6b7280;
-  font-size: 1.125rem;
+  padding: 1rem 0;
 }
 
 /* --- Responsive --- */
 @media (min-width: 1024px) {
-  .prod-container {
-    /* grid-template-columns: 1fr 1fr; */
-    gap: 3rem;
-  }
-
-  .prod-info {
-    position: sticky;
-    top: 2rem;
-  }
-
-  /* На десктопе отключаем sticky и фон */
   .prod-actions-sticky {
     position: static;
-    background-color: transparent;
-    box-shadow: none;
-    padding: 0;
-    margin: 0;
-    /* На десктопе можно оставить их в ряд, или вернуть в колонку, если нужно.
-       Сейчас они останутся в ряд */
+    margin-top: 1rem;
+  }
+  
+  .prod-usp-grid {
+    padding: 1.5rem 1rem;
   }
 }
 
 @media (min-width: 1600px) {
-  .prod-title {
-    font-size: 3rem;
-  }
-  .prod-description {
-    font-size: 1.25rem;
-  }
-  .prod-price {
-    font-size: 2.5rem;
-  }
-  /* Возвращаем паддинги побольше на огромных экранах */
-  .prod-add-btn, .prod-buy-now-btn {
-    padding: 1rem 1.5rem;
-    font-size: 1rem;
-  }
-}
-
-@media (min-width: 2000px) {
-  .prod-title {
-    font-size: 3.5rem;
-  }
-  .prod-description {
-    font-size: 1.375rem;
-  }
-  .prod-price {
-    font-size: 3rem;
-  }
-   /* Возвращаем паддинги еще больше на гигантских экранах */
-  .prod-add-btn, .prod-buy-now-btn {
-    padding: 1.25rem 2rem;
-     font-size: 1.125rem;
-  }
+  .prod-title { font-size: 3rem; }
+  .prod-price { font-size: 2.5rem; }
+  .prod-add-btn, .prod-buy-now-btn { padding: 1.25rem; font-size: 1.1rem; }
 }

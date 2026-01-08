@@ -37,7 +37,7 @@ const products = [
     id: '2',
     name: { en: 'Beer Edition', pl: 'Edycja "Piwko"' },
     price: 45,
-    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/NewPiwoEdycja_withBox.png',
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/kuba.png',
     category: 'male',
     description: {
       en: 'Bench press lying, drink sitting',

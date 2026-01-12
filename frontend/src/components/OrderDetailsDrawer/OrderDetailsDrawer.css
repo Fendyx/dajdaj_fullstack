@@ -1,0 +1,194 @@
+/* Затемнение фона */
+.odd-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Прижимаем к низу */
+    animation: fadeIn 0.3s ease-out;
+  }
+  
+  /* Само модальное окно (шторка) */
+  .odd-drawer {
+    background: white;
+    width: 100%;
+    max-width: 600px; /* На десктопе не слишком широко */
+    height: 85vh; /* Высота 85% экрана */
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease-out;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Анимации */
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Ручка (iPhone style) */
+  .odd-handle-wrapper {
+    width: 100%;
+    height: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+    background: #fff;
+  }
+  .odd-handle {
+    width: 50px;
+    height: 5px;
+    background-color: #e0e0e0;
+    border-radius: 10px;
+  }
+  
+  /* Контент с прокруткой */
+  .odd-content {
+    padding: 0 20px 20px 20px;
+    overflow-y: auto; /* Скроллим только контент */
+    flex-grow: 1;
+  }
+  
+  /* Заголовок */
+  .odd-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .odd-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+  
+  /* Прогресс бар */
+  .odd-section {
+    margin-bottom: 25px;
+  }
+  .odd-status-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: #555;
+  }
+  .odd-progress-bg {
+    width: 100%;
+    height: 8px;
+    background-color: #f0f0f0;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .odd-progress-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+  
+  /* Доставка */
+  .odd-delivery-box {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid #eee;
+  }
+  .odd-info-row {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+  .odd-label {
+    font-size: 0.8rem;
+    color: #888;
+  }
+  .odd-value {
+    font-weight: 500;
+    color: #333;
+  }
+  .odd-value.big {
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  .odd-tracking {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px dashed #ddd;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.9rem;
+  }
+  .odd-tracking button {
+      background: none;
+      border: none;
+      color: #3498db;
+      cursor: pointer;
+      font-weight: bold;
+  }
+  
+  /* Заглушка ожидания */
+  .odd-delivery-waiting {
+    text-align: center;
+    color: #777;
+  }
+  .odd-icon-box {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  /* Карта */
+  .odd-map-container {
+    height: 200px;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 25px;
+    z-index: 1; /* Чтобы не перекрывало UI */
+  }
+  
+  /* Список продуктов */
+  .odd-product-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    padding-bottom: 10px;
+  }
+  .odd-product-item:last-child {
+    border-bottom: none;
+  }
+  .odd-product-item img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 15px;
+  }
+  .odd-prod-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+  }
+  .odd-prod-meta {
+    color: #888;
+    font-size: 0.85rem;
+  }
+  .odd-user-address {
+      margin-top: 15px;
+      color: #aaa;
+      text-align: center;
+  }

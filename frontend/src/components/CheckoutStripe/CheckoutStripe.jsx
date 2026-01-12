@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom"; // 1. Импортируем useLocation
+import { useLocation } from "react-router-dom";
 import StripePaymentForm from "./StripePaymentForm";
 import "./CheckoutStripe.css";
 
 export default function CheckoutStripe() {
-  const location = useLocation(); // 2. Инициализируем хук
+  const location = useLocation();
   const cart = useSelector((state) => state.cart);
   const auth = useSelector((state) => state.auth);
 
@@ -23,21 +23,22 @@ export default function CheckoutStripe() {
     method: profile?.delivery?.method || "",
   };
 
-  // 3. Логика выбора товаров:
-  // Если есть buyNowItem — создаем массив из него.
-  // Иначе — берем из корзины Redux.
+  // ✅ ИСПРАВЛЕННАЯ ЛОГИКА
+  // Мы должны передавать ВЕСЬ объект товара, чтобы не потерять tempStorageId
   const cartItems = buyNowItem
     ? [
-        {
-          id: buyNowItem.id,
-          qty: buyNowItem.qty || 1, // Убедимся, что количество передается
-          // Можно добавить price, если StripePaymentForm его использует для отображения,
-          // но для API обычно нужны только ID и Qty
-        },
+        // Если это Buy Now, просто берем объект целиком, он уже правильный
+        // (добавляем qty на всякий случай, если его там нет)
+        { 
+          ...buyNowItem, 
+          qty: buyNowItem.cartQuantity || 1 
+        }
       ]
     : cart?.cartItems?.map((item) => ({
-        id: item.id,
-        qty: item.cartQuantity || item.qty || 1,
+        // Если из корзины — копируем ВСЕ поля (...item)
+        // Это сохранит tempStorageId, originalId, price, name и т.д.
+        ...item,
+        qty: item.cartQuantity || 1,
       })) || [];
 
   return (

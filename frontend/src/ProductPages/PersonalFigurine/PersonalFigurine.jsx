@@ -3,14 +3,12 @@ import { FaStar, FaUpload, FaImage, FaShoppingCart, FaCreditCard } from 'react-i
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../slices/cartSlice';
+
+// ✅ Убедись, что путь к utils/db правильный!
 import { saveOrderToDB } from '../../utils/db'; 
 import './PersonalFigurine.css';
 
-// Путь к видео
 const videoSrc = 'https://www.youtube.com/watch?embeds_referring_euri=https%3A%2F%2Frandom-ize.com%2F&source_ve_path=Mjg2NjQsMTY0NTAz&v=zONW46d50A0&feature=youtu.be';
-
-// Путь к заглушке для корзины (чтобы не переполнять память)
-// Убедись, что этот файл есть в папке public (у тебя в дереве был dajdaj_logo1.png)
 const CART_PLACEHOLDER_IMAGE = '/dajdaj_logo1.png'; 
 
 const convertToBase64 = (file) => {
@@ -22,7 +20,50 @@ const convertToBase64 = (file) => {
   });
 };
 
-// --- UI Components ---
+// Функция для создания маленькой миниатюры (до 100px)
+const createThumbnail = (file) => {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Максимальный размер иконки в корзине (например, 150px)
+        const maxSize = 150; 
+        let width = img.width;
+        let height = img.height;
+
+        // Пропорциональное уменьшение
+        if (width > height) {
+          if (width > maxSize) {
+            height *= maxSize / width;
+            width = maxSize;
+          }
+        } else {
+          if (height > maxSize) {
+            width *= maxSize / height;
+            height = maxSize;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Рисуем уменьшенное изображение
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Конвертируем в JPEG с качеством 0.7 (сильное сжатие)
+        // Получится строка размером 3-10 КБ вместо 2 МБ
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
 function VideoPlayer({ src }) {
   const videoRef = useRef(null);
   useEffect(() => {
@@ -40,7 +81,6 @@ function VideoPlayer({ src }) {
           autoPlay muted loop playsInline 
           style={{ pointerEvents: 'none', userSelect: 'none', width: '100%', height: 'auto' }}
         >
-          error
         </video>
       </div>
     </div>
@@ -104,7 +144,6 @@ function Badge({ children, className }) {
   return <span className={`personal-fi-badge ${className}`}>{children}</span>;
 }
 
-// --- MAIN COMPONENT ---
 export default function PersonalFigurine() {
   const [isSticky, setIsSticky] = useState(true);
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -137,36 +176,45 @@ export default function PersonalFigurine() {
     setIsLoading(true);
 
     try {
-      // 1. Конвертация картинок в Base64
-      const base64Images = await Promise.all(
+      // 1. Для IndexedDB (тяжелые данные) конвертируем как есть (оригиналы)
+      // Можно оставить твой старый метод convertToBase64, 
+      // но лучше сохранять только то, что нужно.
+      // Если у тебя convertToBase64 уже есть выше, используем его для DB.
+      const fullSizeImages = await Promise.all(
         selectedFiles.map(file => convertToBase64(file))
       );
 
-      // 2. Создаем уникальный ID для хранилища
+      // 2. А вот для КОРЗИНЫ создаем легкую миниатюру только из первого файла
+      let thumbnailImage = CART_PLACEHOLDER_IMAGE;
+      if (selectedFiles.length > 0) {
+        try {
+          thumbnailImage = await createThumbnail(selectedFiles[0]);
+          console.log("Thumbnail created, length:", thumbnailImage.length); // Для проверки размера
+        } catch (err) {
+          console.warn("Thumbnail creation failed, using placeholder");
+        }
+      }
+
       const tempId = `custom_${Date.now()}`;
       
-      // 3. Формируем "тяжелый" объект ТОЛЬКО для IndexedDB
+      // Сохраняем ТЯЖЕЛЫЕ оригиналы в базу
       const heavyData = {
         id: tempId, 
         inscription: inscription,
-        images: base64Images, // <--- Тут лежат большие файлы
+        images: fullSizeImages, // Оригиналы высокого качества
         timestamp: Date.now()
       };
 
-      // 4. Сохраняем в IndexedDB (нет лимита памяти)
       await saveOrderToDB(heavyData);
+      console.log(`✅ [PersonalFigurine] Saved to DB: ${tempId}`);
 
-      // 5. Формируем "легкий" объект для Redux/Корзины
       return {
-        id: "personal-figurine-custom", 
-        name: "Personalized 3D Figurine",
+        id: "17",         
+        name: "Personal Figurine",
         price: 99,
-        // !!! ИСПРАВЛЕНИЕ ТУТ !!!
-        // Мы НЕ кладем base64Images[0] в Redux, потому что он > 5МБ и ломает LocalStorage.
-        // Используем заглушку. В корзине юзер увидит логотип, но заказ все равно будет с фото.
-        image: CART_PLACEHOLDER_IMAGE, 
+        image: thumbnailImage, // 👈 Сюда идет сжатая картинка (5-10 КБ)
         cartQuantity: 1,
-        tempStorageId: tempId, // Ссылка на тяжелые данные
+        tempStorageId: tempId, 
         isCustom: true
       };
 
@@ -183,17 +231,21 @@ export default function PersonalFigurine() {
     if (item) {
       dispatch(addToCart(item));
       setIsLoading(false);
-      // alert("Added to cart successfully!"); 
-      // Лучше редирект в корзину, чтобы юзер видел результат
       navigate("/cart");
     }
   };
 
   const handleBuyNow = async () => {
+    console.log("🚀 Нажата кнопка Buy Now");
     const item = await prepareProductData();
+    
     if (item) {
+      console.log("👉 Переход на checkout с товаром:", item);
+      // Передаем item через state роутера
       navigate('/checkout-stripe', { state: { buyNowItem: item } });
       setIsLoading(false);
+    } else {
+      console.warn("⚠️ Item creation failed");
     }
   };
 

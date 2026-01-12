@@ -13,6 +13,9 @@ import {
 import { logoutUser } from "../../slices/authSlice";
 
 import { CardGallery } from "./components/CardGallery/CardGallery";
+// 👇 Импортируем нашу новую модалку (проверь путь!)
+import { OrderDetailsDrawer } from "../OrderDetailsDrawer/OrderDetailsDrawer";
+
 import "./UserProfile.css";
 
 // --- Вспомогательные компоненты ---
@@ -49,15 +52,17 @@ export function UserProfile() {
   const location = useLocation();
 
   const [activeTab, setActiveTab] = useState("orders");
+  
+  // 👇 Состояние для выбранного заказа (для модалки)
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     if (!token) navigate("/login");
   }, [token, navigate]);
 
-  // ✅ 1. Достаем isLoading и переименовываем в loadingProfile
   const { 
     data: userProfile, 
-    isLoading: loadingProfile, // <--- Вернули лоадер
+    isLoading: loadingProfile, 
     refetch: refetchProfile 
   } = useGetUserProfileQuery(undefined, { skip: !token });
   
@@ -112,6 +117,16 @@ export function UserProfile() {
   const handleEditProfile = (id) => console.log("Edit profile:", id);
   const handleAddNewProfile = () => console.log("Add new profile");
 
+  // 👇 Обработчик открытия модалки
+  const handleOrderClick = (order) => {
+    setSelectedOrder(order);
+  };
+
+  // 👇 Обработчик закрытия модалки
+  const handleCloseModal = () => {
+    setSelectedOrder(null);
+  };
+
   const hasAuthError = errorOrders?.originalStatus === 401 || errorOrders?.originalStatus === 400;
 
   if (hasAuthError) {
@@ -139,10 +154,10 @@ export function UserProfile() {
         </button>
       </div>
 
-      {/* ✅ 2. Логика загрузки CardGallery */}
+      {/* Галерея профилей */}
       <div className="up-gallery-wrapper">
         {loadingProfile ? (
-          <div className="up-loading-state" style={{ height: "150px" }}> {/* Чуть меньше высота для этого блока */}
+          <div className="up-loading-state" style={{ height: "150px" }}>
             <div className="up-spinner"></div>
             <span style={{ marginLeft: "10px" }}>Loading profiles...</span>
           </div>
@@ -191,7 +206,13 @@ export function UserProfile() {
               ) : sortedOrders?.length > 0 ? (
                 <div className="up-orders-list">
                   {sortedOrders.map((order) => (
-                    <div key={order._id} className="up-order-card">
+                    <div 
+                      key={order._id} 
+                      className="up-order-card"
+                      // 👇 Добавили onClick и стиль курсора
+                      onClick={() => handleOrderClick(order)}
+                      style={{ cursor: "pointer" }}
+                    >
                       <div className="up-order-header">
                         <div className="up-order-meta">
                           <span className="up-order-id">#{order._id.slice(-6).toUpperCase()}</span>
@@ -200,15 +221,19 @@ export function UserProfile() {
                         <span className={`up-status-badge ${order.status.toLowerCase()}`}>{order.status}</span>
                       </div>
                       <div className="up-order-products-preview">
-                         {order.products.map((p, idx) => (
-                           <div key={idx} className="up-mini-product">
-                             <ImageWithFallback src={p.image} alt={p.name} />
-                             <div className="up-mini-info">
-                               <span className="name">{p.name}</span>
-                               <span className="qty">x{p.quantity}</span>
-                             </div>
-                           </div>
-                         ))}
+                        {order.products.map((p, idx) => {
+                          const finalImage = p.personalOrderId?.images?.[0] || p.image;
+
+                          return (
+                            <div key={idx} className="up-mini-product">
+                              <ImageWithFallback src={finalImage} alt={p.name} />
+                              <div className="up-mini-info">
+                                <span className="name">{p.name}</span>
+                                <span className="qty">x{p.quantity}</span>
+                              </div>
+                            </div>
+                          );
+                        })}
                       </div>
                       <div className="up-order-footer">
                         <span className="up-total-label">Total:</span>
@@ -286,6 +311,13 @@ export function UserProfile() {
           )}
         </div>
       </div>
+
+      {/* 👇 Модальное окно деталей заказа */}
+      <OrderDetailsDrawer 
+        isOpen={!!selectedOrder} 
+        onClose={handleCloseModal} 
+        order={selectedOrder} 
+      />
     </div>
   );
 }

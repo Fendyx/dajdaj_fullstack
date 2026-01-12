@@ -25,15 +25,12 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
   let event;
 
   console.log("📦 Webhook received from:", req.headers['host'] || req.headers['origin']);
-  console.log("📦 Webhook user agent:", req.headers['user-agent']);
-  console.log("📦 Webhook timestamp:", new Date().toISOString());
 
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    console.log("✅ Webhook verified:", event.type, "ID:", event.id);
+    console.log("✅ Webhook verified:", event.type);
   } catch (err) {
     console.error("❌ Webhook verification failed:", err?.message);
-    console.error("❌ Webhook secret present:", !!process.env.STRIPE_WEBHOOK_SECRET);
     return res.status(400).send(`Webhook Error: ${err?.message}`);
   }
 
@@ -45,16 +42,9 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
       const metadata = paymentIntent.metadata || {};
       const orderToken = metadata.orderToken;
 
-      console.log("💰 Payment succeeded:", {
-        paymentIntentId,
-        orderToken,
-        amount: paymentIntent.amount,
-        currency: paymentIntent.currency,
-        status: paymentIntent.status
-      });
+      console.log("💰 Payment succeeded for:", orderToken);
 
       if (!orderToken) {
-        console.warn("⚠️ No orderToken in payment intent metadata");
         return res.status(200).json({ received: true, processed: false, reason: "missing_order_token" });
       }
 
@@ -62,12 +52,13 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
       let order = await Order.findOne({ orderToken }).exec();
 
       if (!order) {
-        console.error(`❌ Order not found for orderToken: ${orderToken}`);
+        console.error(`❌ Order not found for token: ${orderToken}. Creating Emergency Order...`);
         
-        // Создаем новый заказ если не найден (резервный вариант)
+        // --- 🚨 АВАРИЙНОЕ СОЗДАНИЕ ЗАКАЗА ---
         try {
-          const userId = metadata.userId;
+          const userId = metadata.userId === "guest" ? undefined : metadata.userId;
           const cartItems = JSON.parse(metadata.cart || '[]');
+          
           const deliveryInfo = {
             name: metadata.delivery_name,
             phone: metadata.delivery_phone,
@@ -77,15 +68,18 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
           };
 
           order = new Order({
-            userId: mongoose.Types.ObjectId.isValid(userId) ? mongoose.Types.ObjectId(userId) : undefined,
+            userId: (userId && mongoose.Types.ObjectId.isValid(userId)) ? mongoose.Types.ObjectId(userId) : undefined,
             orderToken,
             orderNumber: `ORD-${new Date().toISOString().slice(0,10).replace(/-/g,'')}-${String(orderToken).slice(-4).toUpperCase()}`,
             paymentIntentId,
             products: cartItems.map(item => ({
+              id: item.id, // Сохраняем ID товара
               name: item.name || "Unknown",
               price: item.price || 0,
               quantity: item.qty || item.quantity || 1,
               image: item.image || "",
+              // 👇 ГЛАВНОЕ ИСПРАВЛЕНИЕ ЗДЕСЬ 👇
+              personalOrderId: item.personalOrderId || null 
             })),
             totalPrice: paymentIntent.amount / 100,
             status: "paid",
@@ -103,88 +97,49 @@ router.post("/webhook", express.raw({ type: "application/json" }), async (req, r
           });
 
           await order.save();
-          console.log(`🆕 Emergency order created for token ${orderToken}`);
+          console.log(`🆕 Emergency order created successfully with ID: ${order._id}`);
         } catch (createError) {
           console.error("❌ Failed to create emergency order:", createError);
-          return res.status(200).json({ 
-            received: true, 
-            processed: false, 
-            reason: "order_creation_failed" 
-          });
+          return res.status(200).json({ received: true, processed: false, reason: "creation_failed" });
         }
       } else {
-        // Обновляем существующий заказ
+        // Заказ найден - просто обновляем статус
         if (order.status !== "paid") {
           order.status = "paid";
           order.paymentIntentId = paymentIntentId;
           await order.save();
-          console.log(`✅ Order ${order.orderToken} updated to paid status`);
-        } else {
-          console.log(`ℹ️ Order ${order.orderToken} already paid`);
+          console.log(`✅ Order updated to PAID`);
         }
       }
 
-      // Отправляем письмо подтверждения
       await trySendOrderEmail(order);
-
-      return res.status(200).json({ 
-        received: true, 
-        processed: true, 
-        orderId: order._id,
-        status: order.status 
-      });
+      return res.status(200).json({ received: true, processed: true, orderId: order._id });
     }
 
-    // Обрабатываем failed платежи
+    // Обработка остальных событий (Failed / Processing)
     if (event.type === "payment_intent.payment_failed") {
       const paymentIntent = event.data.object;
-      const paymentIntentId = paymentIntent.id;
-      const metadata = paymentIntent.metadata || {};
-      const orderToken = metadata.orderToken;
-
-      console.log("❌ Payment failed:", {
-        paymentIntentId,
-        orderToken,
-        failure_message: paymentIntent.last_payment_error?.message
-      });
-
+      const orderToken = paymentIntent.metadata?.orderToken;
       if (orderToken) {
-        const order = await Order.findOne({ orderToken }).exec();
-        if (order && order.status !== "canceled") {
-          order.status = "failed";
-          order.paymentError = paymentIntent.last_payment_error?.message || "Payment failed";
-          await order.save();
-          console.log(`🔴 Order ${order.orderToken} marked as failed`);
-        }
+        await Order.updateOne({ orderToken }, { status: "failed" });
+        console.log(`🔴 Order ${orderToken} marked as failed`);
       }
     }
 
-    // Обрабатываем processing платежи
     if (event.type === "payment_intent.processing") {
       const paymentIntent = event.data.object;
       const orderToken = paymentIntent.metadata?.orderToken;
-      
-      console.log("🔄 Payment processing:", {
-        paymentIntentId: paymentIntent.id,
-        orderToken
-      });
-
       if (orderToken) {
-        const order = await Order.findOne({ orderToken }).exec();
-        if (order && order.status === "pending") {
-          order.status = "processing";
-          await order.save();
-          console.log(`🔄 Order ${order.orderToken} marked as processing`);
-        }
+        await Order.updateOne({ orderToken }, { status: "processing" });
+        console.log(`🔄 Order ${orderToken} marked as processing`);
       }
     }
 
-    console.log(`ℹ️ Webhook processed event type: ${event.type}`);
-    return res.status(200).json({ received: true, processed: true });
+    return res.status(200).json({ received: true });
 
   } catch (err) {
-    console.error("❌ Webhook processing error:", err);
-    return res.status(500).json({ error: "Internal webhook error" });
+    console.error("❌ Webhook fatal error:", err);
+    return res.status(500).json({ error: "Webhook error" });
   }
 });
 

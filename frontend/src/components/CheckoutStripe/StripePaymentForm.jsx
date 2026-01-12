@@ -16,21 +16,24 @@ import PaymentMethods from "./PaymentMethods/PaymentMethods";
 import PaymentFooter from "./PaymentFooter";
 import Drawer, { DrawerTrigger, DrawerContent } from "../Drawer/Drawer";
 
+// ✅ ВАЖНО: Импорт функции получения данных из IndexedDB
+import { getOrderFromDB } from "../../utils/db"; 
+
 const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const location = useLocation();
-  const { token } = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth);
+  const token = auth.token || localStorage.getItem("token");
 
-  // --- ЛОГИКА ОПРЕДЕЛЕНИЯ ТОВАРОВ ДЛЯ ПОКУПКИ ---
+  // Определение товаров
   const itemsToPurchase = useMemo(() => {
     if (location.state?.buyNowItem) {
       return [location.state.buyNowItem];
     }
     return propCartItems;
   }, [location.state, propCartItems]);
-  // ----------------------------------------------
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [userInitiated, setUserInitiated] = useState(false);
@@ -102,23 +105,20 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
 
   const calculateTotalAmount = () => {
     if (!itemsToPurchase || !Array.isArray(itemsToPurchase)) return 0;
-
     const itemsTotal = itemsToPurchase.reduce((sum, item) => {
       const price = Number(item.price) || 0;
       const qty = Number(item.cartQuantity) || 0;
       return sum + (price * qty);
     }, 0);
-
     const deliveryCost = 9.99;
     const total = itemsTotal + deliveryCost;
     const totalInCents = Math.round(total * 100);
-
     return isNaN(totalInCents) ? 0 : totalInCents;
   };
 
+  // Google/Apple Pay Logic
   useEffect(() => {
     if (!stripe) return;
-
     const amount = calculateTotalAmount();
     if (amount <= 0) return;
 
@@ -135,9 +135,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
 
     pr.canMakePayment().then((result) => {
       setCanMakePaymentResult(result);
-      if (result) {
-        setPaymentRequest(pr);
-      }
+      if (result) setPaymentRequest(pr);
     });
 
     pr.on("paymentmethod", async (ev) => {
@@ -152,15 +150,13 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
 
         const { error } = await stripe.confirmCardPayment(
           clientSecret,
-          {
-            payment_method: ev.paymentMethod.id,
-          },
+          { payment_method: ev.paymentMethod.id },
           { handleActions: false }
         );
 
         if (error) {
           ev.complete("fail");
-          console.error("Google Pay confirm error:", error);
+          console.error("Payment Request confirm error:", error);
         } else {
           ev.complete("success");
           if (pi.orderToken) {
@@ -168,7 +164,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
           }
         }
       } catch (err) {
-        console.error("Google Pay processing failed:", err);
+        console.error("Payment Request failed:", err);
         ev.complete("fail");
       } finally {
         submittingRef.current = false;
@@ -181,17 +177,25 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
       const newAmount = calculateTotalAmount();
       if (newAmount > 0) {
         paymentRequest.update({
-          total: {
-            label: "Total (incl. delivery)",
-            amount: newAmount,
-          },
+          total: { label: "Total (incl. delivery)", amount: newAmount },
         });
       }
     }
   }, [itemsToPurchase, paymentRequest]);
 
-  // --- ИСПРАВЛЕННАЯ ФУНКЦИЯ ---
+  // ✅ --- ГЛАВНАЯ ИСПРАВЛЕННАЯ ФУНКЦИЯ ---
   const getOrCreatePaymentIntent = async () => {
+    // 👇 НАЧАЛО ДЕБАГА
+    console.group("🔍 DEBUG: Проверка товаров перед оплатой");
+    itemsToPurchase.forEach((item, index) => {
+      console.log(`📦 Товар #${index + 1}:`);
+      console.log(`   - ID: ${item.id}`);
+      console.log(`   - tempStorageId:`, item.tempStorageId); // 👈 ЕСЛИ ТУТ UNDEFINED, ФОТО НЕ ЗАГРУЗИТСЯ
+      console.log(`   - inscription:`, item.inscription);
+    });
+    console.groupEnd();
+    // 👆 КОНЕЦ ДЕБАГА
+
     if (paymentIntentRef.current) return paymentIntentRef.current;
 
     if (creatingPIRef.current) {
@@ -201,21 +205,64 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
 
     creatingPIRef.current = true;
     try {
-      // 1. Создаем конфигурацию заголовков
+      // 1. ПРОВЕРКА И ЗАГРУЗКА
+      const processedItems = await Promise.all(
+        itemsToPurchase.map(async (item) => {
+          // 👇 ПРОВЕРКА: Если tempStorageId есть, мы заходим внутрь
+          if (item.tempStorageId) {
+            console.log(`🚀 НАЧИНАЕМ ЗАГРУЗКУ ФОТО для ${item.tempStorageId}`);
+            
+            try {
+              const heavyData = await getOrderFromDB(item.tempStorageId);
+              
+              if (!heavyData) {
+                console.error(`❌ ОШИБКА: Данные не найдены в IndexedDB!`);
+                return item; 
+              }
+              
+              console.log("📤 Отправка на бекенд...");
+              console.log("🔐 Отправка токена:", token); // Проверим, что летит на сервер
+              const uploadResponse = await axios.post(
+                `${process.env.REACT_APP_API_URL}/api/personal-orders`,
+                {
+                  inscription: heavyData.inscription,
+                  images: heavyData.images 
+                }
+              );
+
+              const { orderId } = uploadResponse.data;
+              console.log(`✅ УСПЕХ! Картинки загружены. ID: ${orderId}`);
+
+              return {
+                ...item,
+                personalOrderId: orderId, 
+              };
+
+            } catch (uploadError) {
+              console.error("❌ ОШИБКА ЗАГРУЗКИ:", uploadError);
+              throw uploadError;
+            }
+          } else {
+             console.log(`⚠️ Это обычный товар (нет tempStorageId), пропускаем загрузку.`);
+          }
+          return item;
+        })
+      );
+
+      // 2. Настройка заголовков
       const config = {};
-      
-      // 2. Добавляем Authorization ТОЛЬКО если токен существует
       if (token) {
         config.headers = { Authorization: `Bearer ${token}` };
       }
 
+      // 3. Отправляем в Stripe УЖЕ ОБРАБОТАННЫЕ товары (без Base64, только ID)
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
         {
-          cartItems: itemsToPurchase,
+          cartItems: processedItems, 
           deliveryInfo: formData,
         },
-        config // 3. Передаем конфиг (с заголовком или без)
+        config
       );
 
       paymentIntentRef.current = data;
@@ -227,7 +274,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
       creatingPIRef.current = false;
     }
   };
-  // -----------------------------
+  // ----------------------------------------
 
   const handleCardFieldChange = (fieldName) => (event) => {
     setCardFields((prev) => ({
@@ -259,6 +306,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     submittingRef.current = true;
 
     try {
+      // Здесь вызовется наша новая функция с загрузкой фото
       const pi = await getOrCreatePaymentIntent();
       const { clientSecret, orderToken } = pi;
 
@@ -309,7 +357,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
       }
     } catch (err) {
       console.error("Payment submission error:", err);
-      // Если ошибка связана с авторизацией, можно вывести конкретное сообщение
       if (err.response && (err.response.status === 401 || err.response.status === 403)) {
          setPaymentError("Session expired or unauthorized. Please refresh or login.");
       } else if (!err.message?.includes("abort")) {

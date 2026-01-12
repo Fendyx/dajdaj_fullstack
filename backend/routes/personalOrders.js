@@ -2,31 +2,18 @@ const express = require('express');
 const router = express.Router();
 const PersonalOrder = require('../models/personalOrder');
 
-// --- ЖЕЛЕЗОБЕТОННОЕ РЕШЕНИЕ ---
-// Мы подключаем парсер с лимитом 50mb ПРЯМО ЗДЕСЬ.
-// Это гарантирует, что для этого роута лимит будет большим, 
-// независимо от настроек в index.js
+// Принудительно ставим лимит 50mb
 router.use(express.json({ limit: '50mb' }));
 router.use(express.urlencoded({ limit: '50mb', extended: true }));
 
-// POST /api/personal-orders
 router.post('/', async (req, res) => {
   try {
     const { inscription, images } = req.body;
 
-    console.log("📥 Received order request in personalOrders route");
-    // Проверка, пришли ли данные
-    if (images) {
-        console.log(`🖼️ Images count: ${images.length}`);
-        // Для отладки: проверим размер первой картинки (первые 50 символов)
-        console.log(`🔍 Base64 sample: ${images[0].substring(0, 50)}...`);
-    } else {
-        console.log("⚠️ Images is undefined or null");
-    }
-
-    // Простая валидация
+    console.log("📥 [PersonalOrder] Request received");
+    
     if (!images || images.length === 0) {
-      console.log("❌ No images provided");
+      console.warn("⚠️ [PersonalOrder] No images!");
       return res.status(400).send('No images provided');
     }
 
@@ -36,13 +23,16 @@ router.post('/', async (req, res) => {
     });
 
     const savedOrder = await newOrder.save();
-    console.log("✅ Order saved to MongoDB:", savedOrder._id);
+    console.log("✅ [PersonalOrder] Created ID:", savedOrder._id);
 
-    res.status(201).json({ message: 'Order created successfully', orderId: savedOrder._id });
+    // 👇 ВАЖНО: Мы должны вернуть именно 'orderId', так как фронт ждет это поле
+    res.status(201).json({ 
+        message: 'Order created', 
+        orderId: savedOrder._id 
+    });
+
   } catch (error) {
-    console.error('❌ Error saving order:', error);
-    // Если ошибка все еще PayloadTooLarge, Express выбросит её до входа в эту функцию,
-    // но если ошибка внутри Mongoose, мы её увидим здесь.
+    console.error('❌ [PersonalOrder] Error:', error);
     res.status(500).send('Server Error: ' + error.message);
   }
 });

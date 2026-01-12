@@ -53,7 +53,16 @@ router.post("/delivery", auth, async (req, res) => {
 // ✅ Получить историю заказов пользователя
 router.get("/orders", auth, async (req, res) => {
   try {
-    const orders = await Order.find({ userId: req.user._id }).sort({ createdAt: -1 });
+    const orders = await Order.find({ userId: req.user._id })
+      // 👇 ДОБАВЛЯЕМ ЭТОТ БЛОК (он безопасен для обычных товаров)
+      .populate({
+        path: "products.personalOrderId", 
+        model: "PersonalOrder",           
+        select: "images inscription" // Тянем только картинки
+      })
+      // 👆 КОНЕЦ ДОБАВЛЕНИЯ
+      .sort({ createdAt: -1 });
+
     res.json(orders);
   } catch (error) {
     console.error(error);

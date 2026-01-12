@@ -1,65 +1,78 @@
 import React from 'react';
-import './HeroPersonalFigurine.css'; // Не забудь создать/обновить этот файл
-import { FaCamera, FaArrowRight, FaMagic } from 'react-icons/fa'; // Используем иконки для наглядности
+import './HeroPersonalFigurine.css';
+import { FaArrowRight, FaCloudUploadAlt, FaCube, FaTruck } from 'react-icons/fa';
 
 export const HeroPersonalFigurine = ({ heroProduct, handleHeroClick }) => {
   if (!heroProduct) return null;
 
   return (
     <section className="hero-product-section" onClick={handleHeroClick}>
-      <div className="hero-card">
-        {/* Фоновый декоративный элемент */}
-        <div className="hero-bg-glow"></div>
-
+      <div className="hero-card compact-style">
+        
+        {/* Левая часть: Контент */}
         <div className="hero-content">
-          <div className="hero-tags">
-            <span className="hero-badge highlight">
-              <FaMagic className="badge-icon" /> HIT
-            </span>
-            <span className="hero-badge">Handmade 3D</span>
+          <div className="hero-badge-row">
+            <span className="pill-badge new">🔥 HIT</span>
+            <span className="pill-badge">Handmade 3D</span>
           </div>
 
           <h2 className="hero-title">
-            Turn your photo <br />
-            <span className="text-gradient">into a Mini-You</span>
+            Turn your Photo <br />
+            into a <span className="highlight-text">3D Figurine</span>
           </h2>
 
-          <p className="hero-description">
-            Ever wanted a figurine of yourself? Upload a photo, and we will craft 
-            a <strong>unique handmade 3D model</strong> that looks exactly like you.
-          </p>
+          {/* UX Visualizer (оставили, но уменьшили в CSS) */}
+          <div className="steps-visualizer">
+            <div className="step-item">
+              <div className="step-icon"><FaCloudUploadAlt /></div>
+              <span>Upload</span>
+            </div>
+            <div className="step-arrow">→</div>
+            <div className="step-item">
+              <div className="step-icon"><FaCube /></div>
+              <span>3D Print</span>
+            </div>
+            <div className="step-arrow">→</div>
+            <div className="step-item">
+              <div className="step-icon"><FaTruck /></div>
+              <span>Receive</span>
+            </div>
+          </div>
 
-          <div className="hero-action-row">
-            <div className="hero-price-block">
-              <span className="hero-label">Starting at</span>
-              <span className="hero-price">
+          <div className="hero-bottom-row">
+            <div className="price-container">
+              <span className="price-label">Price from</span>
+              <span className="price-value">
                 {heroProduct.price} {heroProduct.currency || 'PLN'}
               </span>
             </div>
-
+            
             <button className="hero-cta-button">
-              <span>Create My Figurine</span>
-              <div className="icon-circle">
-                <FaArrowRight />
-              </div>
+              Create My Figurine <FaArrowRight />
             </button>
           </div>
         </div>
 
-        <div className="hero-image-wrapper">
-          {/* Визуальная подсказка: Иконка фото */}
-          <div className="photo-hint-badge">
-            <FaCamera />
-            <span>From Photo</span>
-          </div>
+        {/* Правая часть: Визуал с деталями */}
+        <div className="hero-visual">
+          <div className="visual-circle-bg"></div>
           
-          <div className="hero-circle-decoration"></div>
+          {/* Тот самый "Floating UI" с анимацией загрузки - оставлен как киллер-фича */}
+          <div className="floating-ui-card upload-hint">
+             <div className="skeleton-photo"></div>
+             <div className="ui-text">
+               <span>Your Photo</span>
+               <div className="loading-bar"></div>
+             </div>
+          </div>
+
           <img
             src={heroProduct.image || heroProduct.img}
             alt={heroProduct.name}
-            className="hero-image"
+            className="hero-main-image"
           />
         </div>
+
       </div>
     </section>
   );

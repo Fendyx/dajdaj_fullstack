@@ -412,7 +412,7 @@
 
 /* ✅ МОБИЛЬНАЯ АДАПТАЦИЯ (GRID ДЛЯ ТАБОВ) */
 @media (max-width: 768px) {
-  .up-container { margin-top: 60px; padding: 0 16px; }
+  .up-container { margin-top: 60px; padding: 0 0px; }
   .up-greeting-section { flex-direction: column; align-items: flex-start; gap: 16px; }
   .up-logout-mini-btn { width: 100%; text-align: center; }
   

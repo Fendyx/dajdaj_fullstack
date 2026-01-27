@@ -1,17 +1,16 @@
 import { useState, useMemo } from "react";
-// Используем твои текущие иконки, чтобы не ставить новые библиотеки
-import { FaCreditCard, FaBolt, FaChevronDown, FaLock, FaShieldAlt } from "react-icons/fa";
+import { FaCreditCard, FaBolt, FaChevronDown, FaLock, FaShieldAlt, FaUniversity, FaShoppingBag } from "react-icons/fa";
 import GoogleApplePayButton from "./PaymentMethods/GoogleApplePayButton";
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import "./PaymentFooter.css";
 
-const PaymentFooter = ({ selected, paymentRequest, canMakePaymentResult }) => {
+const PaymentFooter = ({ selected, paymentRequest, canMakePaymentResult, disabled }) => {
   const location = useLocation();
   const reduxCartItems = useSelector((state) => state.cart.cartItems);
   const [showDetails, setShowDetails] = useState(false);
 
-  // --- ЛОГИКА РАСЧЕТА (Твоя оригинальная) ---
+  // --- ЛОГИКА РАСЧЕТА ---
   const itemsToPurchase = useMemo(() => {
     if (location.state?.buyNowItem) {
       return [location.state.buyNowItem];
@@ -35,7 +34,6 @@ const PaymentFooter = ({ selected, paymentRequest, canMakePaymentResult }) => {
   const deliveryFee = 9.99; 
   const totalWithDelivery = (cartTotal + deliveryFee).toFixed(2);
 
-  // Компонент для строк деталей (чтобы не дублировать код)
   const DetailRows = () => (
     <>
       <div className="pf-row">
@@ -46,18 +44,15 @@ const PaymentFooter = ({ selected, paymentRequest, canMakePaymentResult }) => {
         <span className="pf-row-label">Shipping</span>
         <span className="pf-row-value">{deliveryFee.toFixed(2)} PLN</span>
       </div>
-      {/* Если есть скидки или налоги, добавь их здесь */}
     </>
   );
 
   return (
     <>
-      {/* Оверлей только для мобильной шторки */}
       {showDetails && <div className="pf-overlay" onClick={() => setShowDetails(false)} />}
 
       <div className={`payment-footer ${showDetails ? "expanded" : ""}`}>
         
-        {/* --- MOBILE DETAILS (Выезжает снизу) --- */}
         {showDetails && (
           <div className="pf-details pf-mobile-only">
             <DetailRows />
@@ -65,20 +60,16 @@ const PaymentFooter = ({ selected, paymentRequest, canMakePaymentResult }) => {
           </div>
         )}
 
-        {/* --- DESKTOP DETAILS (Всегда видны на ПК) --- */}
         <div className="pf-details pf-desktop-only">
             <DetailRows />
             <div className="pf-divider"></div>
         </div>
 
-        {/* --- MAIN BAR (Цена + Кнопки) --- */}
         <div className="pf-main-bar">
           
-          {/* ЛЕВАЯ ЧАСТЬ: ИТОГО */}
           <div className="pf-total-info" onClick={() => setShowDetails(!showDetails)}>
             <div className="pf-total-header">
               <span className="pf-label">Total to pay</span>
-              {/* Стрелка только на мобильном */}
               <div className="pf-chevron">
                 <FaChevronDown style={{ transform: showDetails ? 'rotate(180deg)' : 'rotate(0)' }} />
               </div>
@@ -91,20 +82,37 @@ const PaymentFooter = ({ selected, paymentRequest, canMakePaymentResult }) => {
             <div className="pf-micro-text">Tap for details</div>
           </div>
 
-          {/* ПРАВАЯ ЧАСТЬ: КНОПКИ */}
           <div className="pf-actions">
             
+            {/* BLIK Button */}
             {selected === "blik" && (
-              <button type="submit" form="payment-form" className="pf-btn blik-btn">
+              <button type="submit" form="payment-form" className="pf-btn blik-btn" disabled={disabled}>
                 <FaBolt /> 
-                <span>Pay Now</span>
+                <span>Pay with BLIK</span>
               </button>
             )}
 
+            {/* Credit Card Button */}
             {selected === "card" && (
-              <button type="submit" form="payment-form" className="pf-btn card-btn">
+              <button type="submit" form="payment-form" className="pf-btn card-btn" disabled={disabled}>
                 <FaLock size={14} /> 
                 <span>Pay Securely</span>
+              </button>
+            )}
+
+             {/* Przelewy24 Button */}
+             {selected === "p24" && (
+              <button type="submit" form="payment-form" className="pf-btn" style={{ backgroundColor: "#006b3a" }} disabled={disabled}>
+                <FaUniversity size={14} /> 
+                <span>Pay with Bank</span>
+              </button>
+            )}
+
+            {/* Klarna Button */}
+            {selected === "klarna" && (
+              <button type="submit" form="payment-form" className="pf-btn" style={{ backgroundColor: "#FFB3C7", color: "black" }} disabled={disabled}>
+                <FaShoppingBag size={14} /> 
+                <span>Pay via Klarna</span>
               </button>
             )}
 
@@ -117,7 +125,6 @@ const PaymentFooter = ({ selected, paymentRequest, canMakePaymentResult }) => {
                 </div>
               )}
 
-            {/* Security Badge (Замок под кнопкой) */}
             <div className="pf-security">
               <FaShieldAlt size={10} />
               <span>SSL Encrypted Payment</span>

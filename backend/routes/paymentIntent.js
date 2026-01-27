@@ -218,7 +218,7 @@ router.post("/create-payment-intent", optionalAuth, async (req, res) => {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: finalAmount,
       currency: "pln",
-      payment_method_types: ["card", "blik"],
+      payment_method_types: ["card", "blik", "p24", "klarna"],
       metadata: {
         userId: userId ? userId.toString() : "guest", // ✅ Теперь здесь будет реальный ID
         orderToken,

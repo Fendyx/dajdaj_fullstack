@@ -1,5 +1,5 @@
 import React from "react";
-import { FaCreditCard, FaGoogle, FaApple } from "react-icons/fa";
+import { FaCreditCard, FaGoogle, FaApple, FaUniversity, FaShoppingBag } from "react-icons/fa";
 import BlikPayment from "./BlikPayment";
 import CardPayment from "./CardPayment";
 import "./PaymentMethods.css"; 
@@ -92,6 +92,28 @@ const PaymentMethods = ({
           />, 
           "pm-blik",
           <BlikPayment blikCode={blikCode} setBlikCode={setBlikCode} />
+        )}
+
+        {/* Przelewy24 */}
+        {renderOption(
+          "p24",
+          "Przelewy24 / Bank Transfer",
+          <FaUniversity />, // Можно заменить на логотип P24, если есть svg
+          "pm-p24",
+          <div className="pm-helper-text">
+            You will be redirected to your bank to complete the payment securely.
+          </div>
+        )}
+
+        {/* Klarna */}
+        {renderOption(
+          "klarna",
+          "Klarna - Pay Later",
+          <FaShoppingBag />, // Можно заменить на логотип Klarna
+          "pm-klarna",
+          <div className="pm-helper-text">
+            Buy now, pay later. You will be redirected to Klarna.
+          </div>
         )}
 
         {/* Credit Card */}

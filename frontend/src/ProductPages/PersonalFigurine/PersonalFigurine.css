@@ -1,480 +1,412 @@
 /* Reset and base styles */
 .personal-fi-app-container * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  .personal-fi-app-container {
-    min-height: 100vh;
-    background-color: #f9fafb;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
-  
-  /* Header styles */
-  .personal-fi-header {
-    border-bottom: 1px solid #e5e7eb;
-    background-color: white;
-  }
-  
-  .personal-fi-header-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 16px 20px;
-  }
-  
-  .personal-fi-header-content h1 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #111827;
-  }
-  
-  /* Main content */
-  .personal-fi-main-content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 32px 20px;
-  }
-  
-  .personal-fi-content-grid {
-    display: grid;
-    gap: 32px;
-  }
-  
-  @media (min-width: 1024px) {
-    .personal-fi-content-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  
-  /* Product gallery */
-  .personal-fi-product-gallery {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .personal-fi-main-image {
-    aspect-ratio: 1;
-    overflow: hidden;
-    border-radius: 12px;
-    background-color: #f3f4f6;
-  }
-  
-  .personal-fi-product-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  .personal-fi-thumbnail-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-  }
-  
-  .personal-fi-thumbnail-btn {
-    aspect-ratio: 1;
-    overflow: hidden;
-    border-radius: 8px;
-    border: 2px solid #e5e7eb;
-    background: none;
-    cursor: pointer;
-    transition: border-color 0.2s;
-    padding: 0;
-  }
-  
-  .personal-fi-thumbnail-btn:hover {
-    border-color: #9ca3af;
-  }
-  
-  .personal-fi-thumbnail-btn.personal-fi-active {
-    border-color: #000000;
-  }
-  
-  .personal-fi-thumbnail-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  
-  /* Product info */
-  .personal-fi-product-info {
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    position: relative;
-  }
-  
-  .personal-fi-product-header {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .personal-fi-header-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-  
-  .personal-fi-custom-badge {
-    display: inline-block;
-    background-color: #dbeafe;
-    color: #2563eb;
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 8px;
-  }
-  
-  .personal-fi-product-title {
-    font-size: 28px;
-    font-weight: 600;
-    color: #111827;
-  }
-  
-  .personal-fi-rating {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-  }
-  
-  .personal-fi-star-icon {
-    width: 16px;
-    height: 16px;
-    fill: #fbbf24;
-    color: #fbbf24;
-  }
-  
-  .personal-fi-rating-count {
-    margin-left: 4px;
-    color: #4b5563;
-    font-size: 14px;
-  }
-  
-  .personal-fi-price-container {
-    display: flex;
-    align-items: baseline;
-    gap: 12px;
-  }
-  
-  .personal-fi-current-price {
-    font-size: 28px;
-    font-weight: 700;
-    color: #111827;
-  }
-  
-  .personal-fi-old-price {
-    font-size: 20px;
-    color: #6b7280;
-    text-decoration: line-through;
-  }
-  
-  /* Cards */
-  .personal-fi-description-card,
-  .personal-fi-upload-section,
-  .personal-fi-info-card {
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    background-color: white;
-  }
-  
-  .personal-fi-description-card {
-    padding: 24px;
-  }
-  
-  .personal-fi-description-card h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 16px;
-  }
-  
-  .personal-fi-options-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .personal-fi-option-item {
-    display: flex;
-    gap: 12px;
-  }
-  
-  .personal-fi-option-number {
-    width: 32px;
-    height: 32px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 9999px;
-    font-weight: 500;
-  }
-  
-  .personal-fi-option-number-1 {
-    background-color: #dbeafe;
-    color: #2563eb;
-  }
-  
-  .personal-fi-option-number-2 {
-    background-color: #fce7f3;
-    color: #db2777;
-  }
-  
-  .personal-fi-option-number-3 {
-    background-color: #f3e8ff;
-    color: #7c3aed;
-  }
-  
-  .personal-fi-option-content {
-    flex: 1;
-  }
-  
-  .personal-fi-option-title {
-    font-weight: 500;
-    color: #111827;
-    margin-bottom: 4px;
-  }
-  
-  .personal-fi-option-description {
-    color: #6b7280;
-    font-size: 14px;
-    line-height: 1.5;
-  }
-  
-  /* Upload section */
-  .personal-fi-upload-section {
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-  }
-  
-  .personal-fi-upload-section h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-  }
-  
-  .personal-fi-upload-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .personal-fi-upload-label {
-    font-weight: 500;
-    color: #374151;
-  }
-  
-  .personal-fi-upload-container {
-    position: relative;
-  }
-  
-  .personal-fi-file-input {
-    display: none;
-  }
-  
-  .personal-fi-upload-area {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    border: 2px dashed #d1d5db;
-    border-radius: 8px;
-    background-color: #f9fafb;
-    padding: 32px;
-    transition: all 0.2s;
-  }
-  
-  .personal-fi-upload-area:hover {
-    border-color: #9ca3af;
-    background-color: #f3f4f6;
-  }
-  
-  .personal-fi-upload-icon {
-    width: 32px;
-    height: 32px;
-    color: #9ca3af;
-    margin-bottom: 8px;
-  }
-  
-  .personal-fi-upload-text {
-    color: #4b5563;
-    margin-bottom: 4px;
-  }
-  
-  .personal-fi-upload-hint {
-    color: #9ca3af;
-    font-size: 14px;
-  }
-  
-  .personal-fi-selected-files {
-    margin-top: 12px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .personal-fi-file-item {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    background-color: white;
-    padding: 8px;
-  }
-  
-  .personal-fi-file-icon {
-    width: 16px;
-    height: 16px;
-    color: #6b7280;
-  }
-  
-  .personal-fi-file-name {
-    flex: 1;
-    color: #374151;
-    font-size: 14px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  
-  .personal-fi-file-size {
-    color: #6b7280;
-    font-size: 14px;
-  }
-  
-  /* Inscription field */
-  .personal-fi-inscription-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .personal-fi-inscription-label {
-    font-weight: 500;
-    color: #374151;
-  }
-  
-  .personal-fi-inscription-input {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    font-size: 16px;
-    transition: border-color 0.2s;
-  }
-  
-  .personal-fi-inscription-input:focus {
-    outline: none;
-    border-color: #3b82f6;
-  }
-  
-  .personal-fi-character-count {
-    color: #6b7280;
-    font-size: 14px;
-  }
-  
-  /* Sticky Button Container */
-  .personal-fi-sticky-button-container {
-    position: relative;
-    width: 100%;
-    transition: all 0.3s ease;
-  }
-  
-  .personal-fi-sticky-button-container.personal-fi-sticky-active {
-    position: sticky !important;
-    z-index: 20 !important;
-    bottom: 65px;
-  }
-  
-  .personal-fi-sticky-button-container.personal-fi-sticky-stop {
-    position: relative !important;
-    background-color: transparent !important;
-    padding: 16px 0 !important;
-  }
-  
-  /* Button */
-  .personal-fi-badge {
-    display: inline-block;
-  }
-  
-  .personal-fi-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .personal-fi-btn-large {
-    padding: 12px 24px;
-    font-size: 16px;
-  }
-  
-  .personal-fi-pay-button {
-    width: 100%;
-    background-color: #000000;
-    color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .personal-fi-pay-button:hover {
-    background-color: #1f2937;
-  }
-  
-  /* Info card */
-  .personal-fi-info-card {
-    padding: 16px;
-  }
-  
-  .personal-fi-info-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    color: #4b5563;
-  }
-  
-  .personal-fi-info-list li {
-    padding-left: 4px;
-  }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-  /* Video player styles */
+.personal-fi-app-container {
+  min-height: 100vh;
+  background-color: #f9fafb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.personal-fi-header {
+  border-bottom: 1px solid #e5e7eb;
+  background-color: white;
+}
+
+.personal-fi-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 20px;
+}
+
+.personal-fi-header-content h1 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* Main Layout */
+.personal-fi-main-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px 20px;
+}
+
+.personal-fi-content-grid {
+  display: grid;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .personal-fi-content-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  
+  /* Sticky behavior for info column on desktop */
+  .personal-fi-product-info {
+      position: sticky;
+      top: 20px;
+  }
+}
+
+/* Video Player */
 .personal-fi-video-player {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .personal-fi-main-video {
-    aspect-ratio: 1/1;
-    overflow: hidden;
-    border-radius: 12px;
-    background-color: #000;
-  }
-  
-  .personal-fi-video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
-  }
-  
-  /* Remove old gallery styles */
-  .personal-fi-product-gallery,
-  .personal-fi-thumbnail-grid,
-  .personal-fi-thumbnail-btn,
-  .personal-fi-thumbnail-image {
-    display: none;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.personal-fi-main-video {
+  aspect-ratio: 1/1;
+  overflow: hidden;
+  border-radius: 16px;
+  background-color: #000;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+.personal-fi-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Product Info Column */
+.personal-fi-product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.personal-fi-header-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.personal-fi-custom-badge {
+  background-color: #dbeafe;
+  color: #2563eb;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  display: inline-block;
+}
+
+.personal-fi-product-title {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #111827;
+}
+
+.personal-fi-rating {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.personal-fi-star-icon {
+  width: 16px;
+  height: 16px;
+  color: #fbbf24;
+}
+
+.personal-fi-rating-count {
+  margin-left: 6px;
+  color: #6b7280;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.personal-fi-price-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.personal-fi-current-price {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.personal-fi-delivery-info {
+  font-size: 14px;
+  color: #10b981; /* Green color for positive delivery info */
+  font-weight: 600;
+  background: #ecfdf5;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+/* 🔥 NEW: Process Steps Styling 🔥 */
+.personal-fi-steps-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
+.personal-fi-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+}
+
+.personal-fi-step-icon-box {
+  width: 40px;
+  height: 40px;
+  background-color: #f3f4f6;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  font-size: 18px;
+  color: #111827;
+}
+
+.personal-fi-step-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.personal-fi-step-desc {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+.personal-fi-step-arrow {
+  color: #d1d5db;
+  font-weight: 300;
+  padding: 0 5px;
+}
+
+/* Upload Section */
+.personal-fi-upload-section {
+  padding: 20px;
+  background-color: white;
+  border: 2px solid #e5e7eb; /* Thicker border */
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.personal-fi-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.personal-fi-section-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.personal-fi-badge-required {
+  background: #fee2e2;
+  color: #ef4444;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 99px;
+  text-transform: uppercase;
+}
+
+.personal-fi-upload-container {
+  position: relative;
+}
+
+.personal-fi-file-input {
+  display: none;
+}
+
+.personal-fi-upload-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 2px dashed #3b82f6; /* Blue dashed border by default to attract attention */
+  background-color: #eff6ff;
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.2s;
+}
+
+.personal-fi-upload-area:hover {
+  background-color: #dbeafe;
+  transform: translateY(-1px);
+}
+
+/* Success state for upload */
+.personal-fi-upload-success {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+.personal-fi-upload-icon {
+  width: 32px;
+  height: 32px;
+  color: #3b82f6;
+  margin-bottom: 8px;
+}
+
+.personal-fi-upload-icon-success {
+  width: 32px;
+  height: 32px;
+  color: #10b981;
+  margin-bottom: 8px;
+}
+
+.personal-fi-upload-text {
+  color: #1f2937;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.personal-fi-upload-hint {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.personal-fi-selected-files {
+  margin-top: 8px;
+}
+
+.personal-fi-file-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f9fafb;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.personal-fi-file-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.personal-fi-separator {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 4px 0;
+}
+
+/* Inscription */
+.personal-fi-inscription-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.personal-fi-inscription-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.personal-fi-inscription-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+.personal-fi-inscription-input:focus {
+  outline: none;
+  border-color: #000;
+}
+
+/* Sticky Buttons */
+.personal-fi-sticky-button-container {
+  width: 100%;
+  transition: all 0.3s ease;
+  padding: 10px 0;
+  background: transparent;
+}
+
+.personal-fi-sticky-active {
+  position: sticky;
+  bottom: 20px;
+  z-index: 50;
+  /* Adding a subtle shadow/background so buttons float nicely */
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(5px);
+  padding: 16px;
+  margin: 0 -16px;
+  width: calc(100% + 32px);
+  border-top: 1px solid rgba(0,0,0,0.05);
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+}
+
+.personal-fi-sticky-stop {
+  position: relative;
+}
+
+.personal-fi-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.personal-fi-btn:active {
+  transform: scale(0.98);
+}
+
+.personal-fi-pay-button {
+  background-color: #000;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.personal-fi-pay-button:hover {
+  background-color: #1f2937;
+}
+
+/* Footer Info */
+.personal-fi-info-card {
+  background: #f3f4f6;
+  padding: 16px;
+  border-radius: 12px;
+}
+
+.personal-fi-info-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #4b5563;
+}

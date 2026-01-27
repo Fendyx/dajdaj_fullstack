@@ -459,7 +459,7 @@ const products = [
     id: '17',
     name: { en: 'Personal Figurine', pl: 'Personal Figurine' },
     price: 99,
-    image: 'https://ae-pic-a1.aliexpress-media.com/kf/Sfeaf235917304a8580a8f8b8e72b7e2fo.jpg_960x960q75.jpg_.avif',
+    image: 'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/personal_figure.png',
     category: 'female',
     description: {
       en: 'Personal Figurine',

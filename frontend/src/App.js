@@ -14,7 +14,6 @@ import { ScrollProvider } from "./components/ScrollContext";
 import { UIProvider } from "./context/UIContext";
 
 import { UserCard } from "./components/UserProfile/components/UserCard/UserCard";
-import { UserProfileCard } from "./components/UserProfile/components/UserProfileCard/UserProfileCard";
 import LottiePlayer from "./components/LottieTestHero/LottiePlayer";
 import LottieTestHero from "./components/LottieTestHero/LottieTestHero";
 import CheckoutStripe from "./components/CheckoutStripe/CheckoutStripe";
@@ -142,10 +141,6 @@ function AppContent() {
                 element={<SelectDeliveryMethod />}
               />
               <Route path="/usercard" element={<UserCard profile={auth} />} />
-              <Route
-                path="/user-profile-card"
-                element={<UserProfileCard profile={auth} />}
-              />
               <Route path="/lottie" element={<LottiePlayer />} />
               <Route path="/lottie-hero" element={<LottieTestHero />} />
               <Route path="/selected-item" element={<SelectedCartItem />} />

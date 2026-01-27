@@ -22,7 +22,6 @@ import { getOrderFromDB } from "../../utils/db";
 const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const stripe = useStripe();
   const elements = useElements();
-  const navigate = useNavigate();
   const location = useLocation();
   const auth = useSelector((state) => state.auth);
   const token = auth.token || localStorage.getItem("token");
@@ -45,6 +44,8 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const [paymentRequest, setPaymentRequest] = useState(null);
   const [canMakePaymentResult, setCanMakePaymentResult] = useState(null);
   const [blikCode, setBlikCode] = useState("");
+  
+  // По умолчанию выбрана карта
   const [selected, setSelected] = useState("card");
   const [paymentError, setPaymentError] = useState("");
 
@@ -183,14 +184,14 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     }
   }, [itemsToPurchase, paymentRequest]);
 
-  // ✅ --- ГЛАВНАЯ ИСПРАВЛЕННАЯ ФУНКЦИЯ ---
+  // ✅ --- ГЛАВНАЯ ЛОГИКА (IndexedDB -> Backend -> Stripe) ---
   const getOrCreatePaymentIntent = async () => {
     // 👇 НАЧАЛО ДЕБАГА
     console.group("🔍 DEBUG: Проверка товаров перед оплатой");
     itemsToPurchase.forEach((item, index) => {
       console.log(`📦 Товар #${index + 1}:`);
       console.log(`   - ID: ${item.id}`);
-      console.log(`   - tempStorageId:`, item.tempStorageId); // 👈 ЕСЛИ ТУТ UNDEFINED, ФОТО НЕ ЗАГРУЗИТСЯ
+      console.log(`   - tempStorageId:`, item.tempStorageId); 
       console.log(`   - inscription:`, item.inscription);
     });
     console.groupEnd();
@@ -205,10 +206,9 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
 
     creatingPIRef.current = true;
     try {
-      // 1. ПРОВЕРКА И ЗАГРУЗКА
+      // 1. ПРОВЕРКА И ЗАГРУЗКА ИЗОБРАЖЕНИЙ
       const processedItems = await Promise.all(
         itemsToPurchase.map(async (item) => {
-          // 👇 ПРОВЕРКА: Если tempStorageId есть, мы заходим внутрь
           if (item.tempStorageId) {
             console.log(`🚀 НАЧИНАЕМ ЗАГРУЗКУ ФОТО для ${item.tempStorageId}`);
             
@@ -221,7 +221,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
               }
               
               console.log("📤 Отправка на бекенд...");
-              console.log("🔐 Отправка токена:", token); // Проверим, что летит на сервер
               const uploadResponse = await axios.post(
                 `${process.env.REACT_APP_API_URL}/api/personal-orders`,
                 {
@@ -243,7 +242,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
               throw uploadError;
             }
           } else {
-             console.log(`⚠️ Это обычный товар (нет tempStorageId), пропускаем загрузку.`);
+             console.log(`⚠️ Это обычный товар, пропускаем загрузку.`);
           }
           return item;
         })
@@ -255,7 +254,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
         config.headers = { Authorization: `Bearer ${token}` };
       }
 
-      // 3. Отправляем в Stripe УЖЕ ОБРАБОТАННЫЕ товары (без Base64, только ID)
+      // 3. Создаем Payment Intent в Stripe
       const { data } = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`,
         {
@@ -298,6 +297,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     setDrawerOpen(false);
   };
 
+  // 🔥 ОБНОВЛЕННЫЙ HANDLESUBMIT (Поддержка P24 и Klarna)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setPaymentError("");
@@ -306,11 +306,15 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     submittingRef.current = true;
 
     try {
-      // Здесь вызовется наша новая функция с загрузкой фото
+      // 1. Создаем Intent и грузим фото
       const pi = await getOrCreatePaymentIntent();
       const { clientSecret, orderToken } = pi;
 
+      // URL для возврата после редиректа (для P24 и Klarna)
+      const returnUrl = `${window.location.origin}/checkout-success?orderToken=${orderToken}`;
+
       if (selected === "blik") {
+        // --- ЛОГИКА BLIK ---
         const { error } = await stripe.confirmPayment({
           clientSecret,
           confirmParams: {
@@ -325,11 +329,13 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
             payment_method_options: {
               blik: { code: blikCode },
             },
-            return_url: `${window.location.origin}/checkout-success?orderToken=${orderToken}`,
+            return_url: returnUrl,
           },
         });
         if (error) throw error;
+
       } else if (selected === "card") {
+        // --- ЛОГИКА КАРТ ---
         const cardElement = elements.getElement(CardNumberElement);
         if (!cardElement) throw new Error("Card element not found");
 
@@ -344,7 +350,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
                 phone: formData.phone,
               },
             },
-            return_url: `${window.location.origin}/checkout-success?orderToken=${orderToken}`,
+            return_url: returnUrl,
           }
         );
 
@@ -352,9 +358,34 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
           setPaymentError(`Payment failed: ${error.message}`);
           throw error;
         } else {
-          window.location.href = `${window.location.origin}/checkout-success?orderToken=${orderToken}`;
+          window.location.href = returnUrl;
         }
+
+      } else if (selected === "p24" || selected === "klarna") {
+        // ✅ НОВАЯ ЛОГИКА: PRZELEWY24 и KLARNA
+        // Эти методы работают через редирект (пользователь уходит с сайта и возвращается)
+        const { error } = await stripe.confirmPayment({
+          clientSecret,
+          confirmParams: {
+            payment_method_data: {
+              type: selected, // "p24" или "klarna"
+              billing_details: {
+                name: `${formData.name} ${formData.surname}`,
+                email: formData.email, // Klarna обязательно требует email
+                address: {
+                  country: 'PL', // Важно для банковских методов
+                }
+              },
+            },
+            // Stripe сам перенаправит юзера, а потом вернет сюда
+            return_url: returnUrl,
+          },
+        });
+
+        // Если мы дошли до этой строки, значит редирект не сработал (ошибка)
+        if (error) throw error;
       }
+
     } catch (err) {
       console.error("Payment submission error:", err);
       if (err.response && (err.response.status === 401 || err.response.status === 403)) {

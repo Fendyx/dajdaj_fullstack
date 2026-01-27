@@ -1,5 +1,14 @@
 import { useEffect, useState, useRef } from 'react';
-import { FaStar, FaUpload, FaImage, FaShoppingCart, FaCreditCard } from 'react-icons/fa';
+import { 
+  FaStar, 
+  FaCloudUploadAlt, 
+  FaImage, 
+  FaShoppingCart, 
+  FaCreditCard, 
+  FaMagic, 
+  FaTruck, 
+  FaCheckCircle 
+} from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../../slices/cartSlice';
@@ -20,7 +29,7 @@ const convertToBase64 = (file) => {
   });
 };
 
-// Функция для создания маленькой миниатюры (до 100px)
+// Функция для создания маленькой миниатюры
 const createThumbnail = (file) => {
   return new Promise((resolve) => {
     const reader = new FileReader();
@@ -29,13 +38,10 @@ const createThumbnail = (file) => {
       img.onload = () => {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        
-        // Максимальный размер иконки в корзине (например, 150px)
         const maxSize = 150; 
         let width = img.width;
         let height = img.height;
 
-        // Пропорциональное уменьшение
         if (width > height) {
           if (width > maxSize) {
             height *= maxSize / width;
@@ -50,12 +56,7 @@ const createThumbnail = (file) => {
 
         canvas.width = width;
         canvas.height = height;
-
-        // Рисуем уменьшенное изображение
         ctx.drawImage(img, 0, 0, width, height);
-
-        // Конвертируем в JPEG с качеством 0.7 (сильное сжатие)
-        // Получится строка размером 3-10 КБ вместо 2 МБ
         resolve(canvas.toDataURL('image/jpeg', 0.7));
       };
       img.src = event.target.result;
@@ -87,15 +88,55 @@ function VideoPlayer({ src }) {
   );
 }
 
+// Новый компонент визуализации процесса
+function ProcessSteps() {
+  return (
+    <div className="personal-fi-steps-container">
+      <div className="personal-fi-step">
+        <div className="personal-fi-step-icon-box">
+          <FaCloudUploadAlt />
+        </div>
+        <span className="personal-fi-step-title">1. Upload Photo</span>
+        <span className="personal-fi-step-desc">Your face or pose</span>
+      </div>
+      <div className="personal-fi-step-arrow">→</div>
+      <div className="personal-fi-step">
+        <div className="personal-fi-step-icon-box">
+          <FaMagic />
+        </div>
+        <span className="personal-fi-step-title">2. We Create</span>
+        <span className="personal-fi-step-desc">Custom 3D Model</span>
+      </div>
+      <div className="personal-fi-step-arrow">→</div>
+      <div className="personal-fi-step">
+        <div className="personal-fi-step-icon-box">
+          <FaTruck />
+        </div>
+        <span className="personal-fi-step-title">3. Delivery</span>
+        <span className="personal-fi-step-desc">~7 Days</span>
+      </div>
+    </div>
+  );
+}
+
 function UploadSection({ selectedFiles, onFilesChange, inscription, onInscriptionChange }) {
   const handleFileChange = (e) => {
     if (e.target.files) onFilesChange(Array.from(e.target.files));
   };
+  
+  // Добавляем класс активности, если файлы выбраны
+  const containerClass = selectedFiles.length > 0 
+    ? "personal-fi-upload-area personal-fi-upload-success" 
+    : "personal-fi-upload-area";
+
   return (
     <div className="personal-fi-upload-section" id="upload-section">
-      <h3>Upload Your Data for 3D Model Generation</h3>
+      <div className="personal-fi-section-header">
+        <h3>Step 1: Upload Your Photos</h3>
+        <span className="personal-fi-badge-required">Required</span>
+      </div>
+      
       <div className="personal-fi-upload-field">
-        <label htmlFor="photo-upload" className="personal-fi-upload-label">Upload Photos</label>
         <div className="personal-fi-upload-container">
           <input 
             id="photo-upload" 
@@ -105,10 +146,16 @@ function UploadSection({ selectedFiles, onFilesChange, inscription, onInscriptio
             onChange={handleFileChange} 
             className="personal-fi-file-input" 
           />
-          <label htmlFor="photo-upload" className="personal-fi-upload-area">
-            <FaUpload className="personal-fi-upload-icon" />
-            <p className="personal-fi-upload-text">Click to upload or drag and drop</p>
-            <p className="personal-fi-upload-hint">PNG, JPG (No size limit)</p>
+          <label htmlFor="photo-upload" className={containerClass}>
+            {selectedFiles.length > 0 ? (
+              <FaCheckCircle className="personal-fi-upload-icon-success" />
+            ) : (
+              <FaCloudUploadAlt className="personal-fi-upload-icon" />
+            )}
+            <p className="personal-fi-upload-text">
+              {selectedFiles.length > 0 ? "Photos Loaded!" : "Tap here to upload your photos"}
+            </p>
+            <p className="personal-fi-upload-hint">Selfies, full body, or any clear image</p>
           </label>
         </div>
         {selectedFiles.length > 0 && (
@@ -117,24 +164,25 @@ function UploadSection({ selectedFiles, onFilesChange, inscription, onInscriptio
               <div key={index} className="personal-fi-file-item">
                 <FaImage className="personal-fi-file-icon" />
                 <span className="personal-fi-file-name">{file.name}</span>
-                <span className="personal-fi-file-size">{(file.size / 1024 / 1024).toFixed(2)} MB</span>
               </div>
             ))}
           </div>
         )}
       </div>
+
+      <div className="personal-fi-separator"></div>
+
       <div className="personal-fi-inscription-field">
         <label htmlFor="inscription" className="personal-fi-inscription-label">Base Inscription (Optional)</label>
         <input 
           id="inscription" 
           type="text" 
-          placeholder="Enter text for the base..." 
+          placeholder="E.g. 'Super Dad' or 'Happy Birthday'" 
           value={inscription} 
           onChange={(e) => onInscriptionChange(e.target.value)} 
           maxLength={50} 
           className="personal-fi-inscription-input" 
         />
-        <p className="personal-fi-character-count">{inscription.length}/50 characters</p>
       </div>
     </div>
   );
@@ -158,6 +206,7 @@ export default function PersonalFigurine() {
     const handleScroll = () => {
       if (infoCardRef.current) {
         const infoCardRect = infoCardRef.current.getBoundingClientRect();
+        // Скрываем стики кнопки, когда доскроллили до подвала/низа
         if (infoCardRect.top <= window.innerHeight - 100) setIsSticky(false);
         else setIsSticky(true);
       }
@@ -169,50 +218,44 @@ export default function PersonalFigurine() {
 
   const prepareProductData = async () => {
     if (selectedFiles.length === 0) {
-      alert("Please upload at least one photo!");
+      // Плавный скролл к секции загрузки, если забыли фото
+      document.getElementById('upload-section')?.scrollIntoView({ behavior: 'smooth' });
+      alert("Please upload at least one photo to continue!");
       return null;
     }
 
     setIsLoading(true);
 
     try {
-      // 1. Для IndexedDB (тяжелые данные) конвертируем как есть (оригиналы)
-      // Можно оставить твой старый метод convertToBase64, 
-      // но лучше сохранять только то, что нужно.
-      // Если у тебя convertToBase64 уже есть выше, используем его для DB.
       const fullSizeImages = await Promise.all(
         selectedFiles.map(file => convertToBase64(file))
       );
 
-      // 2. А вот для КОРЗИНЫ создаем легкую миниатюру только из первого файла
       let thumbnailImage = CART_PLACEHOLDER_IMAGE;
       if (selectedFiles.length > 0) {
         try {
           thumbnailImage = await createThumbnail(selectedFiles[0]);
-          console.log("Thumbnail created, length:", thumbnailImage.length); // Для проверки размера
         } catch (err) {
-          console.warn("Thumbnail creation failed, using placeholder");
+          console.warn("Thumbnail failed");
         }
       }
 
       const tempId = `custom_${Date.now()}`;
       
-      // Сохраняем ТЯЖЕЛЫЕ оригиналы в базу
       const heavyData = {
         id: tempId, 
         inscription: inscription,
-        images: fullSizeImages, // Оригиналы высокого качества
+        images: fullSizeImages,
         timestamp: Date.now()
       };
 
       await saveOrderToDB(heavyData);
-      console.log(`✅ [PersonalFigurine] Saved to DB: ${tempId}`);
 
       return {
         id: "17",         
         name: "Personal Figurine",
         price: 99,
-        image: thumbnailImage, // 👈 Сюда идет сжатая картинка (5-10 КБ)
+        image: thumbnailImage,
         cartQuantity: 1,
         tempStorageId: tempId, 
         isCustom: true
@@ -236,16 +279,10 @@ export default function PersonalFigurine() {
   };
 
   const handleBuyNow = async () => {
-    console.log("🚀 Нажата кнопка Buy Now");
     const item = await prepareProductData();
-    
     if (item) {
-      console.log("👉 Переход на checkout с товаром:", item);
-      // Передаем item через state роутера
       navigate('/checkout-stripe', { state: { buyNowItem: item } });
       setIsLoading(false);
-    } else {
-      console.warn("⚠️ Item creation failed");
     }
   };
 
@@ -259,8 +296,10 @@ export default function PersonalFigurine() {
 
       <main className="personal-fi-main-content">
         <div className="personal-fi-content-grid">
+          {/* Левая колонка - Видео */}
           <div><VideoPlayer src={videoSrc} /></div>
 
+          {/* Правая колонка - Инфо */}
           <div className="personal-fi-product-info">
             <div className="personal-fi-product-header">
               <div className="personal-fi-header-top">
@@ -270,22 +309,19 @@ export default function PersonalFigurine() {
                 </div>
                 <div className="personal-fi-rating">
                   {[1, 2, 3, 4, 5].map((star) => <FaStar key={star} className="personal-fi-star-icon" />)}
-                  <span className="personal-fi-rating-count">(127)</span>
+                  <span className="personal-fi-rating-count">(127 reviews)</span>
                 </div>
               </div>
               <div className="personal-fi-price-container">
                 <span className="personal-fi-current-price">99 PLN</span>
-                <span className="personal-fi-old-price">149 PLN</span>
+                <span className="personal-fi-delivery-info">Ready in ~7 Days</span>
               </div>
             </div>
 
-            <div className="personal-fi-description-card">
-              <h3>Perfect for:</h3>
-              <div className="personal-fi-options-list">
-                 <p>Upload your photos and we will create a custom 3D model for you.</p>
-              </div>
-            </div>
+            {/* 🔥 НОВЫЙ БЛОК: КАК ЭТО РАБОТАЕТ 🔥 */}
+            <ProcessSteps />
 
+            {/* Секция загрузки */}
             <UploadSection 
               selectedFiles={selectedFiles} 
               onFilesChange={setSelectedFiles}
@@ -293,6 +329,7 @@ export default function PersonalFigurine() {
               onInscriptionChange={setInscription}
             />
 
+            {/* Кнопки */}
             <div className={`personal-fi-sticky-button-container ${isSticky ? 'personal-fi-sticky-active' : 'personal-fi-sticky-stop'}`}>
               <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
                 <button 
@@ -306,23 +343,23 @@ export default function PersonalFigurine() {
                 </button>
 
                 <button 
-                  className="personal-fi-btn" 
+                  className="personal-fi-btn personal-fi-pay-button" 
                   style={{ flex: 1 }}
                   onClick={handleBuyNow}
                   disabled={isLoading}
                 >
                   <FaCreditCard style={{ marginRight: '8px' }} />
-                  {isLoading ? 'Processing...' : 'Buy Now'}
+                  {isLoading ? 'Processing...' : 'Order Now'}
                 </button>
               </div>
             </div>
 
             <div className="personal-fi-info-card" ref={infoCardRef}>
-              <ul>
-                <li>✓ High-quality 3D printing</li>
-                <li>✓ Delivery within 7-14 business days</li>
-                <li>✓ Free shipping on orders over 500 PLN</li>
-                <li>✓ Satisfaction guaranteed or money back</li>
+              <ul className="personal-fi-info-list">
+                <li>✓ High-quality resin 3D printing</li>
+                <li>✓ Hand-finished details</li>
+                <li>✓ Secure shipping in protective box</li>
+                <li>✓ 100% Satisfaction Guarantee</li>
               </ul>
             </div>
           </div>

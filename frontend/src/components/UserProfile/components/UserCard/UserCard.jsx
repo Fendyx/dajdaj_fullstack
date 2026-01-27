@@ -47,7 +47,7 @@ export function UserCard({
           className={`uc-flippable-card ${isFlipped ? "uc-flipped" : ""}`}
           onClick={onClick}
         >
-          {/* Front Side */}
+          {/* --- Front Side --- */}
           <div className="uc-card-front">
             <div className="uc-flip-pattern">
               <div className="uc-flip-pattern-element-1"></div>
@@ -95,26 +95,43 @@ export function UserCard({
               </div>
 
               <div className="uc-profile-info">
-                <div className="uc-flip-card-section">
-                  <p className="uc-flip-section-label">Card ID</p>
-                  <p className="uc-flip-section-value">{cardNumber}</p>
-                </div>
-
+                {/* 1. Имя и Email (остались на месте) */}
                 <div className="uc-flip-card-section">
                   <h2 className="uc-flip-user-name">{name} {surname}</h2>
                   <p className="uc-flip-user-email">{email}</p>
                 </div>
 
+                {/* 2. Телефон (перенесен с Back) */}
+                {phone && (
+                  <div className="uc-flip-card-section">
+                    <p className="uc-flip-section-label">Contact Number</p>
+                    <p className="uc-flip-section-value">{phone}</p>
+                  </div>
+                )}
+
+                {/* 3. Информация о доставке (перенесена с Back) */}
                 <div className="uc-flip-card-section">
-                  <p className="uc-flip-section-label">Member since</p>
-                  <p className="uc-flip-section-value">
-                    {registrationDate && new Date(registrationDate).toLocaleDateString()}
-                  </p>
+                  <p className="uc-flip-section-label">Delivery Info</p>
+                  <div className="uc-flip-section-value" style={{ fontSize: '0.9em' }}>
+                    {delivery && (delivery.address || delivery.method) ? (
+                      <>
+                        {delivery.address && <div>{delivery.address}</div>}
+                        {delivery.method && <div>Method: {delivery.method}</div>}
+                      </>
+                    ) : address ? (
+                      <>
+                        {address.street && <span>{address.street}, </span>}
+                        {address.city && <span>{address.city}</span>}
+                      </>
+                    ) : (
+                      <span>No delivery data</span>
+                    )}
+                  </div>
                 </div>
               </div>
 
               <div className="uc-flip-hint">
-                <p className="uc-flip-hint-text">Tap to view delivery details</p>
+                <p className="uc-flip-hint-text">Tap to view Card ID & Date</p>
               </div>
             </div>
 
@@ -127,46 +144,33 @@ export function UserCard({
             </div>
           </div>
 
-          {/* Back Side */}
+          {/* --- Back Side --- */}
           <div className="uc-card-back">
             <div className="uc-delivery-container">
-              <h3 className="uc-back-title">Delivery Details</h3>
+              <h3 className="uc-back-title">Membership Details</h3>
 
-              {delivery && (delivery.address || delivery.method) ? (
-                <>
-                  {delivery.address && (
-                    <p>
-                      <strong>Address:</strong> {delivery.address}
-                    </p>
-                  )}
-                  {delivery.method && (
-                    <p>
-                      <strong>Method:</strong> {delivery.method}
-                    </p>
-                  )}
-                </>
-              ) : address ? (
-                <div className="uc-back-section">
-                  <p className="uc-back-label">Address:</p>
-                  {address?.street && <p>{address.street}</p>}
-                  {address?.city && <p>{address.city}</p>}
-                  {address?.postalCode && <p>{address.postalCode}</p>}
-                  {address?.country && <p>{address.country}</p>}
-                </div>
-              ) : (
-                // 👇 если нет вообще ничего — показываем заглушку
-                <div className="uc-back-section">
-                  <p className="uc-back-label">Address:</p>
-                  <p>No delivery data available</p>
-                </div>
+              {/* 1. Card ID (перенесен с Front) */}
+              <div className="uc-back-section">
+                <p className="uc-back-label">Card ID</p>
+                <p>{cardNumber}</p>
+              </div>
+
+              {/* 2. Member Since (перенесен с Front) */}
+              <div className="uc-back-section">
+                <p className="uc-back-label">Member since</p>
+                <p>
+                  {registrationDate && new Date(registrationDate).toLocaleDateString()}
+                </p>
+              </div>
+              
+              {/* Полный адрес (если нужно больше деталей на обороте) или можно оставить пустым */}
+              {address && (address.postalCode || address.country) && (
+                 <div className="uc-back-section">
+                    <p className="uc-back-label">Region</p>
+                    <p>{address.postalCode} {address.country}</p>
+                 </div>
               )}
 
-              {phone && (
-                <div className="uc-back-section">
-                  <p className="uc-back-label">Contact Number:</p>
-                  <p>{phone}</p>
-                </div>
-              )}
             </div>
           </div>
           

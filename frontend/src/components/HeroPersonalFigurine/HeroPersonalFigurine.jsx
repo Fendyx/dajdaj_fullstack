@@ -17,8 +17,7 @@ export const HeroPersonalFigurine = ({ heroProduct, handleHeroClick }) => {
           </div>
 
           <h2 className="hero-title">
-            Turn your Photo <br />
-            into a <span className="highlight-text">3D Figurine</span>
+            Make your own figurine <br />
           </h2>
 
           {/* UX Visualizer (оставили, но уменьшили в CSS) */}

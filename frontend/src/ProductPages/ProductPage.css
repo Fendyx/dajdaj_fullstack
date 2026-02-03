@@ -66,7 +66,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .product-page-container {
-    padding: 0 15px;
+    padding: 0 0px;
   }
   
   .product-layout {
@@ -86,7 +86,7 @@
 
 @media (max-width: 480px) {
   .product-page {
-    padding: 10px;
+    padding: 0px;
     padding-top: 80px;
   }
      

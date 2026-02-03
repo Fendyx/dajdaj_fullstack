@@ -13,8 +13,10 @@ import { PersonalizationModal } from "../PersonalizationModal/PersonalizationMod
 import { useTranslation } from "react-i18next";
 import "./SimilarProducts.css";
 
+import { ProductCard } from "../ProductCard/ProductCard"; 
+
 const SimilarProducts = ({ ids = [], range = [], title }) => {
-  const { i18n, t } = useTranslation();
+  const { i18n } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useSelector(state => state.auth);
@@ -27,8 +29,9 @@ const SimilarProducts = ({ ids = [], range = [], title }) => {
   const [showModal, setShowModal] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <div className="loading-state">Loading...</div>;
 
+  // Логика фильтрации
   let filtered = [];
   if (ids.length > 0) filtered = products.filter(p => ids.includes(+p.id));
   if (range.length === 2) {
@@ -36,6 +39,7 @@ const SimilarProducts = ({ ids = [], range = [], title }) => {
     filtered = products.filter(p => +p.id >= min && +p.id <= max);
   }
 
+  // Логика лайка (такая же, передадим её пропсом)
   const toggleFavorite = async (productId) => {
     if (!token) {
       navigate('/login');
@@ -58,12 +62,19 @@ const SimilarProducts = ({ ids = [], range = [], title }) => {
   };
 
   const handleViewProduct = (product) => {
+    // Скролл наверх при переходе, хорошая практика для SPA
+    window.scrollTo(0, 0); 
     if (product.link) {
       navigate(product.link);
+    } else {
+       // fallback если ссылки нет
+       navigate(`/product/${product.id}`);
     }
   };
 
-  const handleBuyNow = (product) => {
+  // Адаптер: ProductCard вызывает handleAddToCart, 
+  // а мы внутри решаем - нужна модалка или сразу в корзину
+  const handleAddToCartAdapter = (product) => {
     if (+product.id <= 8) {
       setCurrentProduct(product);
       setShowModal(true);
@@ -76,8 +87,12 @@ const SimilarProducts = ({ ids = [], range = [], title }) => {
     const productWithPersonalization = { ...currentProduct, ...personalizedData };
     dispatch(addToCart(productWithPersonalization));
     setShowModal(false);
-    navigate('/cart');
+    // Опционально: можно не редиректить в корзину сразу, чтобы клиент продолжил покупки
+    // navigate('/cart'); 
   };
+
+  // Если товаров нет, ничего не рендерим
+  if (filtered.length === 0) return null;
 
   return (
     <section className="similar-products-section">
@@ -85,16 +100,16 @@ const SimilarProducts = ({ ids = [], range = [], title }) => {
 
       <div className="similar-products-grid">
         {filtered.map(product => (
-          <SimilarCard
-            key={product.id}
-            product={product}
-            isFavorite={favorites?.some(f => f.id === product.id)}
-            toggleFavorite={toggleFavorite}
-            handleViewProduct={handleViewProduct}
-            handleBuyNow={handleBuyNow}
-            t={t}
-            i18n={i18n}
-          />
+          <div key={product.id} className="similar-card-wrapper">
+             {/* Рендерим тот же компонент, что и в основном каталоге */}
+             <ProductCard
+                product={product}
+                favorites={favorites}
+                toggleFavorite={toggleFavorite}
+                handleAddToCart={handleAddToCartAdapter}
+                handleViewProduct={handleViewProduct}
+             />
+          </div>
         ))}
       </div>
 
@@ -106,54 +121,6 @@ const SimilarProducts = ({ ids = [], range = [], title }) => {
         />
       )}
     </section>
-  );
-};
-
-
-/* ============================================================
-   КАРТОЧКА ПО АНАЛОГИИ С твоим Product Grid
-   ============================================================ */
-const SimilarCard = ({ product, isFavorite, toggleFavorite, handleViewProduct, handleBuyNow, i18n, t }) => {
-  console.log("Product description: ", product.description)
-  return (
-    <div 
-      className="similar-card" 
-      onClick={() => handleViewProduct(product)}
-    >
-      <div className="similar-img-wrapper">
-        <img
-          src={product.image}
-          alt={product.name[i18n.language] || product.name.en}
-          className="similar-img"
-        />
-
-        <button
-          className={`similar-fav-btn ${isFavorite ? "active" : ""}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            toggleFavorite(product.id);
-          }}
-        >
-          ♥
-        </button>
-      </div>
-
-      <div className="similar-content">
-        <h3 className="similar-name">
-          {product.name}
-        </h3>
-        <span className="similar-price">{product.price} PLN</span>
-        <button 
-          className="similar-buy-btn" 
-          onClick={(e) => {
-            e.stopPropagation();
-            handleBuyNow(product);
-          }}
-        >
-          {t("productGrid.actions.buyNow")}
-        </button>
-      </div>
-    </div>
   );
 };
 

@@ -6,16 +6,21 @@ export const adminApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.REACT_APP_API_URL + '/api',
     prepareHeaders: (headers, { getState }) => {
+      // Получаем токен из Redux стейта
       const token = getState().auth?.token;
-      if (token) headers.set("Authorization", `Bearer ${token}`);
+      
+      if (token) {
+        // ✅ ИСПРАВЛЕНИЕ: Твой backend (auth.js) ждет именно этот формат
+        headers.set("Authorization", `Bearer ${token}`);
+      }
       return headers;
     },
   }),
-  tagTypes: ['Orders'],
+  tagTypes: ['Orders', 'Analytics'],
   endpoints: (builder) => ({
     // Получение всех заказов
     getAllOrders: builder.query({
-      query: () => "/orders", // должен быть роут на сервере, который возвращает все заказы
+      query: () => "/orders",
       providesTags: ['Orders'],
     }),
 
@@ -28,7 +33,17 @@ export const adminApi = createApi({
       }),
       invalidatesTags: ['Orders'],
     }),
+
+    // Получение статистики
+    getDashboardStats: builder.query({
+      query: () => "/analytics/dashboard-stats",
+      providesTags: ['Analytics'],
+    }),
   }),
 });
 
-export const { useGetAllOrdersQuery, useUpdateOrderStatusMutation } = adminApi;
+export const { 
+  useGetAllOrdersQuery, 
+  useUpdateOrderStatusMutation,
+  useGetDashboardStatsQuery 
+} = adminApi;

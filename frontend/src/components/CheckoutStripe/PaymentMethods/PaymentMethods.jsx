@@ -1,7 +1,7 @@
 import React from "react";
 import { FaCreditCard, FaGoogle, FaApple, FaUniversity, FaShoppingBag } from "react-icons/fa";
-import BlikPayment from "./BlikPayment";
-import CardPayment from "./CardPayment";
+import BlikPayment from "./BlikPayment"; // Убедись, что путь верный
+import CardPayment from "./CardPayment"; // Убедись, что путь верный
 import "./PaymentMethods.css"; 
 
 const PaymentMethods = ({
@@ -56,82 +56,72 @@ const PaymentMethods = ({
 
   return (
     <div className="pm-container">
-      <h3 className="pm-title">Choose payment method</h3>
-      
-      <div className="pm-list">
-        {/* Google Pay */}
-        {canMakePaymentResult?.googlePay && renderOption(
-          "googlepay", 
-          "Google Pay", 
-          <FaGoogle />, 
-          "pm-google",
-          <div className="pm-helper-text">
-            Click the button below to pay with Google Pay
-          </div>
-        )}
+      {/* Google Pay */}
+      {canMakePaymentResult?.googlePay && renderOption(
+        "google_apple_pay", // ВАЖНО: ID должен совпадать с тем, что в StripePaymentForm
+        "Google Pay", 
+        <FaGoogle />, 
+        "pm-google",
+        <div className="pm-helper-text">
+          Confirm payment via the button at the bottom of the screen.
+        </div>
+      )}
 
-        {/* Apple Pay */}
-        {canMakePaymentResult?.applePay && renderOption(
-          "applepay", 
-          "Apple Pay", 
-          <FaApple />, 
-          "pm-apple",
-          <div className="pm-helper-text">
-            Click the button below to pay with Apple Pay
-          </div>
-        )}
+      {/* Apple Pay */}
+      {canMakePaymentResult?.applePay && renderOption(
+        "google_apple_pay", 
+        "Apple Pay", 
+        <FaApple />, 
+        "pm-apple",
+        <div className="pm-helper-text">
+          Confirm payment via the button at the bottom of the screen.
+        </div>
+      )}
 
-        {/* BLIK */}
-        {renderOption(
-          "blik", 
-          "BLIK", 
-          <img 
-            src="/blik.svg" 
-            alt="BLIK" 
-            className="pm-icon-img"
-          />, 
-          "pm-blik",
-          <BlikPayment blikCode={blikCode} setBlikCode={setBlikCode} />
-        )}
+      {/* BLIK */}
+      {renderOption(
+        "blik", 
+        "BLIK", 
+        <img src="/blik.svg" alt="BLIK" className="pm-icon-img" />, 
+        "pm-blik",
+        <BlikPayment blikCode={blikCode} setBlikCode={setBlikCode} />
+      )}
 
-        {/* Przelewy24 */}
-        {renderOption(
-          "p24",
-          "Przelewy24 / Bank Transfer",
-          <FaUniversity />, // Можно заменить на логотип P24, если есть svg
-          "pm-p24",
-          <div className="pm-helper-text">
-            You will be redirected to your bank to complete the payment securely.
-          </div>
-        )}
+      {/* Credit Card */}
+      {renderOption(
+        "card", 
+        "Credit or Debit Card", 
+        <FaCreditCard />, 
+        "pm-card",
+        <CardPayment
+          cardFields={cardFields}
+          handleCardFieldChange={handleCardFieldChange}
+          handleCardFieldFocus={handleCardFieldFocus}
+          handleCardFieldBlur={handleCardFieldBlur}
+        />
+      )}
 
-        {/* Klarna */}
-        {renderOption(
-          "klarna",
-          "Klarna - Pay Later",
-          <FaShoppingBag />, // Можно заменить на логотип Klarna
-          "pm-klarna",
-          <div className="pm-helper-text">
-            Buy now, pay later. You will be redirected to Klarna.
-          </div>
-        )}
+      {/* Przelewy24 */}
+      {renderOption(
+        "p24",
+        "Przelewy24",
+        <FaUniversity />, 
+        "pm-p24",
+        <div className="pm-helper-text">
+          You will be redirected to your bank to complete the payment.
+        </div>
+      )}
 
-        {/* Credit Card */}
-        {renderOption(
-          "card", 
-          "Credit or Debit Card", 
-          <FaCreditCard />, 
-          "pm-card",
-          <CardPayment
-            cardFields={cardFields}
-            handleCardFieldChange={handleCardFieldChange}
-            handleCardFieldFocus={handleCardFieldFocus}
-            handleCardFieldBlur={handleCardFieldBlur}
-          />
-        )}
-        
-        <div className="pm-mobile-spacer"></div>
-      </div>
+      {/* Klarna */}
+      {renderOption(
+        "klarna",
+        "Klarna - Pay Later",
+        <FaShoppingBag />, 
+        "pm-klarna",
+        <div className="pm-helper-text">
+          Buy now, pay later. You will be redirected to Klarna.
+        </div>
+      )}
     </div>
   );
 };

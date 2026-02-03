@@ -203,4 +203,34 @@
       font-size: 1.4rem;
     }
   }
+
+
+  /* Обрезка адреса с тремя точками */
+.uc-address-truncate {
+  white-space: nowrap;      /* Текст в одну строку */
+  overflow: hidden;         /* Прячем то, что не влезло */
+  text-overflow: ellipsis;  /* Ставим те самые три точки */
+  max-width: 100%;          /* Ограничиваем по ширине контейнера */
+  display: block;
+}
+
+/* Стиль для метода доставки на лицевой стороне */
+.uc-method-tag {
+  font-size: 0.75rem;
+  opacity: 0.8;
+  margin-top: 2px;
+}
+
+/* Стиль для полного адреса на обратной стороне */
+.uc-full-address-text {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  word-wrap: break-word;    /* Позволяем перенос на обороте */
+  white-space: normal;      /* Разрешаем многострочность на обороте */
+}
+
+/* Чтобы секции не слипались */
+.uc-flip-card-section {
+  margin-bottom: 8px;
+}
   

@@ -42,7 +42,7 @@ export default function CheckoutStripe() {
       })) || [];
 
   return (
-    <div className="checkout-container">
+    <div className="checkoutt-container">
       <StripePaymentForm cartItems={cartItems} deliveryInfo={deliveryInfo} />
     </div>
   );

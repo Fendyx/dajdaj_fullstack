@@ -288,13 +288,7 @@ export default function PersonalFigurine() {
 
   return (
     <div className="personal-fi-app-container">
-      <header className="personal-fi-header">
-        <div className="personal-fi-header-content">
-          <h1>3D Figurines Marketplace</h1>
-        </div>
-      </header>
-
-      <main className="personal-fi-main-content">
+      <div className="personal-fi-main-content">
         <div className="personal-fi-content-grid">
           {/* Левая колонка - Видео */}
           <div><VideoPlayer src={videoSrc} /></div>
@@ -364,7 +358,7 @@ export default function PersonalFigurine() {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,13 @@
-.checkout-container {
-    width: 100%;
+.checkoutt-container {
+    width: 100vw;
     max-width: 1200px;
     margin: 0 auto;
     padding: 100px 2rem 2rem;
+  }
+
+  @media (max-width: 768px) {
+    .checkoutt-container {
+      padding: 0;
+    }
   }
   

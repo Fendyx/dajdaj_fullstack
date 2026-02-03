@@ -104,8 +104,9 @@
 
 @media (min-width: 1052px) {
   .stripe-form {
+    width: 100%;
     max-width: 1200px;
-    padding: 2rem;
+    padding: 0;
     
     /* На десктопе футер не фиксирован, убираем огромный отступ */
     padding-bottom: 4rem; 

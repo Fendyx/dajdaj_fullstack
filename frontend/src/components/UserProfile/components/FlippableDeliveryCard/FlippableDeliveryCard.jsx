@@ -1,6 +1,7 @@
 import "./FlippableDeliveryCard.css";
 import { useSelector } from "react-redux";
 import EditProfileModal from "../../../EditProfileModal/EditProfileModal";
+import { useState } from "react";
 
 export function FlippableDeliveryCard({
   profile,
@@ -9,25 +10,24 @@ export function FlippableDeliveryCard({
   isFlipped = false,
   style,
   onClick,
-  gradient // новый проп
+  gradient
 }) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const auth = useSelector((state) => state.auth);
   const data = profile || auth;
 
-  if (!data) {
-    console.warn("⚠️ FlippableDeliveryCard: profile/auth data is null");
-    return null;
-  }
+  if (!data) return null;
 
+  // ВОЗВРАЩЕНА СТАРАЯ ЛОГИКА
   const {
     name,
     email,
-    cardNumber,
-    registrationDate,
     delivery,
     personalData,
     address,
-    phoneNumber
+    phoneNumber,
+    cardNumber,
+    registrationDate
   } = data;
 
   const phone = personalData?.phone || phoneNumber;
@@ -39,7 +39,7 @@ export function FlippableDeliveryCard({
           className={`uc-flippable-card ${isFlipped ? "uc-flipped" : ""}`}
           onClick={onClick}
         >
-          {/* Front Side */}
+          {/* --- Front Side (Стилизация под UserCard) --- */}
           <div className="uc-card-front" style={{ background: gradient?.front }}>
             <div className="uc-flip-pattern">
               <div className="uc-flip-pattern-element-1"></div>
@@ -59,15 +59,59 @@ export function FlippableDeliveryCard({
             </div>
 
             <div className="uc-flip-card-content">
+              {/* Кнопки управления */}
+              <div className="uc-flip-card-top">
+                <button
+                  className="uc-card-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Edit
+                </button>
+                <button
+                  className="uc-card-button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onLogOut?.();
+                  }}
+                >
+                  Log Out
+                </button>
+              </div>
+
               <div className="uc-profile-info">
+                {/* 1. Имя и Email */}
                 <div className="uc-flip-card-section">
                   <h2 className="uc-flip-user-name">{name}</h2>
                   <p className="uc-flip-user-email">{email}</p>
                 </div>
-              </div>
 
-              <div className="uc-flip-hint">
-                <p className="uc-flip-hint-text">Tap to view delivery details</p>
+                {/* 2. Телефон (как в UserCard) */}
+                {phone && (
+                  <div className="uc-flip-card-section">
+                    <p className="uc-flip-section-label">Contact Number</p>
+                    <p className="uc-flip-section-value">{phone}</p>
+                  </div>
+                )}
+
+                {/* 3. Информация о доставке с обрезкой текста */}
+                <div className="uc-flip-card-section">
+                  <p className="uc-flip-section-label">Delivery Info</p>
+                  <div className="uc-flip-section-value uc-address-truncate">
+                    {delivery ? (
+                      <>
+                        <span>{delivery.address}</span>
+                        {delivery.method && <div className="uc-method-tag">Method: {delivery.method}</div>}
+                      </>
+                    ) : address ? (
+                      <span>{address.street}, {address.city}</span>
+                    ) : (
+                      "No delivery data"
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -80,42 +124,29 @@ export function FlippableDeliveryCard({
             </div>
           </div>
 
-          {/* Back Side */}
+          {/* --- Back Side (Полные данные) --- */}
           <div className="uc-card-back" style={{ background: gradient?.back }}>
             <div className="uc-delivery-container">
               <h3 className="uc-back-title">Delivery Details</h3>
-              {delivery ? (
-                <>
-                  <p><strong>Address:</strong> {delivery.address}</p>
-                  <p><strong>Method:</strong> {delivery.method}</p>
-                </>
-              ) : (
-                <div className="uc-back-section">
-                  <p className="uc-back-label">Address:</p>
-                  <p>{address?.street}</p>
-                  <p>{address?.city}</p>
-                  <p>{address?.postalCode}</p>
-                  {address?.country && <p>{address.country}</p>}
-                </div>
-              )}
-              {phone && (
-                <div className="uc-back-section">
-                  <p className="uc-back-label">Contact Number:</p>
-                  <p>{phone}</p>
-                </div>
-              )}
+              <div className="uc-back-section">
+                <p className="uc-back-label">Full Address:</p>
+                <p className="uc-full-address-text">
+                  {delivery?.address || `${address?.street || ''} ${address?.city || ''}`}
+                </p>
+              </div>
+              <div className="uc-back-section">
+                <p className="uc-back-label">Method:</p>
+                <p>{delivery?.method || "Not specified"}</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Edit modal fallback */}
-      {!onEdit && (
-        <EditProfileModal
-          isOpen={false}
-          onClose={() => {}}
-        />
-      )}
+      <EditProfileModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 }

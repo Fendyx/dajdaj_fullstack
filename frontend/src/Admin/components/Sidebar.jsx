@@ -9,6 +9,7 @@ export default function Sidebar({ activeTab, onTabChange }) {
     { id: "users", label: "Users", icon: FaUsers },
     { id: "products", label: "Products", icon: FaBox },
     { id: "admins", label: "Admins", icon: FaUserShield },
+    { id: "analitics", label: "analitics", icon: FaUserShield },
   ];
 
   return (

@@ -20,6 +20,8 @@ const paymentIntent = require("./routes/paymentIntent");
 const orders = require("./routes/orders");
 const adminUsers = require("./routes/adminUsers");
 const personalOrders = require("./routes/personalOrders"); // <--- 1. НОВЫЙ ИМПОРТ
+const trackVisit = require("./middleware/trackVisit");
+const analitics = require("./routes/analytics");
 
 const app = express();
 
@@ -62,6 +64,8 @@ app.use("/api/oauth", oauth);
 app.use("/api/orders", orders); 
 app.use("/api/users", adminUsers);
 app.use("/api/personal-orders", personalOrders); // <--- ПОДКЛЮЧЕНИЕ ЗАГРУЗКИ ФОТО
+app.use("/api/analytics", analitics);
+app.use(trackVisit);
 
 console.log("📦 Admin users routes mounted");
 console.log("📦 Personal orders routes mounted");

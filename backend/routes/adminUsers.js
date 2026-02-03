@@ -5,7 +5,7 @@ const User = require("../models/user");
 const authorizeRole = require("../middleware/authorizeRole");
 
 // Получение всех пользователей (только для админа)
-router.get("/", auth, authorizeRole("superadmin"), async (req, res) => {
+router.get("/", auth, async (req, res) => {
   try {
     const users = await User.find().select(
       "clientId name email registrationDate cardNumber"

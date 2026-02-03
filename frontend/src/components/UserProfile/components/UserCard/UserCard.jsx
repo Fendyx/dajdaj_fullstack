@@ -20,7 +20,6 @@ export function UserCard({
     return null;
   }
 
-  // 👇 Безопасно достаем deliveryDatas[0], даже если массив пуст
   const firstDelivery = Array.isArray(data.deliveryDatas)
     ? data.deliveryDatas[0] || {}
     : {};
@@ -35,7 +34,6 @@ export function UserCard({
     phoneNumber,
   } = data;
 
-  // 👇 Берем delivery и personalData из первой записи, если есть
   const delivery = firstDelivery.delivery || {};
   const personalData = firstDelivery.personalData || {};
   const phone = personalData.phone || phoneNumber;
@@ -49,6 +47,7 @@ export function UserCard({
         >
           {/* --- Front Side --- */}
           <div className="uc-card-front">
+            {/* ... (паттерны и логотип остаются без изменений) ... */}
             <div className="uc-flip-pattern">
               <div className="uc-flip-pattern-element-1"></div>
               <div className="uc-flip-pattern-element-2"></div>
@@ -75,9 +74,6 @@ export function UserCard({
                     setIsModalOpen(true);
                   }}
                 >
-                  <svg className="uc-button-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34a.9959.9959 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                  </svg>
                   Edit
                 </button>
                 <button
@@ -87,21 +83,16 @@ export function UserCard({
                     onLogOut?.();
                   }}
                 >
-                  <svg className="uc-button-icon" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.59L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/>
-                  </svg>
                   Log Out
                 </button>
               </div>
 
               <div className="uc-profile-info">
-                {/* 1. Имя и Email (остались на месте) */}
                 <div className="uc-flip-card-section">
                   <h2 className="uc-flip-user-name">{name} {surname}</h2>
                   <p className="uc-flip-user-email">{email}</p>
                 </div>
 
-                {/* 2. Телефон (перенесен с Back) */}
                 {phone && (
                   <div className="uc-flip-card-section">
                     <p className="uc-flip-section-label">Contact Number</p>
@@ -109,37 +100,22 @@ export function UserCard({
                   </div>
                 )}
 
-                {/* 3. Информация о доставке (перенесена с Back) */}
                 <div className="uc-flip-card-section">
                   <p className="uc-flip-section-label">Delivery Info</p>
-                  <div className="uc-flip-section-value" style={{ fontSize: '0.9em' }}>
+                  {/* Добавлен класс uc-address-truncate для трех точек */}
+                  <div className="uc-flip-section-value uc-address-truncate" style={{ fontSize: '0.9em' }}>
                     {delivery && (delivery.address || delivery.method) ? (
                       <>
-                        {delivery.address && <div>{delivery.address}</div>}
-                        {delivery.method && <div>Method: {delivery.method}</div>}
+                        {delivery.address && <span>{delivery.address}</span>}
+                        {delivery.method && <div className="uc-method-info">Method: {delivery.method}</div>}
                       </>
                     ) : address ? (
-                      <>
-                        {address.street && <span>{address.street}, </span>}
-                        {address.city && <span>{address.city}</span>}
-                      </>
+                      <span>{address.street}, {address.city}</span>
                     ) : (
                       <span>No delivery data</span>
                     )}
                   </div>
                 </div>
-              </div>
-
-              <div className="uc-flip-hint">
-                <p className="uc-flip-hint-text">Tap to view Card ID & Date</p>
-              </div>
-            </div>
-
-            <div className="uc-card-styling">
-              <div className="uc-styling-dots">
-                <div className="uc-styling-dot"></div>
-                <div className="uc-styling-dot"></div>
-                <div className="uc-styling-dot"></div>
               </div>
             </div>
           </div>
@@ -147,30 +123,27 @@ export function UserCard({
           {/* --- Back Side --- */}
           <div className="uc-card-back">
             <div className="uc-delivery-container">
-              <h3 className="uc-back-title">Membership Details</h3>
+              <h3 className="uc-back-title">Details & Address</h3>
 
-              {/* 1. Card ID (перенесен с Front) */}
+              {/* Показываем ПОЛНЫЙ адрес здесь, без обрезки */}
               <div className="uc-back-section">
-                <p className="uc-back-label">Card ID</p>
-                <p>{cardNumber}</p>
+                <p className="uc-back-label">Full Delivery Address</p>
+                <p className="uc-full-address-text">
+                   {delivery.address || (address ? `${address.street}, ${address.city}` : "No address provided")}
+                </p>
               </div>
 
-              {/* 2. Member Since (перенесен с Front) */}
+              <div className="uc-back-section">
+                <p className="uc-back-label">Card ID</p>
+                <p className="uc-back-value">{cardNumber}</p>
+              </div>
+
               <div className="uc-back-section">
                 <p className="uc-back-label">Member since</p>
-                <p>
+                <p className="uc-back-value">
                   {registrationDate && new Date(registrationDate).toLocaleDateString()}
                 </p>
               </div>
-              
-              {/* Полный адрес (если нужно больше деталей на обороте) или можно оставить пустым */}
-              {address && (address.postalCode || address.country) && (
-                 <div className="uc-back-section">
-                    <p className="uc-back-label">Region</p>
-                    <p>{address.postalCode} {address.country}</p>
-                 </div>
-              )}
-
             </div>
           </div>
           

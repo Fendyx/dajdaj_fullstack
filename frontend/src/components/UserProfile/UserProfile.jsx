@@ -8,13 +8,18 @@ import {
   useGetUserDiscountsQuery,
   useGetUserFavoritesQuery,
   useGetUserProfileQuery,
+  useAddFavoriteMutation,    // ✅ ДОБАВЛЕНО
+  useRemoveFavoriteMutation, // ✅ ДОБАВЛЕНО
   userApi,
 } from "../../slices/userApi";
 import { logoutUser } from "../../slices/authSlice";
 
+// ✅ ДОБАВЛЕНО: Импорт экшена корзины
+import { addToCart } from "../../slices/cartSlice"; 
+
 import { CardGallery } from "./components/CardGallery/CardGallery";
-// 👇 Импортируем нашу новую модалку (проверь путь!)
 import { OrderDetailsDrawer } from "../OrderDetailsDrawer/OrderDetailsDrawer";
+import { ProductCard } from "../ProductCard/ProductCard";
 
 import "./UserProfile.css";
 
@@ -52,9 +57,11 @@ export function UserProfile() {
   const location = useLocation();
 
   const [activeTab, setActiveTab] = useState("orders");
-  
-  // 👇 Состояние для выбранного заказа (для модалки)
   const [selectedOrder, setSelectedOrder] = useState(null);
+
+  // ✅ ДОБАВЛЕНО: Инициализация хуков для лайков
+  const [addFavorite] = useAddFavoriteMutation();
+  const [removeFavorite] = useRemoveFavoriteMutation();
 
   useEffect(() => {
     if (!token) navigate("/login");
@@ -117,14 +124,35 @@ export function UserProfile() {
   const handleEditProfile = (id) => console.log("Edit profile:", id);
   const handleAddNewProfile = () => console.log("Add new profile");
 
-  // 👇 Обработчик открытия модалки
   const handleOrderClick = (order) => {
     setSelectedOrder(order);
   };
 
-  // 👇 Обработчик закрытия модалки
   const handleCloseModal = () => {
     setSelectedOrder(null);
+  };
+
+  // Логика для карточки товара
+  const toggleFavorite = async (productId) => {
+    try {
+      if (favorites.find(p => p.id === productId)) {
+        await removeFavorite(productId).unwrap();
+      } else {
+        await addFavorite(productId).unwrap();
+      }
+      refetchFavorites(); 
+    } catch (err) {
+      console.error("Ошибка избранного:", err);
+    }
+  };
+
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+  };
+
+  const handleViewProduct = (product) => {
+    navigate(`/product/${product.id}`);
+    window.scrollTo(0, 0);
   };
 
   const hasAuthError = errorOrders?.originalStatus === 401 || errorOrders?.originalStatus === 400;
@@ -209,7 +237,6 @@ export function UserProfile() {
                     <div 
                       key={order._id} 
                       className="up-order-card"
-                      // 👇 Добавили onClick и стиль курсора
                       onClick={() => handleOrderClick(order)}
                       style={{ cursor: "pointer" }}
                     >
@@ -256,18 +283,20 @@ export function UserProfile() {
           {activeTab === "favorites" && (
             <div className="up-fade-in">
               {loadingFavorites ? (
-                <div className="up-loading-state"><div className="up-spinner"></div> Loading...</div>
+                <div className="up-loading-state">
+                  <div className="up-spinner"></div> Loading...
+                </div>
               ) : favorites?.length > 0 ? (
                 <div className="up-favorites-grid">
                   {favorites.map((product) => (
-                    <div key={product.id} className="up-favorite-card" onClick={() => navigate(`/product/${product.id}`)}>
-                      <div className="up-fav-img-wrapper">
-                        <ImageWithFallback src={product.image} alt={product.name[currentLang]} />
-                      </div>
-                      <div className="up-fav-info">
-                        <span className="up-fav-name">{product.name[currentLang]}</span>
-                        <span className="up-fav-price">{product.price} PLN</span>
-                      </div>
+                    <div key={product.id} className="up-fav-card-wrapper">
+                      <ProductCard
+                        product={product}
+                        favorites={favorites}
+                        toggleFavorite={toggleFavorite}
+                        handleAddToCart={handleAddToCart}
+                        handleViewProduct={handleViewProduct}
+                      />
                     </div>
                   ))}
                 </div>
@@ -275,7 +304,9 @@ export function UserProfile() {
                 <div className="up-empty-state">
                   <div className="up-empty-icon">❤️</div>
                   <h3>{t("userProfile.noFavorites")}</h3>
-                  <button className="up-cta-btn" onClick={handleGoShopping}>{t("userProfile.findFavorites")}</button>
+                  <button className="up-cta-btn" onClick={handleGoShopping}>
+                    {t("userProfile.findFavorites")}
+                  </button>
                 </div>
               )}
             </div>
@@ -312,7 +343,6 @@ export function UserProfile() {
         </div>
       </div>
 
-      {/* 👇 Модальное окно деталей заказа */}
       <OrderDetailsDrawer 
         isOpen={!!selectedOrder} 
         onClose={handleCloseModal} 

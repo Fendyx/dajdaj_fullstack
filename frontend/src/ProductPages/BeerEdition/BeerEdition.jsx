@@ -23,7 +23,7 @@ export default function BeerEdition() {
   };
 
   const productImages = [
-    'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/NewPiwoEdycja_withBox.png',
+    'https://raw.githubusercontent.com/Fendyx/images/refs/heads/main/kuba.png',
     'https://images.unsplash.com/photo-1704440278730-b420f5892700?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
     'https://images.unsplash.com/photo-1648316316198-5f15553e55df?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
     'https://images.unsplash.com/photo-1731401737053-313b3b8a447c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080'

@@ -9,12 +9,18 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import "./StripePaymentForm.css";
 
+// RTK Query
+import { useGetUserProfileQuery } from "../../slices/userApi";
+
 // Импорт компонентов
-import SelectDeliveryMethod from "../../Pages/ShippingInfo/components/selectDeliveryMethod/SelectDeliveryMethod";
 import SelectedCartItem from "../SelectedCartItem/SelectedCartItem";
 import PaymentMethods from "./PaymentMethods/PaymentMethods";
 import PaymentFooter from "./PaymentFooter";
 import { getOrderFromDB } from "../../utils/db"; 
+
+// --- НОВЫЕ КОМПОНЕНТЫ ---
+import { UserCard } from "../UserProfile/components/UserCard/UserCard";
+import { DeliverySelectorModal } from "./DeliverySelectorModal"; 
 
 const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const stripe = useStripe();
@@ -23,7 +29,67 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const auth = useSelector((state) => state.auth);
   const token = auth.token || localStorage.getItem("token");
 
-  // Определение товаров
+  // 1. Загружаем профиль пользователя (если есть токен)
+  const { data: userProfile } = useGetUserProfileQuery(undefined, { skip: !token });
+
+  // 2. Состояние для Модалки и Выбранной карты
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProfileCard, setSelectedProfileCard] = useState(null);
+
+  // 3. Данные формы (Они отправляются в Stripe)
+  const [formData, setFormData] = useState({
+    name: deliveryInfo?.name || "",
+    surname: deliveryInfo?.surname || "",
+    email: deliveryInfo?.email || "",
+    phone: deliveryInfo?.phone || "",
+    address: deliveryInfo?.address || "",
+    method: deliveryInfo?.method || "",
+  });
+
+  // 4. Эффект: При загрузке профиля ставим дефолтную карту
+  useEffect(() => {
+    if (userProfile && !selectedProfileCard) {
+        const mainDelivery = userProfile.deliveryDatas?.[0];
+        const initialCard = mainDelivery 
+            ? { ...userProfile, ...mainDelivery.personalData, delivery: mainDelivery.delivery, type: 'main' }
+            : { ...userProfile, delivery: { address: "No address", method: "—" }, personalData: { name: userProfile.name, email: userProfile.email }, type: 'main' };
+        
+        setSelectedProfileCard(initialCard);
+    }
+  }, [userProfile, selectedProfileCard]);
+
+  // 5. ГЛАВНОЕ: Синхронизация Выбранной карты с formData
+  // Как только меняется selectedProfileCard -> обновляем formData
+  useEffect(() => {
+    if (selectedProfileCard && selectedProfileCard.type !== 'new') {
+        setFormData({
+            name: selectedProfileCard.personalData?.name || selectedProfileCard.name || "",
+            surname: selectedProfileCard.personalData?.surname || selectedProfileCard.surname || "",
+            email: selectedProfileCard.personalData?.email || selectedProfileCard.email || "",
+            phone: selectedProfileCard.personalData?.phone || selectedProfileCard.phone || "",
+            address: selectedProfileCard.delivery?.address || "",
+            method: selectedProfileCard.delivery?.method || "Standard", // Дефолт, если пусто
+        });
+    } else if (selectedProfileCard?.type === 'new') {
+        // Если выбрали "New", очищаем, но оставляем email аккаунта если есть
+        setFormData({ 
+            name: "", 
+            surname: "", 
+            email: auth.email || "", 
+            phone: "", 
+            address: "", 
+            method: "" 
+        });
+    }
+  }, [selectedProfileCard, auth.email]);
+
+  // Обычный обработчик ввода для ручного режима
+  const handleInputChange = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  // --- ЛОГИКА ОПЛАТЫ (Взята из твоего рабочего файла) ---
+  
   const itemsToPurchase = useMemo(() => {
     if (location.state?.buyNowItem) {
       return [location.state.buyNowItem];
@@ -32,12 +98,9 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   }, [location.state, propCartItems]);
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1052);
-  const [selectedDelivery, setSelectedDelivery] = useState(deliveryInfo || null);
-
   const [paymentRequest, setPaymentRequest] = useState(null);
   const [canMakePaymentResult, setCanMakePaymentResult] = useState(null);
   const [blikCode, setBlikCode] = useState("");
-  
   const [selected, setSelected] = useState("card");
   const [paymentError, setPaymentError] = useState("");
 
@@ -52,37 +115,18 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const creatingPIRef = useRef(false);
   const submittingRef = useRef(false);
 
-  const [formData, setFormData] = useState({
-    name: deliveryInfo?.name || "",
-    surname: deliveryInfo?.surname || "",
-    email: deliveryInfo?.email || "",
-    phone: deliveryInfo?.phone || "",
-    address: deliveryInfo?.address || "",
-    method: deliveryInfo?.method || "",
-  });
-
   const handleCardFieldFocus = (fieldName) => () => {
-    setCardFields((prev) => ({
-      ...prev,
-      [fieldName]: { ...prev[fieldName], focused: true },
-    }));
+    setCardFields((prev) => ({ ...prev, [fieldName]: { ...prev[fieldName], focused: true } }));
   };
 
   const handleCardFieldBlur = (fieldName) => () => {
-    setCardFields((prev) => ({
-      ...prev,
-      [fieldName]: { ...prev[fieldName], focused: false },
-    }));
+    setCardFields((prev) => ({ ...prev, [fieldName]: { ...prev[fieldName], focused: false } }));
   };
 
   const handleCardFieldChange = (fieldName) => (event) => {
     setCardFields((prev) => ({
       ...prev,
-      [fieldName]: {
-        ...prev[fieldName],
-        complete: event.complete,
-        error: event.error,
-      },
+      [fieldName]: { ...prev[fieldName], complete: event.complete, error: event.error },
     }));
     if (event.complete && fieldName === "expiry") cardCvcRef.current?.focus();
   };
@@ -94,19 +138,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     mediaQuery.addEventListener("change", handleResize);
     return () => mediaQuery.removeEventListener("change", handleResize);
   }, []);
-
-  useEffect(() => {
-    if (selectedDelivery) {
-      setFormData({
-        name: selectedDelivery?.personalData?.name || "",
-        surname: selectedDelivery?.personalData?.surname || "",
-        email: selectedDelivery?.personalData?.email || "",
-        phone: selectedDelivery?.personalData?.phone || "",
-        address: selectedDelivery?.delivery?.address || "",
-        method: selectedDelivery?.delivery?.method || "",
-      });
-    }
-  }, [selectedDelivery]);
 
   const calculateTotalAmount = () => {
     if (!itemsToPurchase || !Array.isArray(itemsToPurchase)) return 0;
@@ -140,26 +171,19 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     });
 
     pr.on("paymentmethod", async (ev) => {
-      if (submittingRef.current) {
-        ev.complete("fail");
-        return;
-      }
+      if (submittingRef.current) { ev.complete("fail"); return; }
       submittingRef.current = true;
       try {
         const pi = await getOrCreatePaymentIntent();
         const { clientSecret } = pi;
         const { error } = await stripe.confirmCardPayment(clientSecret, { payment_method: ev.paymentMethod.id }, { handleActions: false });
-        if (error) {
-          ev.complete("fail");
-        } else {
+        if (error) { ev.complete("fail"); } 
+        else {
           ev.complete("success");
           if (pi.orderToken) window.location.href = `${window.location.origin}/checkout-success?orderToken=${pi.orderToken}`;
         }
-      } catch (err) {
-        ev.complete("fail");
-      } finally {
-        submittingRef.current = false;
-      }
+      } catch (err) { ev.complete("fail"); } 
+      finally { submittingRef.current = false; }
     });
   }, [stripe, itemsToPurchase]);
 
@@ -192,6 +216,7 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
         })
       );
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+      // ВАЖНО: Здесь мы передаем formData (который обновился из Галереи или инпутов)
       const { data } = await axios.post(`${process.env.REACT_APP_API_URL}/api/stripe/create-payment-intent`, { cartItems: processedItems, deliveryInfo: formData }, config);
       paymentIntentRef.current = data;
       return data;
@@ -254,7 +279,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
   const isProcessing = creatingPIRef.current || submittingRef.current;
   const totalAmount = calculateTotalAmount();
 
-  // Выносим пропсы для PaymentMethods, чтобы не дублировать код
   const paymentMethodsProps = {
     selected,
     setSelected,
@@ -268,6 +292,15 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
     canMakePaymentResult
   };
 
+  // Обработчик выбора из модалки
+  const handleSelectFromModal = (cardData) => {
+    if (cardData.type === 'new') {
+        setSelectedProfileCard(null); 
+    } else {
+        setSelectedProfileCard(cardData);
+    }
+  };
+
   return (
     <form id="payment-form" onSubmit={handleSubmit} className="stripe-form">
       {paymentError && (
@@ -275,21 +308,58 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
       )}
 
       <div className="stripe-layout">
-        {/* ЛЕВАЯ КОЛОНКА: Товары + Доставка */}
+        {/* ЛЕВАЯ КОЛОНКА */}
         <div className="stripe-left">
           <SelectedCartItem />
           
-          <SelectDeliveryMethod
-            onSelectDelivery={setSelectedDelivery}
-            formData={formData}
-            handleChange={(e) =>
-              setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-            }
-          />
+          {/* БЛОК ДОСТАВКИ (Новый дизайн) */}
+          <div className="delivery-section-container" style={{ margin: '20px 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                <h3>Delivery Details</h3>
+                {token && (
+                    <button 
+                        type="button" 
+                        onClick={() => setIsModalOpen(true)}
+                        style={{ background: 'transparent', border: '1px solid #ccc', borderRadius: '15px', padding: '5px 15px', cursor: 'pointer' }}
+                    >
+                        Change
+                    </button>
+                )}
+            </div>
 
-          {/* ВАЖНОЕ ИЗМЕНЕНИЕ: 
-             Если это МОБИЛКА (!isDesktop), методы оплаты показываем здесь (слева/снизу)
-          */}
+            {/* ВАРИАНТ 1: ПОЛЬЗОВАТЕЛЬ ЗАЛОГИНЕН И ВЫБРАЛ ПРОФИЛЬ */}
+            {token && selectedProfileCard ? (
+                <div className="selected-card-preview fade-in">
+                    <UserCard 
+                        profile={selectedProfileCard} 
+                        hideActions={true} 
+                        style={{ margin: 0, width: '100%', maxWidth: '100%' }}
+                    />
+                </div>
+            ) : (
+            /* ВАРИАНТ 2: ГОСТЬ ИЛИ РУЧНОЙ ВВОД */
+                <div className="manual-address-fields fade-in">
+                     <p style={{fontSize: '0.9rem', color: '#666', marginBottom: '10px'}}>
+                        {token ? "Enter details for new recipient:" : "Please fill in delivery details:"}
+                     </p>
+                    <div className="input-row">
+                        <input name="name" placeholder="Name" value={formData.name} onChange={handleInputChange} required className="stripe-input" />
+                        <input name="surname" placeholder="Surname" value={formData.surname} onChange={handleInputChange} required className="stripe-input" />
+                    </div>
+                    <input name="email" type="email" placeholder="Email" value={formData.email} onChange={handleInputChange} required className="stripe-input" />
+                    <input name="phone" placeholder="Phone" value={formData.phone} onChange={handleInputChange} required className="stripe-input" />
+                    <input name="address" placeholder="Address (Street, House, Zip)" value={formData.address} onChange={handleInputChange} required className="stripe-input" />
+                    
+                    <select name="method" value={formData.method} onChange={handleInputChange} className="stripe-input" required>
+                        <option value="" disabled>Select Delivery Method</option>
+                        <option value="Standard">Standard Delivery</option>
+                        <option value="Express">Express Delivery</option>
+                        <option value="InPost">InPost Locker</option>
+                    </select>
+                </div>
+            )}
+          </div>
+
           {!isDesktop && (
              <div className="inline-payment-methods mobile-methods">
                 <h3>Payment Method</h3>
@@ -298,18 +368,14 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
           )}
         </div>
 
-        {/* ПРАВАЯ КОЛОНКА (Десктоп): Методы оплаты + Кнопка */}
+        {/* ПРАВАЯ КОЛОНКА */}
         {isDesktop && (
           <div className="stripe-right">
              <div className="desktop-sticky-summary">
-                {/* ВАЖНОЕ ИЗМЕНЕНИЕ: 
-                   Если это ДЕСКТОП, методы оплаты показываем здесь (справа)
-                */}
                 <div className="inline-payment-methods desktop-methods">
                   <h3>Payment Method</h3>
                   <PaymentMethods {...paymentMethodsProps} />
                 </div>
-
                 <PaymentFooter
                   isDesktop={true}
                   selected={selected}
@@ -323,7 +389,6 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
         )}
       </div>
 
-      {/* МОБИЛЬНЫЙ ФУТЕР (Только кнопка) */}
       {!isDesktop && (
         <PaymentFooter
           isDesktop={false}
@@ -333,6 +398,16 @@ const StripePaymentForm = ({ cartItems: propCartItems, deliveryInfo }) => {
           amount={totalAmount}
           disabled={isProcessing}
         />
+      )}
+
+      {/* МОДАЛКА */}
+      {token && (
+          <DeliverySelectorModal 
+            isOpen={isModalOpen} 
+            onClose={() => setIsModalOpen(false)} 
+            profiles={userProfile ? [userProfile] : []}
+            onSelect={handleSelectFromModal}
+          />
       )}
     </form>
   );

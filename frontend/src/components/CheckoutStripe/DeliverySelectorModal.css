@@ -1,0 +1,212 @@
+/* --- СТИЛИ МОДАЛЬНОГО ОКНА --- */
+.dsm-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(5px);
+  padding: 10px; /* Отступ на очень маленьких экранах */
+}
+
+.dsm-content {
+  background: #ffffff;
+  width: 100%;
+  max-width: 600px; /* Немного шире для комфорта */
+  border-radius: 20px;
+  padding: 20px 0; /* Убрал боковые паддинги у контейнера, чтобы галерея была на всю ширину */
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  animation: dsmFadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@keyframes dsmFadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.dsm-close-cross {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 10;
+  color: #333;
+}
+
+.dsm-title {
+  margin: 0 0 15px 0;
+  text-align: center;
+  font-size: 1.5rem;
+  color: #333;
+  padding: 0 20px;
+}
+
+.dsm-actions {
+  width: 100%;
+  padding: 0 20px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.dsm-confirm-btn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 14px 40px;
+  border-radius: 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+  width: 100%;
+  max-width: 300px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.dsm-confirm-btn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}
+
+/* --- ТВОЙ CSS ГАЛЕРЕИ (с небольшими фиксами для модалки) --- */
+
+.uc-gallery-container.modal-gallery-override {
+  position: relative;
+  width: 100%;
+  /* max-width: 896px; - убрал, так как ограничиваем шириной модалки */
+  margin: 0 auto;
+  /* Исправление выравнивания текста */
+  text-align: left !important; 
+}
+
+.uc-card-stack {
+  position: relative;
+  height: 22rem; /* Оставляем высоту как есть */
+  width: 100%;
+  margin: 0 auto;
+  overflow: hidden; /* Важно, чтобы не вылезало за края модалки */
+  perspective: 1000px;
+}
+
+.uc-profile-card-wrapper {
+  position: absolute;
+  top: 0;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  display: flex;
+  align-items: center; /* Центрируем саму карточку в обертке */
+  justify-content: center;
+  width: 100%;
+  /* Исправление выравнивания текста внутри карточки */
+  text-align: left; 
+}
+
+/* Навигация */
+.uc-bottom-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  margin: 1rem 0; /* Чуть уменьшил отступы для модалки */
+  padding: 0 1rem;
+}
+
+.uc-nav-button {
+  background: #000000;
+  border: 2px solid #000000;
+  border-radius: 50%;
+  width: 2.5rem; /* Чуть крупнее для удобства */
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  color: #fff;
+  flex-shrink: 0; /* Чтобы не сжимались */
+}
+
+.uc-nav-button:hover {
+  background: #ffffff;
+  color: #000;
+}
+
+.uc-nav-button:disabled {
+  background: #ccc;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+.uc-nav-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  fill: currentColor;
+}
+
+/* Индикаторы */
+.uc-card-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.05); /* Чуть темнее фон для модалки */
+  border-radius: 25px;
+}
+
+.uc-indicator {
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+  background: #ccc;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.uc-indicator.uc-active {
+  background: #000;
+  transform: scale(1.3);
+}
+
+/* --- ИСПРАВЛЕНИЕ МОБИЛЬНОЙ ВЕРСИИ --- */
+@media (max-width: 640px) {
+  .dsm-content {
+      width: 100%;
+      border-radius: 15px;
+      padding: 15px 0;
+  }
+
+  .uc-card-stack {
+      height: 20rem; /* Чуть меньше высота на мобилке */
+  }
+
+  .uc-bottom-navigation {
+    gap: 1rem;
+    margin-bottom: 5px;
+  }
+  
+  .uc-nav-button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  /* Самое важное для ширины карточек на мобилке */
+  .uc-gallery-container.modal-gallery-override {
+      width: 100%;
+  }
+  
+  /* Убираем лишние сдвиги на мобильных, если карточка не влезает */
+  .uc-profile-card-wrapper {
+      padding: 0; /* Убираем паддинги, если были */
+  }
+}

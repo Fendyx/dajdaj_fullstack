@@ -1,8 +1,7 @@
 /* --- Container --- */
 .hero-product-section {
   width: 100%;
-  /* Минимальные внешние отступы */
-  padding: 10px 0;
+  padding: 16px 0; /* Увеличил вертикальный отступ */
   display: flex;
   justify-content: center;
   box-sizing: border-box;
@@ -13,25 +12,26 @@
   position: relative;
   width: 100%;
   max-width: 1100px;
-  background: #ffffff;
-  border-radius: 24px;
-  border: 1px solid #e5e7eb;
+  /* ИЗМЕНЕНИЯ ТУТ: */
+  background: rgb(225, 239, 251); /* Светло-серый фон вместо чисто белого */
+  border-radius: 12px; /* Более строгие края под маркетплейс */
+  border: 1px solid #edf2f7; /* Тонкая рамка для четкости */
+  
   display: flex;
   justify-content: space-between;
   align-items: center;
-  /* Уменьшил внутренние отступы с 50px до 30px */
   padding: 30px 40px; 
   overflow: hidden;
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06);
+  /* Более глубокая, но мягкая тень */
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
-  
-  /* ВАЖНО: Ограничиваем высоту для десктопа, чтобы он был "полосой", а не "постером" */
   height: 340px; 
 }
 
 .hero-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.1);
+  background: #f3f4f6; /* Чуть темнее при наведении */
 }
 
 /* --- Left Side: Content --- */
@@ -279,47 +279,49 @@
 
 /* --- Responsive (Mobile) --- */
 @media (max-width: 900px) {
-  .hero-card {
-      flex-direction: column;
-      height: auto; /* На мобилке высота резиновая */
-      padding: 24px 20px;
-      align-items: flex-start;
+  .hero-product-section {
+    padding: 10px 16px; /* Отступы по бокам, чтобы блок не касался краев экрана */
   }
 
+  .hero-card {
+      flex-direction: column;
+      height: auto; 
+      padding: 24px 20px;
+      align-items: flex-start;
+      /* На мобилках радиус можно оставить таким же или чуть уменьшить */
+      border-radius: 12px; 
+      width: calc(100% - 32px); /* Явно задаем ширину с учетом отступов */
+      margin: 0 auto;
+  }
+
+  /* ... остальной мобильный код без изменений ... */
   .hero-content {
       max-width: 100%;
       margin-bottom: 20px;
   }
-
   .hero-title {
       font-size: 2rem;
   }
-
   .steps-visualizer {
       width: 100%;
       justify-content: space-between;
       box-sizing: border-box;
   }
-  
   .step-arrow { display: none; }
-
   .hero-visual {
       width: 100%;
-      height: 250px; /* Фиксируем высоту картинки на мобильном */
+      height: 250px;
       margin-top: 10px;
   }
-
   .hero-main-image {
       height: 100%;
       max-height: 220px;
   }
-
   .floating-ui-card {
       top: 0;
       left: 0;
       transform: scale(0.8) rotate(-5deg);
   }
-  
   .hero-bottom-row {
       width: 100%;
       justify-content: space-between;

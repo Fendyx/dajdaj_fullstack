@@ -22,8 +22,6 @@ import AdminLayout from "./layouts/AdminLayout";
 
 import Home from "./components/Home";
 import Cart from "./components/Cart/Cart";
-import ShippingInfo from "./Pages/ShippingInfo/ShippingInfo";
-import SelectDeliveryMethod from "./Pages/ShippingInfo/components/selectDeliveryMethod/SelectDeliveryMethod";
 import CheckoutSuccess from "./components/CheckoutSuccess/CheckoutSuccess";
 import Register from "./components/auth/Register";
 import Login from "./components/auth/Login";
@@ -58,8 +56,8 @@ function AppContent() {
     "/checkout",
     "/login",
     "/register",
-    "/select-delivery-method",
     "/checkout-stripe",
+    "/"
   ];
   const hideLayout = noLayoutPages.includes(location.pathname);
 
@@ -95,7 +93,6 @@ function AppContent() {
               />
 
               {/* --- ИЗМЕНЕНИЯ: Эти маршруты теперь публичные для гостей --- */}
-              <Route path="/shipping-info" element={<ShippingInfo />} />
               <Route path="/checkout-stripe" element={<CheckoutStripe />} />
               {/* ----------------------------------------------------------- */}
 
@@ -136,10 +133,6 @@ function AppContent() {
                 element={<PersonalFigurine />}
               />
               <Route path="/posters/:slug" element={<Posters />} />
-              <Route
-                path="/select-delivery-method"
-                element={<SelectDeliveryMethod />}
-              />
               <Route path="/usercard" element={<UserCard profile={auth} />} />
               <Route path="/lottie" element={<LottiePlayer />} />
               <Route path="/lottie-hero" element={<LottieTestHero />} />

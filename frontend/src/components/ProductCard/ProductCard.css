@@ -1,29 +1,32 @@
-/* Основной контейнер */
+/* --- ОСНОВНОЙ КОНТЕЙНЕР --- */
 .product-card {
   background: #ffffff;
-  border: 1px solid #e5e7eb; /* Тонкая серая рамка */
-  border-radius: 16px; /* Современное скругление */
+  /* Очень легкая рамка, почти незаметная */
+  border: 1px solid #f3f4f6; 
+  /* Стандартный аккуратный радиус */
+  border-radius: 8px; 
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: all 0.25s ease;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   cursor: pointer;
   position: relative;
   height: 100%;
 }
 
+/* При наведении: легкий подъем и тень */
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-  border-color: rgba(75, 112, 226, 0.3); /* Легкая синяя подсветка */
+  box-shadow: 0 12px 24px -10px rgba(0, 0, 0, 0.1);
+  border-color: #e5e7eb;
 }
 
 /* --- ЗОНА КАРТИНКИ --- */
 .product-image-wrapper {
   position: relative;
   width: 100%;
-  padding-top: 100%; /* Aspect Ratio 1:1 (Квадрат) */
-  background: #f8f9fa; /* Чуть сероватый фон для контраста с товаром */
+  padding-top: 100%; /* Квадрат 1:1 */
+  background: #ffffff; /* Белый фон (сливается с карточкой) */
   overflow: hidden;
 }
 
@@ -33,54 +36,48 @@
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain; /* Товар виден целиком */
-  padding: 1rem; /* Воздух вокруг товара */
-  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  mix-blend-mode: multiply; /* Убирает белый фон jpg (если фон контейнера не белый) */
+  object-fit: contain;
+  padding: 1.5rem; /* Больше воздуха вокруг товара */
+  transition: transform 0.4s ease;
 }
 
+/* Мягкий зум при наведении */
 .product-card:hover .product-img {
-  transform: scale(1.08); /* Плавный зум при наведении */
+  transform: scale(1.05);
 }
 
 /* --- БЕЙДЖИ --- */
 .badges-container {
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 8px;
+  left: 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 4px;
   z-index: 2;
 }
 
 .badge {
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 6px;
+  padding: 3px 8px;
+  border-radius: 4px;
   text-transform: uppercase;
   color: white;
   letter-spacing: 0.5px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.badge-new {
-  background: #2563eb; /* Яркий синий */
-}
-
-.badge-sale {
-  background: #ef4444; /* Красный для скидок */
-}
+.badge-new { background: #3b82f6; } /* Мягкий синий */
+.badge-sale { background: #ef4444; } /* Красный */
 
 /* --- ЛАЙК --- */
 .fav-btn {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.9);
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  background: transparent; /* Прозрачный фон по умолчанию */
   border-radius: 50%;
   border: none;
   display: flex;
@@ -89,13 +86,12 @@
   cursor: pointer;
   z-index: 3;
   color: #9ca3af;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   transition: all 0.2s ease;
 }
 
+/* При наведении появляется фон */
 .fav-btn:hover {
-  background: #fff;
-  transform: scale(1.1);
+  background: #f3f4f6;
   color: #ef4444;
 }
 
@@ -113,109 +109,110 @@
   100% { transform: scale(1); }
 }
 
-/* --- ДЕТАЛИ ТОВАРА --- */
+/* --- ДЕТАЛИ --- */
 .product-details {
-  padding: 12px 16px 16px;
+  padding: 0 12px 16px;
   display: flex;
   flex-direction: column;
-  flex: 1; /* Растягиваем на всю высоту */
-  gap: 6px;
+  flex: 1;
 }
+
+/* Название товара */
+.product-title {
+  font-size: 0.95rem;
+  font-weight: 500; /* Не слишком жирный */
+  color: #1f2937;
+  line-height: 1.4;
+  margin: 8px 0 4px;
+  
+  /* Обрезка текста */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.8em; 
+}
+
+/* Рейтинг */
+.rating-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: #fffbeb; /* Очень бледный желтый фон для рейтинга */
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.star-icon.filled { color: #f59e0b; }
+.rating-value { font-size: 0.75rem; font-weight: 700; color: #b45309; }
+.reviews-count { font-size: 0.75rem; color: #9ca3af; }
+
+/* Распорка (прижимает низ к низу) */
+.spacer { flex: 1; }
 
 /* ЦЕНА */
 .price-block {
   display: flex;
   align-items: baseline;
   gap: 8px;
-  margin-bottom: 2px;
+  margin-bottom: 12px;
 }
 
 .current-price {
-  font-size: 1.25rem;
-  font-weight: 800;
+  font-size: 1.15rem;
+  font-weight: 700;
   color: #111827;
 }
 
 .old-price {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-decoration: line-through;
   color: #9ca3af;
-  font-weight: 400;
 }
 
-/* НАЗВАНИЕ */
-.product-title {
-  font-size: 0.95rem;
-  font-weight: 500;
-  color: #374151;
-  line-height: 1.4;
-  margin: 0;
-  
-  /* Обрезка до 2 строк */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  height: 2.8em; /* Фиксируем высоту под 2 строки, чтобы карточки были ровными */
-}
-
-/* РЕЙТИНГ */
-.rating-row {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.85rem;
-  margin-bottom: 8px;
-}
-
-.star-icon.filled {
-  color: #fbbf24; /* Желтый Star */
-}
-
-.rating-value {
-  font-weight: 700;
-  color: #1f2937;
-}
-
-.reviews-count {
-  color: #9ca3af;
-  font-size: 0.8rem;
-}
-
-/* КНОПКА */
-.action-row {
-  margin-top: auto; /* Прижимает кнопку к низу карточки */
-}
-
+/* --- КНОПКА (OUTLINE STYLE) --- */
 .add-to-cart-btn {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 10px;
-  background: #2c7ae8;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  padding: 9px;
+  
+  /* Делаем кнопку "призрачной" */
+  background: transparent;
+  border: 1px solid #e5e7eb;
+  color: #374151;
+  
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
+/* Ховер кнопки: заливается цветом */
 .add-to-cart-btn:hover {
-  background: #374151;
-  transform: translateY(-1px);
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #fff;
 }
 
 .add-to-cart-btn:active {
   transform: scale(0.98);
 }
 
-/* Зеленая кнопка при успехе */
+/* Успешное добавление */
 .add-to-cart-btn.success {
   background: #10b981;
   border-color: #10b981;
+  color: #fff;
   pointer-events: none;
 }

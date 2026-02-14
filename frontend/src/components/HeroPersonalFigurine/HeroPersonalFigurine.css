@@ -11,9 +11,9 @@
 .hero-card {
   position: relative;
   width: 100%;
-  max-width: 1100px;
+  /* max-width: 1100px; */
   /* ИЗМЕНЕНИЯ ТУТ: */
-  background: rgb(225, 239, 251); /* Светло-серый фон вместо чисто белого */
+  background: rgb(255, 255, 255); /* Светло-серый фон вместо чисто белого */
   border-radius: 12px; /* Более строгие края под маркетплейс */
   border: 1px solid #edf2f7; /* Тонкая рамка для четкости */
   
@@ -280,7 +280,7 @@
 /* --- Responsive (Mobile) --- */
 @media (max-width: 900px) {
   .hero-product-section {
-    padding: 10px 16px; /* Отступы по бокам, чтобы блок не касался краев экрана */
+    /* padding: 10px 16px; Отступы по бокам, чтобы блок не касался краев экрана */
   }
 
   .hero-card {

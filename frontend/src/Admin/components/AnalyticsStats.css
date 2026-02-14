@@ -1,77 +1,173 @@
-/* src/Admin/components/AnalyticsStats.css */
+/* --- Light Minimalist Theme --- */
 
-.analytics-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-    margin-bottom: 2rem;
-    width: 100%;
+.analytics-container {
+  padding: 32px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* Очень светлый серый бордер */
+  border-radius: 16px;
+  color: #1f2937; /* Темно-серый текст */
+  margin-bottom: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05); /* Едва заметная тень */
+}
+
+/* Header */
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.analytics-header h2 {
+  font-size: 1.25rem; /* 20px */
+  font-weight: 600;
+  color: #111827; /* Почти черный */
+  margin: 0;
+  letter-spacing: -0.025em;
+}
+
+.source-badge {
+  font-size: 0.75rem;
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 6px 12px;
+  border-radius: 9999px;
+  font-weight: 500;
+  border: 1px solid #e5e7eb;
+}
+
+/* Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+  margin-bottom: 40px;
+}
+
+/* Cards */
+.stat-card {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 12px;
+  border: 1px solid #f3f4f6; /* Едва заметная рамка */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  border-color: #e5e7eb;
+}
+
+/* Card Content */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.stat-label {
+  color: #6b7280; /* Средний серый */
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 2.5rem; /* 40px */
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+  letter-spacing: -0.025em;
+}
+
+.stat-sub {
+  margin-top: 8px;
+  font-size: 0.875rem;
+  color: #9ca3af;
+}
+
+/* Live Card Special Styles */
+.live-card {
+  background: #f0fdf4; /* Очень бледный зеленый фон */
+  border-color: #dcfce7;
+}
+
+.live-card .stat-value {
+  color: #15803d; /* Насыщенный зеленый */
+}
+
+.live-indicator {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  background-color: #22c55e;
+  border-radius: 50%;
+}
+
+.blink {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  background-color: #22c55e;
+  border-radius: 50%;
+  opacity: 0.7;
+  animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+@keyframes ping {
+  75%, 100% {
+    transform: translate(-50%, -50%) scale(2.5);
+    opacity: 0;
   }
-  
-  /* Переопределение стилей карточки для этого компонента, если нужно,
-     но лучше использовать классы из твоих ui компонентов. 
-     Здесь добавим специфичные отступы для контента внутри статистики */
-  
-  .stat-card-content {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-  
-  .stat-value {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #1e293b; /* Slate 800 */
-    line-height: 1;
-  }
-  
-  .stat-label {
-    font-size: 0.875rem;
-    color: #64748b; /* Slate 500 */
-    font-weight: 500;
-  }
-  
-  .stat-footer {
-    display: flex;
-    gap: 1rem;
-    margin-top: 0.5rem;
-    font-size: 0.75rem;
-    color: #94a3b8;
-  }
-  
-  .stat-footer-item {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-  }
-  
-  .text-green {
-    color: #10b981;
-  }
-  
-  .text-gray {
-    color: #6b7280;
-  }
-  
-  /* Анимация пульсации для "Активных сейчас" */
-  .pulse-circle {
-    display: inline-block;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #10b981;
-    margin-right: 6px;
-    animation: pulse 2s infinite;
-  }
-  
-  @keyframes pulse {
-    0% {
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-    }
-    70% {
-      box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
-    }
-  }
+}
+
+/* Chart Section */
+.chart-section {
+  padding-top: 24px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.chart-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 24px;
+}
+
+/* Tooltip */
+.custom-tooltip {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 8px 12px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.tooltip-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-bottom: 2px;
+}
+
+.tooltip-value {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Loading/Error states */
+.analytics-loading, .analytics-error {
+  padding: 40px;
+  text-align: center;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 12px;
+  font-size: 0.9rem;
+}

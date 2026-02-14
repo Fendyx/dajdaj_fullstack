@@ -45,8 +45,6 @@ export default function AdminDashboard() {
       <div className="main-content">
         <Header />
         <main className="content-area">
-          {/* 👇 Вставляем статистику здесь, чтобы она была видна всегда */}
-          <AnalyticsStats />
           
           <div className="tab-content-wrapper">
              {renderContent()}

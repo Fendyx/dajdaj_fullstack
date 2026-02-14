@@ -10,7 +10,6 @@ export const adminApi = createApi({
       const token = getState().auth?.token;
       
       if (token) {
-        // ✅ ИСПРАВЛЕНИЕ: Твой backend (auth.js) ждет именно этот формат
         headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
@@ -38,6 +37,8 @@ export const adminApi = createApi({
     getDashboardStats: builder.query({
       query: () => "/analytics/dashboard-stats",
       providesTags: ['Analytics'],
+      // Авто-обновление каждые 30 секунд (чтобы видеть лайв трафик)
+      pollingInterval: 30000, 
     }),
   }),
 });

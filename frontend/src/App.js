@@ -5,6 +5,10 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchUserProfile, setToken } from "./slices/authSlice";
 
+// --- GA4 IMPORT ---
+import ReactGA from "react-ga4";
+// ------------------
+
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 
@@ -44,9 +48,21 @@ import Posters from "./ProductPages/Posters/Posters";
 
 const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY);
 
+// --- GA4 INIT ---
+// ВСТАВЬ СЮДА СВОЙ ID ИЗ FIREBASE (G-XXXXXXXX)
+ReactGA.initialize("G-B1FPX1YX71"); 
+// ----------------
+
 function AppContent() {
   const location = useLocation();
   const auth = useSelector((state) => state.auth);
+
+  // --- GA4 TRACKING ---
+  useEffect(() => {
+    // Отправляем pageview каждый раз, когда меняется путь
+    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+  }, [location]);
+  // --------------------
 
   const footerPages = ["/", "/about", "/contacts"];
   const showFooter = footerPages.includes(location.pathname);
@@ -57,7 +73,7 @@ function AppContent() {
     "/login",
     "/register",
     "/checkout-stripe",
-    "/"
+    "/products/"
   ];
   const hideLayout = noLayoutPages.includes(location.pathname);
 
@@ -82,7 +98,6 @@ function AppContent() {
               <Route path="/register" element={<Register />} />
               <Route path="/login" element={<Login />} />
               
-              {/* Профиль остается защищенным */}
               <Route
                 path="/profile"
                 element={
@@ -92,9 +107,7 @@ function AppContent() {
                 }
               />
 
-              {/* --- ИЗМЕНЕНИЯ: Эти маршруты теперь публичные для гостей --- */}
               <Route path="/checkout-stripe" element={<CheckoutStripe />} />
-              {/* ----------------------------------------------------------- */}
 
               <Route
                 path="/products/male-bodybuilder"
@@ -152,28 +165,24 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("🧩 [App] useEffect triggered");
+    // console.log("🧩 [App] useEffect triggered");
   
     const params = new URLSearchParams(window.location.search);
     const oauthToken = params.get("token");
     const storedToken = oauthToken || localStorage.getItem("token");
   
-    console.log("🔑 [App] oauthToken:", oauthToken);
-    console.log("🔑 [App] localStorage token:", localStorage.getItem("token"));
-    console.log("🔑 [App] storedToken:", storedToken);
-  
+    // console.log("🔑 [App] oauthToken:", oauthToken);
+    
     if (storedToken) {
-      console.log("🚀 [App] Dispatching setToken and fetchUserProfile");
+      // console.log("🚀 [App] Dispatching setToken and fetchUserProfile");
       dispatch(setToken(storedToken));
       dispatch(fetchUserProfile());
   
       if (oauthToken) {
-        console.log("🧼 [App] Cleaning up URL");
+        // console.log("🧼 [App] Cleaning up URL");
         window.history.replaceState({}, document.title, window.location.pathname);
       }
-    } else {
-      console.warn("🚫 [App] No token found — skipping fetchUserProfile");
-    }
+    } 
   }, [dispatch]);
   
 

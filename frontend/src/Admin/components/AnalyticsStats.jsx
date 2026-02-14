@@ -10,6 +10,7 @@ import {
   Cell,
   CartesianGrid 
 } from 'recharts';
+import UsersMap from './UsersMap'; 
 import './AnalyticsStats.css'; 
 
 const AnalyticsStats = () => {
@@ -39,8 +40,8 @@ const AnalyticsStats = () => {
         <span className="source-badge">Live Data</span>
       </div>
       
+      {/* 1. КАРТОЧКИ */}
       <div className="stats-grid">
-        {/* Live Card */}
         <div className="stat-card live-card">
           <div className="card-header">
             <span className="stat-label">Real-time</span>
@@ -52,7 +53,6 @@ const AnalyticsStats = () => {
           <div className="stat-sub">Active users on site</div>
         </div>
 
-        {/* Visitors Card */}
         <div className="stat-card">
           <div className="card-header">
             <span className="stat-label">Unique Visitors</span>
@@ -61,7 +61,6 @@ const AnalyticsStats = () => {
           <div className="stat-sub">Today</div>
         </div>
 
-        {/* Views Card */}
         <div className="stat-card">
           <div className="card-header">
             <span className="stat-label">Total Views</span>
@@ -71,52 +70,52 @@ const AnalyticsStats = () => {
         </div>
       </div>
 
-      {/* Chart */}
-      {locationData.length > 0 ? (
-        <div className="chart-section">
-          <h3>Traffic by City (Live)</h3>
-          <div style={{ width: '100%', height: 250 }}>
-            <ResponsiveContainer>
-              <BarChart data={locationData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
-                {/* Сетка очень бледная */}
-                <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-                
-                {/* Оси серые */}
-                <XAxis 
-                  dataKey="city" 
-                  stroke="#9ca3af" 
-                  tick={{ fill: '#6b7280', fontSize: 12 }} 
-                  tickLine={false}
-                  axisLine={false}
-                  dy={10}
-                />
-                <YAxis 
-                  stroke="#9ca3af" 
-                  tick={{ fill: '#6b7280', fontSize: 12 }} 
-                  tickLine={false}
-                  axisLine={false}
-                />
-                
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f9fafb' }} />
-                
-                {/* Столбцы: Красивый синий цвет (Business Blue) */}
-                <Bar dataKey="count" radius={[4, 4, 0, 0]} barSize={40}>
-                  {locationData.map((entry, index) => (
-                    <Cell 
-                      key={`cell-${index}`} 
-                      fill={index % 2 === 0 ? '#3b82f6' : '#60a5fa'} 
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      ) : (
-        <div className="chart-section" style={{textAlign: 'center', padding: '40px', color: '#9ca3af'}}>
-          Waiting for live traffic data...
-        </div>
-      )}
+      {/* 2. ГРАФИК (На всю ширину или в отдельном блоке) */}
+      <div style={{ marginBottom: '24px' }}>
+        {locationData.length > 0 ? (
+          <div className="chart-section" style={{ height: '350px' }}>
+             <h3>Top Cities (Live)</h3>
+             <div style={{ width: '100%', height: 260 }}>
+               <ResponsiveContainer>
+                 <BarChart data={locationData} margin={{ top: 10, right: 0, left: -25, bottom: 0 }}>
+                   <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+                   <XAxis 
+                     dataKey="city" 
+                     stroke="#9ca3af" 
+                     tick={{ fill: '#6b7280', fontSize: 12 }} 
+                     tickLine={false}
+                     axisLine={false}
+                     dy={10}
+                   />
+                   <YAxis 
+                     stroke="#9ca3af" 
+                     tick={{ fill: '#6b7280', fontSize: 12 }} 
+                     tickLine={false}
+                     axisLine={false}
+                   />
+                   <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f9fafb' }} />
+                   <Bar dataKey="count" radius={[4, 4, 0, 0]} barSize={50}>
+                     {locationData.map((entry, index) => (
+                       <Cell 
+                         key={`cell-${index}`} 
+                         fill={index % 2 === 0 ? '#3b82f6' : '#60a5fa'} 
+                       />
+                     ))}
+                   </Bar>
+                 </BarChart>
+               </ResponsiveContainer>
+             </div>
+           </div>
+        ) : (
+           <div className="chart-section" style={{textAlign: 'center', padding: '40px', color: '#9ca3af'}}>
+             Waiting for live traffic to show charts...
+           </div>
+        )}
+      </div>
+
+      {/* 3. КАРТА (Теперь она вынесена из сетки и занимает всю ширину) */}
+      <UsersMap data={locationData} />
+
     </div>
   );
 };

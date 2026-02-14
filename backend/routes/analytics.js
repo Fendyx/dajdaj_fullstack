@@ -3,24 +3,48 @@ const router = express.Router();
 const { BetaAnalyticsDataClient } = require('@google-analytics/data');
 const path = require('path');
 
-// Путь к твоему JSON ключу
-const keyPath = path.join(__dirname, '../service-account.json');
-
-// Инициализация клиента Google
-const analyticsDataClient = new BetaAnalyticsDataClient({
-  keyFilename: keyPath,
-});
-
-// !!! ВСТАВЬ СЮДА ЦИФРЫ PROPERTY ID ИЗ GOOGLE ANALYTICS !!!
+// !!! ТВОЙ ID РЕСУРСА !!!
 const propertyId = '524737614'; 
+
+let analyticsDataClient;
+
+// --- ЛОГИКА ПОДКЛЮЧЕНИЯ (Универсальная) ---
+try {
+  // 1. Проверяем, есть ли переменная окружения (для Хостинга/Production)
+  if (process.env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+    console.log("🔐 Analytics: Используем ключи из Environment Variables");
+    
+    // Превращаем строку обратно в JSON-объект
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_JSON);
+    
+    analyticsDataClient = new BetaAnalyticsDataClient({
+      credentials, 
+    });
+
+  } else {
+    // 2. Если переменной нет, ищем файл (для Localhost)
+    console.log("📂 Analytics: Используем ключи из файла service-account.json");
+    
+    const keyPath = path.join(__dirname, '../service-account.json');
+    analyticsDataClient = new BetaAnalyticsDataClient({
+      keyFilename: keyPath,
+    });
+  }
+} catch (error) {
+  console.error("❌ Критическая ошибка инициализации Google Analytics:", error.message);
+  console.error("Убедитесь, что файл существует ИЛИ переменная окружения GOOGLE_SERVICE_ACCOUNT_JSON настроена верно.");
+}
 
 // @route   GET /api/analytics/dashboard-stats
 // @desc    Получение статистики (Realtime + Basic)
-// @access  Admin (потом добавишь protect middleware)
 router.get('/dashboard-stats', async (req, res) => {
+  // Если клиент не инициализировался (ошибка ключей), вернем ошибку сразу
+  if (!analyticsDataClient) {
+    return res.status(500).json({ message: 'Google Analytics Client not initialized' });
+  }
+
   try {
     // 1. REALTIME ОТЧЕТ (Кто прямо сейчас на сайте)
-    // Google отдает данные с задержкой в несколько секунд
     const [realtimeResponse] = await analyticsDataClient.runRealtimeReport({
       property: `properties/${propertyId}`,
       dimensions: [{ name: 'country' }, { name: 'city' }],

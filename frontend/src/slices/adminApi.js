@@ -38,7 +38,7 @@ export const adminApi = createApi({
       query: () => "/analytics/dashboard-stats",
       providesTags: ['Analytics'],
       // Авто-обновление каждые 30 секунд (чтобы видеть лайв трафик)
-      pollingInterval: 30000, 
+      pollingInterval: 10000, 
     }),
   }),
 });

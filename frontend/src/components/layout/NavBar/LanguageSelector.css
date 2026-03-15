@@ -1,0 +1,96 @@
+/* =====================================================
+   LanguageSelector.css
+   ===================================================== */
+
+   .lang-selector {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    height: 36px;
+    padding: 0 10px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #374151;
+    user-select: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    white-space: nowrap;
+  }
+  
+  .lang-selector:hover {
+    border-color: rgba(75, 112, 226, 0.4);
+    box-shadow: 0 0 0 3px rgba(75, 112, 226, 0.08);
+  }
+  
+  .lang-selector--open {
+    border-color: rgba(75, 112, 226, 0.6);
+    box-shadow: 0 0 0 3px rgba(75, 112, 226, 0.12);
+  }
+  
+  .lang-selector__globe { color: #9ca3af; flex-shrink: 0; }
+  .lang-selector__label { letter-spacing: 0.3px; }
+  
+  .lang-selector__chevron {
+    color: #9ca3af;
+    transition: transform 0.22s ease;
+    flex-shrink: 0;
+  }
+  
+  .lang-selector__chevron--up { transform: rotate(-180deg); }
+  
+  /* ── Dropdown ──────────────────────────────────────── */
+  .lang-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    min-width: 150px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.09);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1), 0 2px 6px rgba(0, 0, 0, 0.06);
+    list-style: none;
+    margin: 0;
+    padding: 4px;
+    z-index: 200;
+    animation: langDropIn 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+  }
+  
+  @keyframes langDropIn {
+    from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)   scale(1);    }
+  }
+  
+  .lang-dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  
+  .lang-dropdown__item:hover { background: #f3f4f6; }
+  
+  .lang-dropdown__item--active {
+    background: rgba(75, 112, 226, 0.08);
+    color: #4b70e2;
+  }
+  
+  .lang-dropdown__code {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: inherit;
+    min-width: 26px;
+  }
+  
+  .lang-dropdown__full {
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+  
+  .lang-dropdown__item--active .lang-dropdown__full { color: #4b70e2; }

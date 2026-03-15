@@ -1,0 +1,74 @@
+/* Контейнер табов - центрирование */
+.up-tabs-header {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px 24px;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  
+  /* Кнопка таба */
+  .up-tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .up-tab-btn:hover {
+    background: #f3f4f6;
+    color: #1f2937;
+  }
+  
+  .up-tab-btn.active {
+    background: #1f2937;
+    color: #ffffff;
+  }
+  
+  .up-tab-btn.active .tab-icon {
+    color: #ffffff;
+  }
+  
+  /* Иконка */
+  .tab-icon {
+    color: inherit;
+    flex-shrink: 0;
+  }
+  
+  /* Лейбл */
+  .tab-label {
+    white-space: nowrap;
+  }
+  
+  /* Адаптив для мобильных */
+  @media (max-width: 640px) {
+    .up-tabs-header {
+      gap: 4px;
+      padding: 12px 16px;
+    }
+  
+    .up-tab-btn {
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+  
+    .tab-label {
+      display: none;
+    }
+  
+    .up-tab-btn {
+      padding: 10px;
+    }
+  }

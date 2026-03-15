@@ -1,0 +1,17 @@
+/* ═══════════════════════════════════════════
+   FAVORITES TAB
+   ═══════════════════════════════════════════ */
+
+   .ft-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 4px 0 24px;
+  }
+  
+  @media (max-width: 480px) {
+    .ft-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+  }

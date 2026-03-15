@@ -1,0 +1,402 @@
+/* ═══════════════════════════════════════════
+   ORDER DETAILS DRAWER
+   ═══════════════════════════════════════════ */
+
+/* Backdrop */
+.odd-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+  
+  .odd-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  /* Drawer */
+  .odd-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100dvh;
+    width: min(480px, 100vw);
+    background: #fff;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: -8px 0 48px rgba(0, 0, 0, 0.14);
+  }
+  
+  .odd-drawer.open {
+    transform: translateX(0);
+  }
+  
+  /* ── Header ── */
+  .odd-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 24px 24px 18px;
+    border-bottom: 1px solid #f0f0f0;
+    flex-shrink: 0;
+  }
+  
+  .odd-header-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 4px;
+  }
+  
+  .odd-header-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin: 0;
+    letter-spacing: 0.02em;
+  }
+  
+  .odd-close-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid #e8e8e8;
+    background: #f8f8f8;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  
+  .odd-close-btn:hover {
+    background: #1a1a1a;
+    color: #fff;
+    border-color: #1a1a1a;
+  }
+  
+  /* ── Body ── */
+  .odd-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    scroll-behavior: smooth;
+  }
+  
+  .odd-body::-webkit-scrollbar {
+    width: 5px;
+  }
+  .odd-body::-webkit-scrollbar-track { background: transparent; }
+  .odd-body::-webkit-scrollbar-thumb {
+    background: #ddd;
+    border-radius: 99px;
+  }
+  
+  /* ── Section ── */
+  .odd-section {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  
+  .odd-section-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0;
+  }
+  
+  .odd-section-title svg {
+    color: #f0a500;
+  }
+  
+  /* ── Status Timeline ── */
+  .odd-timeline {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    padding: 8px 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  
+  .odd-timeline::-webkit-scrollbar { display: none; }
+  
+  .odd-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    flex: 1;
+    min-width: 60px;
+  }
+  
+  .odd-step-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #f5f5f5;
+    border: 2px solid #e0e0e0;
+    color: #bbb;
+    z-index: 1;
+    transition: all 0.2s;
+    flex-shrink: 0;
+  }
+  
+  .odd-step.done .odd-step-icon {
+    background: #e6f4ea;
+    border-color: #2e7d32;
+    color: #2e7d32;
+  }
+  
+  .odd-step.active .odd-step-icon {
+    background: #fff8e6;
+    border-color: #f0a500;
+    color: #f0a500;
+    box-shadow: 0 0 0 4px rgba(240, 165, 0, 0.12);
+  }
+  
+  .odd-active-dot {
+    animation: odd-pulse 1.5s infinite;
+  }
+  
+  @keyframes odd-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  
+  .odd-step-line {
+    position: absolute;
+    top: 16px;
+    left: calc(50% + 16px);
+    right: calc(-50% + 16px);
+    height: 2px;
+    background: #e0e0e0;
+    z-index: 0;
+  }
+  
+  .odd-step-line.done {
+    background: #2e7d32;
+  }
+  
+  .odd-step-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #aaa;
+    text-align: center;
+    white-space: nowrap;
+  }
+  
+  .odd-step.done .odd-step-label,
+  .odd-step.active .odd-step-label {
+    color: #1a1a1a;
+    font-weight: 600;
+  }
+  
+  /* Status Banner (canceled/failed) */
+  .odd-status-banner {
+    padding: 14px 18px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  
+  .odd-status-banner.canceled {
+    background: #fce8e8;
+    color: #c0392b;
+    border: 1px solid #f5c6c6;
+  }
+  
+  .odd-status-banner.failed {
+    background: #fce8e8;
+    color: #c0392b;
+    border: 1px solid #f5c6c6;
+  }
+  
+  /* ── Products List ── */
+  .odd-products-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .odd-product-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    background: #fafafa;
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+  }
+  
+  .odd-product-img-wrap {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #f0f0f0;
+  }
+  
+  .odd-product-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .odd-product-img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+  }
+  
+  .odd-product-details {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .odd-product-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .odd-product-qty {
+    font-size: 12px;
+    color: #999;
+  }
+  
+  .odd-product-price {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a1a;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  /* Total Row */
+  .odd-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 10px 4px;
+    border-top: 1px dashed #e0e0e0;
+    font-size: 14px;
+    color: #888;
+    font-weight: 500;
+  }
+  
+  .odd-total-price {
+    font-size: 17px;
+    font-weight: 800;
+    color: #1a1a1a;
+  }
+  
+  /* ── Delivery Info ── */
+  .odd-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .odd-info-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #444;
+  }
+  
+  .odd-info-item svg {
+    color: #f0a500;
+    flex-shrink: 0;
+  }
+  
+  .odd-meta-label {
+    color: #aaa;
+    font-size: 13px;
+    min-width: 80px;
+  }
+  
+  .odd-meta-mono {
+    font-family: "Courier New", monospace;
+    font-size: 12px;
+    color: #666;
+    word-break: break-all;
+  }
+  
+  /* ── Map ── */
+  .odd-map-wrapper {
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #e8e8e8;
+    position: relative;
+    height: 200px;
+    background: #f5f5f5;
+  }
+  
+  .odd-map-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+  }
+  
+  .odd-map-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #555;
+  }
+  
+  .odd-map-overlay svg {
+    color: #f0a500;
+    flex-shrink: 0;
+  }

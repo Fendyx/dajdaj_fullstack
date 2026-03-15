@@ -1,0 +1,59 @@
+.order-examples {
+    margin-top: 4rem;
+    padding: 0 1rem;
+  }
+  
+  .order-examples__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #000;
+  }
+  
+  .order-examples__subtitle {
+    color: #666;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .order-examples__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.25rem;
+  }
+  
+  .order-examples__card {
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f9f9f9;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .order-examples__card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+  
+  .order-examples__img-wrapper {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+  }
+  
+  .order-examples__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+  }
+  
+  .order-examples__card:hover .order-examples__img {
+    transform: scale(1.05);
+  }
+  
+  .order-examples__caption {
+    padding: 0.75rem 1rem;
+    font-size: 0.85rem;
+    color: #555;
+    text-align: center;
+  }

@@ -1,0 +1,63 @@
+{
+  "navbar": {
+    "signIn": "Sign In",
+    "joinUs": "Join Us",
+    "favorites": "Favorites",
+    "profile": "Profile",
+    "cart": "Cart"
+  },
+  "login": {
+    "title": "Welcome Back"
+  },
+  "reviews": "reviews",
+  "userProfile": {
+    "noOrders": "No orders yet",
+    "goShopping": "Go Shopping",
+    "noFavorites": "No favorites yet",
+    "findFavorites": "Discover Products",
+    "noDiscounts": "No coupons yet",
+    "orders": "Orders",
+    "favorites": "Favorites",
+    "discounts": "Discounts"
+  },
+  "orders": {
+    "loading": "Loading orders...",
+    "details": "Details",
+    "unknownProduct": "Product",
+    "empty": {
+      "title": "No orders yet",
+      "action": "Start Shopping"
+    },
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "paid": "Paid",
+      "shipping": "Shipping",
+      "delivered": "Delivered",
+      "canceled": "Canceled",
+      "failed": "Failed"
+    },
+    "drawer": {
+      "title": "Order Details",
+      "status": "Order Status",
+      "products": "Products",
+      "delivery": "Delivery Info",
+      "meta": "Order Info",
+      "total": "Total",
+      "qty": "Qty",
+      "orderId": "Order ID",
+      "date": "Date"
+    }
+  },
+  "discounts": {
+    "yourCode": "Your promo code",
+    "copy": "Copy code",
+    "validUntil": "Valid until",
+    "expiresSoon": "Expires soon",
+    "hint": "Click the copy icon to copy a code, then use it at checkout.",
+    "empty": {
+      "title": "No coupons yet",
+      "description": "Complete orders and participate in promotions to earn discount coupons."
+    }
+  }
+}

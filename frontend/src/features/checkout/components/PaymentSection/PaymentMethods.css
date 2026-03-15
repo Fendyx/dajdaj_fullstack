@@ -1,0 +1,238 @@
+/* =====================================================
+   PAYMENT METHODS — Pure CSS
+   Used by: PaymentMethods, CardPayment, BlikPayment
+   ===================================================== */
+
+/* ── Container ─────────────────────────────────────── */
+.pm-container {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.pm-container__title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #9ca3af;
+  padding: 1rem 1.25rem 0.75rem;
+  margin: 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+/* ── Single option ─────────────────────────────────── */
+.pm-option {
+  border-bottom: 1px solid #f3f4f6;
+  transition: background 0.15s;
+}
+
+.pm-option:last-child {
+  border-bottom: none;
+}
+
+.pm-option--selected {
+  background: #fafafa;
+}
+
+/* ── Option header (clickable row) ────────────────── */
+.pm-option__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.pm-option__header:hover {
+  background: #f9fafb;
+}
+
+.pm-option__left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pm-option__label {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+/* ── Radio circle ──────────────────────────────────── */
+.pm-radio {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: border-color 0.15s;
+}
+
+.pm-radio--active {
+  border-color: #2563eb;
+}
+
+.pm-radio__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #2563eb;
+}
+
+/* ── Method icon box ───────────────────────────────── */
+.pm-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pm-icon--card   { background: #eff6ff; color: #2563eb; }
+.pm-icon--blik   { background: #fff7ed; color: #ea580c; }
+.pm-icon--p24    { background: #f0fdf4; color: #16a34a; }
+.pm-icon--google { background: #fef2f2; color: #dc2626; }
+.pm-icon--apple  { background: #111827; color: #fff; }
+.pm-icon--klarna { background: #fdf4ff; color: #9333ea; }
+
+.pm-icon__img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* ── Card brand badges ─────────────────────────────── */
+.pm-card-brands {
+  display: flex;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.pm-brand {
+  display: inline-block;
+  width: 36px;
+  height: 22px;
+  border-radius: 4px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Simple colored placeholders — replace with real SVG logos if available */
+.pm-brand--mastercard {
+  background-color: #eb001b;
+  /* background-image: url('/mastercard.svg'); */
+}
+
+.pm-brand--visa {
+  background-color: #1a1f71;
+  /* background-image: url('/visa.svg'); */
+}
+
+/* ── Expanded content area ─────────────────────────── */
+.pm-option__content {
+  padding: 0 1.25rem 1.25rem;
+}
+
+/* ── Helper text ───────────────────────────────────── */
+.pm-helper {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0;
+  padding: 0.25rem 0;
+  line-height: 1.5;
+}
+
+/* ═══════════════════════════════════════════════════
+   CARD PAYMENT
+   ═══════════════════════════════════════════════════ */
+.pm-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.25rem;
+}
+
+.pm-input-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.375rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pm-stripe-field {
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.pm-stripe-field:focus-within {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.pm-card-row {
+  display: flex;
+  gap: 1rem;
+}
+
+.pm-card-row > div {
+  flex: 1;
+}
+
+/* ═══════════════════════════════════════════════════
+   BLIK PAYMENT
+   ═══════════════════════════════════════════════════ */
+.pm-blik-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  padding-top: 0.25rem;
+}
+
+.pm-blik-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.875rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-align: center;
+  color: #111827;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -moz-appearance: textfield;
+}
+
+.pm-blik-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.pm-blik-input::placeholder {
+  color: #d1d5db;
+  letter-spacing: 0.15em;
+}
+
+.pm-input-hint {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  margin: 0;
+}

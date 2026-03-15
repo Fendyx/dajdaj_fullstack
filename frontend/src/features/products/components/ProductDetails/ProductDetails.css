@@ -1,0 +1,168 @@
+/* ProductDetails.css */
+
+:root {
+    --primary-color: #111827; 
+    --accent-color: #3b82f6; 
+    --success-color: #10b981; 
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --radius-btn: 12px;
+    --radius-card: 16px;
+  }
+  
+  .prod-page {
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+    background-color: #fff;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .prod-container {
+    max-width: 600px;
+    width: 100%;
+  }
+  
+  .prod-info-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative; /* Важно для sticky внутри */
+  }
+  
+  /* --- 1. Header --- */
+  .prod-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .prod-badge-new {
+    background: #eff6ff;
+    color: var(--accent-color);
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 6px;
+    text-transform: uppercase;
+  }
+  
+  .prod-rating-mini {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    font-weight: 600;
+  }
+  .star-icon { color: #fbbf24; }
+  
+  .prod-title-main {
+    font-size: 2.25rem;
+    line-height: 1.1;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin: 0;
+  }
+  
+  /* --- 2. Price --- */
+  .prod-price-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .prod-current-price {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+  
+  .prod-availability {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--success-color);
+    font-weight: 600;
+    background: #ecfdf5;
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .pulsing-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--success-color);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  
+  
+  /* --- 4. Micro USP --- */
+  .prod-micro-benefits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .benefit-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #4b5563;
+    background: #f3f4f6;
+    padding: 6px 10px;
+    border-radius: 6px;
+  }
+  .benefit-pill svg { color: var(--accent-color); }
+  
+  .prod-divider { border: none; border-top: 1px solid #e5e7eb; margin: 10px 0; }
+  .prod-desc-text { font-size: 1rem; line-height: 1.6; color: #4b5563; }
+  
+  .btn-3d-toggle {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    background: #fff;
+    border: 1px dashed #d1d5db;
+    border-radius: var(--radius-btn);
+    color: var(--accent-color);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  /* --- Accordions --- */
+  .prod-specs-accordion { border: 1px solid #e5e7eb; border-radius: var(--radius-card); overflow: hidden; }
+  .accordion-item { border-bottom: 1px solid #e5e7eb; }
+  .accordion-item:last-child { border-bottom: none; }
+  .accordion-head {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 16px;
+    background: #fff;
+    border: none;
+    font-weight: 600;
+    color: var(--text-main);
+  }
+  .accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    background: #f9fafb;
+    transition: max-height 0.3s ease;
+  }
+  .accordion-item.active .accordion-body { max-height: 600px; }
+  .spec-row { display: flex; justify-content: space-between; padding: 12px 16px; font-size: 0.9rem; border-bottom: 1px solid #f3f4f6; }
+  .review-card { padding: 16px; border-bottom: 1px solid #eee; }
+  .review-top { display: flex; justify-content: space-between; margin-bottom: 5px; }
+  .review-user { font-weight: 700; font-size: 0.9rem; }
+  
+  .prod-footer-secure {
+    display: flex; justify-content: center; gap: 8px; font-size: 0.8rem; color: #9ca3af; padding-bottom: 20px;
+  }
+  

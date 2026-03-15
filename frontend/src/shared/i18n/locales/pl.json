@@ -1,0 +1,63 @@
+{
+  "navbar": {
+    "signIn": "Zaloguj się",
+    "joinUs": "Dołącz się",
+    "favorites": "Ulubione",
+    "profile": "Profil",
+    "cart": "Koszyk"
+  },
+  "login": {
+    "title": "Witaj ponownie"
+  },
+  "reviews": "opinii",
+  "userProfile": {
+    "noOrders": "Brak zamówień",
+    "goShopping": "Idź na zakupy",
+    "noFavorites": "Brak ulubionych",
+    "findFavorites": "Przeglądaj produkty",
+    "noDiscounts": "Brak kuponów",
+    "orders": "Zamówienia",
+    "favorites": "Ulubione",
+    "discounts": "Zniżki"
+  },
+  "orders": {
+    "loading": "Ładowanie zamówień...",
+    "details": "Szczegóły",
+    "unknownProduct": "Produkt",
+    "empty": {
+      "title": "Brak zamówień",
+      "action": "Zacznij zakupy"
+    },
+    "status": {
+      "pending": "Oczekuje",
+      "processing": "W trakcie",
+      "paid": "Opłacone",
+      "shipping": "W dostawie",
+      "delivered": "Dostarczone",
+      "canceled": "Anulowane",
+      "failed": "Nieudane"
+    },
+    "drawer": {
+      "title": "Szczegóły zamówienia",
+      "status": "Status zamówienia",
+      "products": "Produkty",
+      "delivery": "Dane dostawy",
+      "meta": "Informacje",
+      "total": "Razem",
+      "qty": "Ilość",
+      "orderId": "ID zamówienia",
+      "date": "Data"
+    }
+  },
+  "discounts": {
+    "yourCode": "Twój kod promocyjny",
+    "copy": "Kopiuj kod",
+    "validUntil": "Ważny do",
+    "expiresSoon": "Wygasa wkrótce",
+    "hint": "Kliknij ikonę kopiowania, aby skopiować kod i użyć go przy kasie.",
+    "empty": {
+      "title": "Brak kuponów",
+      "description": "Składaj zamówienia i bierz udział w promocjach, aby zdobywać kupony zniżkowe."
+    }
+  }
+}

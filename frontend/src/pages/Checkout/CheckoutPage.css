@@ -1,0 +1,92 @@
+/* =====================================================
+   CHECKOUT PAGE — Pure CSS
+   Desktop: Left col (items + delivery) | Right col (payment + footer)
+   Mobile:  Single column, stacked
+   ===================================================== */
+
+   .checkout-page {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 100px 2rem 5rem;
+    min-height: 100vh;
+    background: #fff;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #111827;
+  }
+  
+  /* ── Two-column form ───────────────────────────────── */
+  .checkout-form {
+    display: flex;
+    flex-direction: row !important; /* Принудительно ставим в строку */
+    flex-wrap: nowrap !important;   /* ЗАПРЕЩАЕМ падать в колонку на десктопе */
+    width: 100%;                    /* Заставляем форму занять весь контейнер */
+    gap: 2.5rem;
+    align-items: flex-start;
+  }
+  
+  /* ── Left column: SelectedCartItem + DeliverySection ─ */
+  .checkout-col--left {
+    flex: 1 1 0%;          /* Более строгая альтернатива flex: 1, чтобы блок точно сжимался */
+    min-width: 0;          
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* ── Right column: PaymentMethods + PaymentFooter ──── */
+  .checkout-col--right {
+    width: 380px;
+    flex-shrink: 0;        /* Запрещаем правой колонке сужаться */
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  
+  .checkout-col--right::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* ── Error banner ──────────────────────────────────── */
+  .checkout-error {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #dc2626;
+    padding: 0.875rem 1rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  
+  /* ── Tablet ≤ 1024px ───────────────────────────────── */
+  @media (max-width: 1024px) {
+    .checkout-col--right {
+      width: 320px;
+    }
+  }
+  
+  /* ── Mobile ≤ 768px ────────────────────────────────── */
+  @media (max-width: 768px) {
+    .checkout-page {
+      padding: 80px 1rem 2.5rem;
+    }
+  
+    .checkout-form {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+  
+    .checkout-col--right {
+      width: 100%;
+      position: static;
+      max-height: none;
+      overflow-y: visible;
+    }
+  }

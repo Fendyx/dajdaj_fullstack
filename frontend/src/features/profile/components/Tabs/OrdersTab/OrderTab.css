@@ -1,0 +1,242 @@
+/* ═══════════════════════════════════════════
+   ORDERS TAB
+   ═══════════════════════════════════════════ */
+
+   .ot-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 4px 0 24px;
+  }
+  
+  /* ── Card ── */
+  .ot-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--card-bg, #fff);
+    border: 1px solid var(--border-color, #ebebeb);
+    border-radius: 16px;
+    padding: 16px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.18s ease, border-color 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .ot-card::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 16px 0 0 16px;
+    background: linear-gradient(180deg, #f0a500, #e07b00);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+  
+  .ot-card:hover {
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.09);
+    transform: translateY(-2px);
+    border-color: #d0d0d0;
+  }
+  
+  .ot-card:hover::before {
+    opacity: 1;
+  }
+  
+  /* ── Product Images ── */
+  .ot-images {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  
+  .ot-img-wrap {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #f5f5f5;
+    border: 1px solid #ebebeb;
+  }
+  
+  .ot-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.25s ease;
+  }
+  
+  .ot-card:hover .ot-img {
+    transform: scale(1.06);
+  }
+  
+  .ot-img-placeholder {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background: #f5f5f5;
+    border: 1px solid #ebebeb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
+  }
+  
+  .ot-img-more {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    background: #f0f0f0;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #777;
+    letter-spacing: 0.02em;
+  }
+  
+  /* ── Info ── */
+  .ot-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .ot-header-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  
+  .ot-order-num {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary, #1a1a1a);
+    letter-spacing: 0.03em;
+  }
+  
+  .ot-product-names {
+    font-size: 13px;
+    color: var(--text-secondary, #666);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+  }
+  
+  .ot-meta-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 2px;
+  }
+  
+  .ot-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-muted, #999);
+  }
+  
+  .ot-meta-item svg {
+    flex-shrink: 0;
+    color: #bbb;
+  }
+  
+  /* ── Right ── */
+  .ot-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  
+  .ot-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary, #1a1a1a);
+  }
+  
+  .ot-currency {
+    font-size: 12px;
+    font-weight: 500;
+    color: #888;
+    margin-left: 2px;
+  }
+  
+  .ot-details-btn {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #f0a500;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    transition: gap 0.15s ease, color 0.15s ease;
+    white-space: nowrap;
+  }
+  
+  .ot-details-btn:hover {
+    gap: 6px;
+    color: #e07b00;
+  }
+  
+  /* ── Status Badges ── */
+  .ot-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+  }
+  
+  .status-pending    { background: #fff8e6; color: #b07800; }
+  .status-processing { background: #e8f0fe; color: #1a56c4; }
+  .status-paid       { background: #e6f4ea; color: #1e7e34; }
+  .status-shipping   { background: #e8f5fb; color: #0277bd; }
+  .status-delivered  { background: #e8f5e9; color: #2e7d32; }
+  .status-canceled   { background: #fce8e8; color: #c0392b; }
+  .status-failed     { background: #fce8e8; color: #c0392b; }
+  
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .ot-card {
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+  
+    .ot-images {
+      order: 1;
+    }
+  
+    .ot-info {
+      order: 2;
+      flex: 1;
+    }
+  
+    .ot-right {
+      order: 3;
+      width: 100%;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 10px;
+    }
+  }

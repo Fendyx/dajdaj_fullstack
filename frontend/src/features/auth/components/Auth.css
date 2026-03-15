@@ -1,0 +1,215 @@
+/* AuthLayout Styles */
+.auth-container {
+    min-height: calc(100vh - 80px); /* Минус высота хедера */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f9fafb; /* Мягкий фон */
+    padding: 2rem 1rem;
+  }
+  
+  /* Form Styles */
+  .auth-form {
+    width: 100%;
+    max-width: 440px;
+    background-color: #ffffff;
+    padding: 3rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #eaeaea;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .auth-form h2 {
+    margin-bottom: 0.5rem;
+    text-align: center;
+    font-size: 1.75rem;
+    color: #1a1a1a;
+    font-weight: 700;
+  }
+  
+  .input-group {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input-group label {
+    margin-bottom: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #444;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    padding-right: 2.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s;
+    outline: none;
+    background: #fff;
+  }
+  
+  .input-group input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+  
+  .input-group input.has-error {
+    border-color: #d32f2f;
+  }
+  
+  .eye-icon {
+    position: absolute;
+    right: 12px;
+    bottom: 13px;
+    color: #999;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+  
+  .eye-icon:hover { color: #555; }
+  
+  .auth-submit-btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    background-color: #111;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .auth-submit-btn:hover { background-color: #333; }
+  .auth-submit-btn:disabled { background-color: #ccc; cursor: not-allowed; }
+  
+  .error-text {
+    color: #d32f2f;
+    font-size: 0.8rem;
+    margin-top: -0.5rem;
+    margin-left: 2px;
+  }
+  
+  .backend-error {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  
+  .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: #888;
+    font-size: 0.8rem;
+    margin: 0.2rem 0;
+  }
+  
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #eaeaea;
+  }
+  .divider::before { margin-right: 10px; }
+  .divider::after { margin-left: 10px; }
+  
+  .social-login {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+  }
+  
+  .social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #fff;
+    border: 1px solid #ddd;
+    color: #333;
+    transition: 0.2s;
+  }
+  
+  .social-btn:hover { background-color: #f9f9f9; border-color: #ccc; }
+  .social-btn.google-btn { color: #db4437; }
+  .social-btn.facebook-btn { color: #1877f2; }
+  
+  .switch-auth {
+    margin-top: 0.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+  }
+  
+  .switch-auth span {
+    color: #007bff;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 5px;
+  }
+  .switch-auth span:hover { text-decoration: underline; }
+  
+  /* Адаптация */
+  @media (max-height: 800px) {
+    .auth-form { padding: 1.5rem 2rem; gap: 1rem; }
+    .auth-form h2 { font-size: 1.5rem; }
+    .input-group input { padding: 0.7rem 1rem; }
+    .eye-icon { bottom: 10px; }
+    .auth-submit-btn { padding: 0.8rem; }
+  }
+  
+  @media (max-width: 480px) {
+    .auth-form { box-shadow: none; border: none; padding: 1.5rem; max-width: 100%; }
+  }
+
+
+  .gdpr-checkbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+  
+  .gdpr-checkbox input[type="checkbox"] {
+    margin-top: 2px;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    flex-shrink: 0;
+    accent-color: #111827;
+  }
+  
+  .gdpr-checkbox label {
+    cursor: pointer;
+  }
+  
+  .gdpr-checkbox a {
+    color: #111827;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  
+  .gdpr-checkbox a:hover {
+    opacity: 0.7;
+  }

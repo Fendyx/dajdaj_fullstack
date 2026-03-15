@@ -1,0 +1,18 @@
+.lottie-player{
+    width: 50%;
+    margin-left: 40%;
+}
+
+@media(max-width:1200px){
+    .lottie-player{
+        width: 50%;
+        margin-left: 0%;
+    }
+}
+
+@media(max-width: 692px){
+    .lottie-player{
+        width: 100%;
+        margin-left: 0%;
+    }
+}

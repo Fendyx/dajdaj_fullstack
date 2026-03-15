@@ -1,0 +1,205 @@
+/* ═══════════════════════════════════════════
+   DISCOUNTS TAB — Coupon Ticket Design
+   ═══════════════════════════════════════════ */
+
+   .dt-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 0 24px;
+  }
+  
+  .dt-hint {
+    font-size: 13px;
+    color: #aaa;
+    margin: 0 0 4px;
+  }
+  
+  /* ── Ticket ── */
+  .dt-ticket {
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: #fff;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    min-height: 96px;
+  }
+  
+  .dt-ticket:hover {
+    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+  
+  .dt-ticket.expiring {
+    border-color: #ffd180;
+    background: linear-gradient(135deg, #fffdf5 0%, #fff9e6 100%);
+  }
+  
+  /* Tear edges — simulated with circles */
+  .dt-tear-left,
+  .dt-tear-right {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--page-bg, #f5f5f5);
+    border: 1.5px solid #e8e8e8;
+    z-index: 2;
+    flex-shrink: 0;
+  }
+  
+  .dt-tear-left {
+    left: -10px;
+  }
+  
+  .dt-tear-right {
+    right: -10px;
+  }
+  
+  /* ── Value Section ── */
+  .dt-value-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 28px 20px 24px;
+    min-width: 100px;
+    background: linear-gradient(135deg, #f0a500, #e07b00);
+    height: 100%;
+    align-self: stretch;
+    gap: 0;
+  }
+  
+  .dt-percent {
+    font-size: 40px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  
+  .dt-percent-symbol {
+    font-size: 20px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+    line-height: 1;
+    align-self: flex-start;
+    margin-top: -2px;
+  }
+  
+  .dt-off-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  
+  /* ── Perforation Line ── */
+  .dt-perforation {
+    width: 2px;
+    align-self: stretch;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 5px,
+      #e0e0e0 5px,
+      #e0e0e0 10px
+    );
+    flex-shrink: 0;
+  }
+  
+  /* ── Code Section ── */
+  .dt-code-section {
+    flex: 1;
+    padding: 16px 28px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .dt-code-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  
+  .dt-code-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .dt-code {
+    font-family: "Courier New", "Courier", monospace;
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a1a1a;
+    letter-spacing: 0.08em;
+  }
+  
+  .dt-copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1.5px solid #e0e0e0;
+    background: #f8f8f8;
+    cursor: pointer;
+    color: #666;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+  }
+  
+  .dt-copy-btn:hover {
+    background: #f0a500;
+    border-color: #f0a500;
+    color: #fff;
+  }
+  
+  .dt-copy-btn.copied {
+    background: #2e7d32;
+    border-color: #2e7d32;
+    color: #fff;
+  }
+  
+  .dt-expiry {
+    font-size: 12px;
+    color: #bbb;
+    margin-top: 2px;
+  }
+  
+  .dt-expiry.soon {
+    color: #e07b00;
+    font-weight: 600;
+  }
+  
+  /* ── Responsive ── */
+  @media (max-width: 480px) {
+    .dt-value-section {
+      padding: 16px 20px;
+      min-width: 82px;
+    }
+  
+    .dt-percent {
+      font-size: 32px;
+    }
+  
+    .dt-code {
+      font-size: 15px;
+    }
+  
+    .dt-code-section {
+      padding: 14px 20px 14px 14px;
+    }
+  }

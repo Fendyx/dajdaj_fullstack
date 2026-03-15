@@ -1,0 +1,274 @@
+/* ── Оболочка ── */
+.pf-shell {
+    border: 1.5px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .pf-shell-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6b7280;
+  }
+  
+  /* ── Группа (один шаг) ── */
+  .pf-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  /* ── Step label ── */
+  .pf-step-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #111;
+    margin: 0;
+  }
+  
+  .pf-step-badge {
+    background: #111;
+    color: #fff;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.72rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  
+  .pf-optional-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: #9ca3af;
+    background: #f3f4f6;
+    padding: 2px 8px;
+    border-radius: 99px;
+    margin-left: 4px;
+  }
+  
+  /* ── Mode switcher (только figurine) ── */
+  .pf-mode-switcher {
+    display: flex;
+    background: #f3f4f6;
+    padding: 3px;
+    border-radius: 10px;
+  }
+  
+  .pf-mode-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.8rem;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+  }
+  
+  .pf-mode-btn.active {
+    background: #fff;
+    color: #111;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+  
+  /* ── Preset options grid ── */
+  .pf-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(118px, 1fr));
+    gap: 8px;
+  }
+  
+  .pf-option-card {
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 10px 8px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.15s ease;
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #374151;
+    background: #fff;
+  }
+  
+  .pf-option-card:hover { border-color: #3b82f6; background: #f0f7ff; }
+  
+  .pf-option-card.active {
+    border-color: #3b82f6;
+    background: #eff6ff;
+    color: #1d4ed8;
+    font-weight: 600;
+  }
+  
+  .pf-check {
+    position: absolute;
+    top: -6px; right: -6px;
+    background: #3b82f6;
+    color: #fff;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* ── Поля ввода (общие) ── */
+  .pf-field-wrapper { position: relative; }
+  
+  .pf-textarea {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 0.88rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    resize: none;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+    box-sizing: border-box;
+  }
+  .pf-textarea:focus { border-color: #3b82f6; }
+  
+  .pf-input {
+    width: 100%;
+    padding: 12px 52px 12px 14px;
+    font-size: 0.9rem;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: #fff;
+    box-sizing: border-box;
+    font-family: inherit;
+  }
+  .pf-input:focus { border-color: #3b82f6; }
+  
+  .pf-char-count {
+    position: absolute;
+    right: 10px; bottom: 10px;
+    font-size: 0.7rem;
+    color: #9ca3af;
+  }
+  .pf-char-count--inline {
+    top: 50%; bottom: auto;
+    transform: translateY(-50%);
+  }
+  
+  /* ── Upload area (только custom) ── */
+  .pf-file-input { display: none; }
+  
+  .pf-upload-wrapper { display: flex; flex-direction: column; gap: 8px; }
+  
+  .pf-upload-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border: 2px dashed #3b82f6;
+    background: #eff6ff;
+    border-radius: 12px;
+    padding: 22px;
+    transition: all 0.2s;
+    gap: 6px;
+  }
+  .pf-upload-area:hover { background: #dbeafe; transform: translateY(-1px); }
+  
+  .pf-upload-area--success {
+    border-color: #10b981;
+    background: #ecfdf5;
+    border-style: solid;
+  }
+  .pf-upload-area--processing {
+    opacity: 0.7;
+    cursor: wait;
+  }
+  
+  .pf-upload-icon { color: #3b82f6; }
+  .pf-upload-icon--success { color: #10b981; }
+  
+  .pf-upload-text {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1f2937;
+  }
+  .pf-upload-hint {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+  
+  .pf-upload-spinner {
+    width: 26px; height: 26px;
+    border: 3px solid #e5e7eb;
+    border-top-color: #3b82f6;
+    border-radius: 50%;
+    animation: pf-spin 0.8s linear infinite;
+  }
+  
+  @keyframes pf-spin { to { transform: rotate(360deg); } }
+  
+  .pf-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pf-file-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f9fafb;
+    padding: 7px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #374151;
+  }
+  .pf-file-name {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+
+  /* ── Highlight / shake when validation fails ── */
+@keyframes pf-shake {
+  0%   { transform: translateX(0); }
+  15%  { transform: translateX(-6px); }
+  30%  { transform: translateX(6px); }
+  45%  { transform: translateX(-5px); }
+  60%  { transform: translateX(5px); }
+  75%  { transform: translateX(-3px); }
+  90%  { transform: translateX(3px); }
+  100% { transform: translateX(0); }
+}
+
+.pf-shell--shake {
+  animation: pf-shake 0.45s ease;
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}

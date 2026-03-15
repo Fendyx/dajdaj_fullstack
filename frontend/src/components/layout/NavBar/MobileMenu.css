@@ -1,0 +1,236 @@
+/* =====================================================
+   MobileMenu.css
+   ===================================================== */
+
+/* ── Overlay ─────────────────────────────────────── */
+.mobile-menu-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1900;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  
+  .mobile-menu-overlay--visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  /* ── Panel ───────────────────────────────────────── */
+  .mobile-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(340px, 92vw);
+    height: 100dvh;
+    background: #f7f8fa;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+    will-change: transform;
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
+  }
+  
+  .mobile-menu.open { transform: translateX(0); }
+  
+  /* ── Header ──────────────────────────────────────── */
+  .mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
+  }
+  
+  .menu-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #111827;
+    letter-spacing: -0.3px;
+  }
+  
+  .close-btn {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border-radius: 8px;
+    cursor: pointer;
+    color: #6b7280;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+  
+  .close-btn:hover { background: #e5e7eb; color: #111827; }
+  
+  /* ── Scrollable content ──────────────────────────── */
+  .mobile-content {
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 12px 0 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* ── Sections ────────────────────────────────────── */
+  .mobile-section {
+    background: #fff;
+    border-radius: 12px;
+    margin: 0 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  
+  .section-label {
+    padding: 12px 16px 6px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: #9ca3af;
+  }
+  
+  /* ── Auth Section ────────────────────────────────── */
+  .auth-section { padding: 16px; }
+  
+  .auth-buttons-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  
+  .btn-auth {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 11px 12px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.18s ease;
+  }
+  
+  .btn-auth.login {
+    background: #f3f4f6;
+    color: #374151;
+  }
+  .btn-auth.login:hover { background: #e5e7eb; }
+  
+  .btn-auth.register {
+    background: #4b70e2;
+    color: #fff;
+    box-shadow: 0 2px 10px rgba(75, 112, 226, 0.3);
+  }
+  .btn-auth.register:hover { background: #3a5fd1; }
+  
+  /* ── User profile row ────────────────────────────── */
+  .user-profile-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    padding: 4px 0;
+  }
+  
+  .user-avatar {
+    width: 46px;
+    height: 46px;
+    background: #eef2ff;
+    color: #4b70e2;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  
+  .user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .user-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: #111827;
+  }
+  
+  .user-action {
+    font-size: 0.8rem;
+    color: #9ca3af;
+  }
+  
+  .arrow-icon { color: #d1d5db; flex-shrink: 0; }
+  
+  /* ── Lists ───────────────────────────────────────── */
+  .mobile-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .mobile-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    text-decoration: none;
+    color: #1f2937;
+    border-bottom: 1px solid #f9fafb;
+    transition: background 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .mobile-list li:last-child .mobile-link { border-bottom: none; }
+  
+  .mobile-link:active { background: #f3f4f6; }
+  
+  .link-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eef2ff;
+    border-radius: 8px;
+    color: #4b70e2;
+    flex-shrink: 0;
+  }
+  
+  /* Icon color variants */
+  .link-icon--green  { background: #ecfdf5; color: #10b981; }
+  .link-icon--red    { background: #fff1f2; color: #f43f5e; }
+  .link-icon--orange { background: #fff7ed; color: #f97316; }
+  .link-icon--blue   { background: #eef2ff; color: #4b70e2; }
+  
+  .link-text {
+    flex: 1;
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+  
+  /* ── Badge ───────────────────────────────────────── */
+  .mobile-badge {
+    background: #f43f5e;
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 999px;
+    line-height: 1.6;
+  }

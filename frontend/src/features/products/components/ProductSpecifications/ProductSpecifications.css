@@ -1,0 +1,46 @@
+.prod-specs {
+    margin-top: 4rem;
+    padding: 0 1rem;
+  }
+  
+  .prod-specs__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #000;
+  }
+  
+  .prod-specs__table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .prod-specs__row {
+    border-bottom: 1px solid #f0f0f0;
+    transition: background 0.15s;
+  }
+  
+  .prod-specs__row:last-child {
+    border-bottom: none;
+  }
+  
+  .prod-specs__row:hover {
+    background: #fafafa;
+  }
+  
+  .prod-specs__label,
+  .prod-specs__value {
+    padding: 0.875rem 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .prod-specs__label {
+    font-weight: 600;
+    color: #111;
+    width: 40%;
+  }
+  
+  .prod-specs__value {
+    color: #444;
+  }

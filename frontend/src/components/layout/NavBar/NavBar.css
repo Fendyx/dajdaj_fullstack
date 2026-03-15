@@ -1,0 +1,333 @@
+/* =====================================================
+   NavBar.css — layout, scroll-hide, search, icons
+   ===================================================== */
+
+   :root {
+    --nav-height: 68px;
+    --nav-bg: rgba(255, 255, 255, 0.82);
+    --nav-blur: blur(18px) saturate(180%);
+    --nav-border: rgba(0, 0, 0, 0.07);
+    --nav-shadow: 0 1px 0 rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.05);
+    --nav-text: #111827;
+    --nav-muted: #6b7280;
+    --nav-accent: #4b70e2;
+    --nav-accent-hover: #3a5fd1;
+    --nav-green: #5cb85c;
+    --nav-green-hover: #4a9e4a;
+    --nav-radius-sm: 8px;
+    --nav-radius-pill: 24px;
+    --ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  
+  /* ── Base ─────────────────────────────────────────── */
+  .nav-bar {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 1000;
+    height: var(--nav-height);
+  
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 4rem;
+  
+    background: var(--nav-bg);
+    backdrop-filter: var(--nav-blur);
+    -webkit-backdrop-filter: var(--nav-blur);
+    border-bottom: 1px solid var(--nav-border);
+    box-shadow: var(--nav-shadow);
+  
+    transform: translateY(0);
+    transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+  }
+  
+  .nav-bar--hidden {
+    transform: translateY(-100%);
+    box-shadow: none;
+  }
+  
+  /* ── Logo ─────────────────────────────────────────── */
+  .nav-left { flex-shrink: 0; }
+  
+  .logo-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: var(--nav-text);
+    font-weight: 700;
+    font-size: 1.15rem;
+    letter-spacing: -0.4px;
+    transition: opacity 0.2s ease;
+  }
+  
+  .logo-link:hover { opacity: 0.75; }
+  
+  .logo-link img {
+    height: 40px;
+    width: 40px;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  
+  /* ── Center: Desktop Search ───────────────────────── */
+  .nav-center {
+    flex: 1;
+    display: none;
+    justify-content: center;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  
+  .nav-search {
+    position: relative;
+    width: 100%;
+  }
+  
+  .nav-search__icon {
+    position: absolute;
+    left: 13px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--nav-muted);
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+  
+  .nav-search__input {
+    width: 100%;
+    height: 40px;
+    padding: 0 56px 0 40px;
+    background: #f3f4f6;
+    border: 1.5px solid transparent;
+    border-radius: var(--nav-radius-pill);
+    color: var(--nav-text);
+    font-size: 0.875rem;
+    outline: none;
+    transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .nav-search__input::placeholder { color: var(--nav-muted); }
+  
+  .nav-search__input:focus {
+    background: #fff;
+    border-color: var(--nav-accent);
+    box-shadow: 0 0 0 3px rgba(75, 112, 226, 0.12);
+  }
+  
+  .nav-search__kbd {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.7rem;
+    color: var(--nav-muted);
+    background: #e5e7eb;
+    padding: 2px 6px;
+    border-radius: 5px;
+    font-family: ui-monospace, monospace;
+    pointer-events: none;
+    letter-spacing: 0;
+    line-height: 1.6;
+  }
+  
+  /* ── Right ────────────────────────────────────────── */
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  
+  /* ── Generic icon button (Favorites / Profile) ────── */
+  .nav-icon-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 7px 10px;
+    border-radius: var(--nav-radius-sm);
+    text-decoration: none;
+    color: var(--nav-text);
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+  
+  .nav-icon-btn:hover {
+    background: rgba(0,0,0,0.05);
+    color: var(--nav-accent);
+  }
+  
+  .nav-icon-btn__label {
+    display: none;
+    font-size: 0.67rem;
+    font-weight: 500;
+    color: var(--nav-muted);
+    white-space: nowrap;
+  }
+  
+  /* ── Cart button ──────────────────────────────────── */
+  .cart-btn {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--nav-accent), var(--nav-accent-hover));
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: var(--nav-radius-pill);
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out);
+    box-shadow: 0 2px 8px rgba(75, 112, 226, 0.3);
+    position: relative;
+  }
+  
+  .cart-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(75, 112, 226, 0.4);
+  }
+  
+  .cart-btn:active { transform: translateY(0); }
+  
+  .cart-btn__label { display: none; }
+  
+  .cart-btn__icon-wrap { position: relative; display: inline-flex; }
+  
+  .cart-btn__badge {
+    position: absolute;
+    top: -7px;
+    right: -9px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 4px;
+    background: #fbbf24;
+    color: #111;
+    font-size: 0.65rem;
+    font-weight: 800;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #fff;
+    line-height: 1;
+  }
+  
+  /* ── Auth buttons ─────────────────────────────────── */
+  .auth-actions {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding-left: 12px;
+    margin-left: 4px;
+    border-left: 1px solid var(--nav-border);
+    height: 32px;
+  }
+  
+  .auth-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 15px;
+    border-radius: var(--nav-radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: all 0.2s var(--ease-out);
+  }
+  
+  .auth-btn.sign-in {
+    color: #374151;
+    background: transparent;
+  }
+  .auth-btn.sign-in:hover {
+    background: rgba(0,0,0,0.05);
+    color: var(--nav-text);
+  }
+  
+  .auth-btn.join-us {
+    background: var(--nav-green);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(92, 184, 92, 0.35);
+  }
+  .auth-btn.join-us:hover {
+    background: var(--nav-green-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(92, 184, 92, 0.45);
+  }
+  .auth-btn.join-us:active { transform: translateY(0); }
+  
+  /* ── Burger ───────────────────────────────────────── */
+  .burger {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: var(--nav-radius-sm);
+    padding: 0;
+    transition: background 0.2s ease;
+  }
+  
+  .burger:hover { background: rgba(0,0,0,0.05); }
+  
+  .burger__line {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--nav-text);
+    border-radius: 2px;
+    transition: transform 0.3s var(--ease-out), opacity 0.3s ease, width 0.3s ease;
+    transform-origin: center;
+  }
+  
+  /* Animated X state */
+  .burger--open .burger__line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  .burger--open .burger__line:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .burger--open .burger__line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+  
+  /* =====================================================
+     Breakpoints
+     ===================================================== */
+  
+  /* ≥ 640px: show auth */
+  @media (min-width: 640px) {
+    .auth-actions { display: flex; }
+  }
+  
+  /* ≥ 1024px: show search, labels, hide burger */
+  @media (min-width: 1024px) {
+    .nav-center { display: flex; }
+    .burger { display: none; }
+    .nav-icon-btn__label { display: block; }
+    .cart-btn__label { display: inline; }
+  
+    .nav-icon-btn { flex-direction: row; gap: 6px; }
+    .nav-icon-btn__label { font-size: 0.875rem; color: var(--nav-text); }
+  }
+  
+  /* ≥ 1280px */
+  @media (min-width: 1280px) {
+    .nav-bar { padding: 0 5rem; }
+    .nav-center { max-width: 560px; }
+  }
+  
+  /* mobile small */
+  @media (max-width: 665px) {
+    .nav-bar { padding: 0 1.25rem; height: 60px; }
+    .logo-link img { height: 34px; width: 34px; }
+    .logo-text { display: none; }
+  }

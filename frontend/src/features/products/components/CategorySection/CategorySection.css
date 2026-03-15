@@ -1,0 +1,68 @@
+/* Отступы секции (было mb-12) */
+.category-section {
+    margin-bottom: 3rem;
+  }
+  
+  /* Отступы шапки (было mb-6) */
+  .category-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Заголовок (было text-2xl font-bold) */
+  .category-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 2rem;
+    margin: 0;
+  }
+  
+  /* Синяя полоска (было h-1 w-20 bg-blue-500 mt-2) */
+  .category-divider {
+    height: 4px;
+    width: 5rem;
+    background-color: #3b82f6;
+    margin-top: 0.5rem;
+  }
+  
+  /* СЕТКА ТОВАРОВ 
+    (было grid gap-6 и куча grid-cols-...)
+  */
+  .category-grid {
+    display: grid;
+    gap: 1.5rem; /* Расстояние между карточками (gap-6) */
+    
+    /* По умолчанию (для телефонов) делаем 2 колонки */
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  /* Для планшетов (по желанию, можно удалить, если планшеты не нужны) */
+  @media (max-width: 767px) {
+    .category-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 0.75rem;
+      padding-bottom: 0.5rem;
+      /* Прячем скроллбар, но сохраняем функцию */
+      scrollbar-width: none;
+    }
+    
+    .category-grid::-webkit-scrollbar {
+      display: none;
+    }
+  
+    .category-grid > * {
+      flex: 0 0 42%; /* Показываем 2 с половиной → намёк что есть ещё */
+      scroll-snap-align: start;
+    }
+  }
+  
+  /* Для десктопов делаем 4 колонки */
+  @media (min-width: 1024px) {
+    .category-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  

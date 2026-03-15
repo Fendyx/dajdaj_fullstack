@@ -1,0 +1,324 @@
+/* ========================================
+   MODAL OVERLAY
+   ======================================== */
+   .cnp-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(17, 24, 39, 0.4); /* Минималистичный темный фон */
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: cnp-fadeIn 0.2s ease-out;
+    padding: 1rem;
+  }
+  
+  @keyframes cnp-fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* ========================================
+     MODAL CONTAINER
+     ======================================== */
+  .cnp-modal-container {
+    width: 100%;
+    max-width: 640px; /* Сузили для аккуратности */
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border-radius: 12px; /* Оставляем 12px для самого окна (стандарт), но внутри всё будет 8px */
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    animation: cnp-slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+  }
+  
+  @keyframes cnp-slideUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* ========================================
+     HEADER
+     ======================================== */
+  .cnp-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+  }
+  
+  .cnp-title {
+    margin: 0;
+    color: #111827;
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .cnp-close-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #9ca3af;
+    transition: color 0.2s;
+    padding: 0.25rem;
+    display: flex;
+  }
+  
+  .cnp-close-btn:hover {
+    color: #374151;
+  }
+  
+  /* ========================================
+     CONTENT & SECTIONS
+     ======================================== */
+  .cnp-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+  }
+  
+  .cnp-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .cnp-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .cnp-section-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+  
+  /* ========================================
+     FORM GRID & INPUTS
+     ======================================== */
+  .cnp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .cnp-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  
+  .cnp-input-group-full {
+    width: 100%;
+  }
+  
+  .cnp-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #374151;
+  }
+  
+  .cnp-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+  
+  .cnp-input-icon {
+    position: absolute;
+    left: 1rem;
+    color: #9ca3af;
+    pointer-events: none;
+    transition: color 0.2s;
+  }
+  
+  .cnp-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem; /* Отступ под иконку */
+    border: 1px solid #e5e7eb;
+    border-radius: 8px; /* Убрали большие скругления */
+    font-size: 0.95rem;
+    color: #1f2937;
+    background-color: #fff;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+  }
+  
+  .cnp-input-no-icon {
+    padding-left: 1rem; /* Если иконки нет (например, фамилия) */
+  }
+  
+  .cnp-input:focus {
+    outline: none;
+    border-color: #3b82f6; /* Новый синий цвет */
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  }
+  
+  .cnp-input:focus + .cnp-input-icon,
+  .cnp-input:focus ~ .cnp-input-icon {
+    color: #3b82f6;
+  }
+  
+  .cnp-input::placeholder {
+    color: #d1d5db;
+  }
+  
+  .cnp-input-readonly {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+  
+  /* ========================================
+     METHOD SELECTOR (Точно как в Delivery)
+     ======================================== */
+  .cnp-method-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .cnp-method-card {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px; /* Уменьшен радиус */
+    cursor: pointer;
+    background-color: #fff;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+  
+  .cnp-method-card:hover {
+    border-color: #d1d5db;
+    background-color: #f9fafb;
+  }
+  
+  .cnp-method-card.selected {
+    border-color: #3b82f6;
+    background-color: #eff6ff; /* Светло-синий фон */
+    box-shadow: 0 0 0 1px #3b82f6;
+  }
+  
+  .cnp-method-icon {
+    color: #6b7280;
+    margin-right: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .cnp-method-card.selected .cnp-method-icon {
+    color: #3b82f6;
+  }
+  
+  .cnp-method-name {
+    font-weight: 500;
+    font-size: 0.95rem;
+    color: #1f2937;
+    flex: 1;
+  }
+  
+  /* Custom Radio Circle */
+  .cnp-radio-circle {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    margin-left: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .cnp-method-card.selected .cnp-radio-circle {
+    border-color: #3b82f6;
+    background-color: #fff;
+  }
+  
+  .cnp-radio-dot {
+    width: 10px;
+    height: 10px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+  }
+  
+  /* ========================================
+     FOOTER & BUTTONS
+     ======================================== */
+  .cnp-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    background: #f9fafb; /* Слегка серый фон футера для контраста */
+  }
+  
+  .cnp-btn {
+    padding: 0.6rem 1.25rem;
+    border: none;
+    border-radius: 8px; /* Убрали сильные закругления */
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .cnp-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .cnp-btn-secondary {
+    background: #fff;
+    color: #374151;
+    border: 1px solid #d1d5db;
+  }
+  
+  .cnp-btn-secondary:hover:not(:disabled) {
+    background: #f3f4f6;
+  }
+  
+  .cnp-btn-primary {
+    background: #3b82f6; /* Плоский синий цвет */
+    color: #ffffff;
+  }
+  
+  .cnp-btn-primary:hover:not(:disabled) {
+    background: #2563eb;
+  }
+  
+  /* ========================================
+     RESPONSIVE
+     ======================================== */
+  @media (max-width: 640px) {
+    .cnp-row {
+      grid-template-columns: 1fr;
+    }
+    
+    .cnp-modal-container {
+      height: 100%;
+      max-height: 100%;
+      border-radius: 0;
+    }
+    
+    .cnp-modal-overlay {
+      padding: 0;
+    }
+  }

@@ -23,6 +23,7 @@ const personalOrders = require("./routes/personalOrders");
 const analytics = require("./routes/analytics");
 const upload = require("./routes/upload");
 const productsRoute = require("./routes/products");
+const adminProducts = require("./routes/adminProducts");
 
 const app = express();
 
@@ -77,6 +78,7 @@ app.use("/api/personal-orders", personalOrders);
 app.use("/api/analytics", analytics);
 app.use("/api/upload", upload);
 app.use("/api/products", productsRoute);
+app.use("/api/admin/products", adminProducts);
 
 // Root
 app.get("/", (req, res) => {

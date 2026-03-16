@@ -1,9 +1,10 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 
 // Layouts
 import { MainLayout } from "@/layouts/MainLayout";
+import { AdminLayout } from "@/layouts/AdminLayout";
 
-// Pages
+// Pages — Shop
 import { HomePage } from "@/pages/Home/HomePage";
 import { ProfilePage } from "@/pages/Profile/ProfilePage";
 import { ProductPage } from "@/pages/Product/ProductPage";
@@ -14,12 +15,19 @@ import { RegisterPage } from "@/pages/Auth/RegisterPage";
 import { PrivacyPolicyPage } from "@/pages/Legal/PrivacyPolicyPage";
 import { TermsPage } from "@/pages/Legal/TermsPage";
 import NotFound from "./pages/NotFound/NotFound";
-
-// Routing
-import { PrivateRoute } from "@/components/routing/PrivateRoute";
 import { CheckoutSuccess } from "./pages/Checkout/CheckoutSuccess/CheckoutSuccess";
 
+// Pages — Admin
+import { OrdersPage } from "@/features/admin/orders/OrdersPage";
+import { UsersPage } from "@/features/admin/users/UsersPage";
+import { ProductsPage } from "@/features/admin/products/ProductsPage";
+
+// Routing guards
+import { PrivateRoute } from "@/components/routing/PrivateRoute";
+import { AdminRoute } from "@/components/routing/AdminRoute";
+
 export const router = createBrowserRouter([
+  // ── SHOP ────────────────────────────────────────────────────
   {
     path: "/",
     element: <MainLayout />,
@@ -30,10 +38,7 @@ export const router = createBrowserRouter([
       { path: "cart", element: <CartPage /> },
       { path: "checkout-stripe", element: <CheckoutPage /> },
       { path: "checkout-success", element: <CheckoutSuccess /> },
-
-      // ── Главное изменение: product/:id → products/:slug ──
       { path: "products/:slug", element: <ProductPage /> },
-
       { path: "privacy", element: <PrivacyPolicyPage /> },
       { path: "terms", element: <TermsPage /> },
       {
@@ -45,6 +50,23 @@ export const router = createBrowserRouter([
         ),
       },
       { path: "*", element: <NotFound /> },
+    ],
+  },
+
+  // ── ADMIN ────────────────────────────────────────────────────
+  {
+    path: "/admin",
+    element: (
+      <AdminRoute>
+        <AdminLayout />
+      </AdminRoute>
+    ),
+    children: [
+      // /admin → редирект на /admin/orders
+      { index: true, element: <Navigate to="orders" replace /> },
+      { path: "orders", element: <OrdersPage /> },
+      { path: "users", element: <UsersPage /> },
+      { path: "products", element: <ProductsPage /> },
     ],
   },
 ]);

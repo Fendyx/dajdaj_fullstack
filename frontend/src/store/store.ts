@@ -1,37 +1,39 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-// 🧠 Слайсы (Локальное состояние)
+// 🧠 Слайсы
 import authReducer from "@/features/auth/authSlice";
 import cartReducer from "@/features/cart/cartSlice";
-// ❌ productsReducer удален навсегда!
 
-// 🌐 RTK Query API (Сетевые запросы)
+// 🌐 RTK Query API
 import { userApi } from "@/services/userApi";
 import { productsApi } from "@/services/productsApi";
-import { adminApi } from "@/features/admin/adminApi";           // Убедись, что положил их сюда
-import { adminUsersApi } from "@/features/admin/adminUsersApi"; // Убедись, что положил их сюда
+
+// 🛡 Admin APIs (разбиты по фичам)
+import { adminOrdersApi } from "@/features/admin/orders/api/adminOrdersApi";
+import { adminUsersApi } from "@/features/admin/users/api/adminUsersApi";
+import { adminProductsApi } from "@/features/admin/products/api/adminProductsApi";
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     cart: cartReducer,
-    
-    // Подключаем редьюсеры RTK Query
+
     [userApi.reducerPath]: userApi.reducer,
     [productsApi.reducerPath]: productsApi.reducer,
-    [adminApi.reducerPath]: adminApi.reducer,
+
+    [adminOrdersApi.reducerPath]: adminOrdersApi.reducer,
     [adminUsersApi.reducerPath]: adminUsersApi.reducer,
+    [adminProductsApi.reducerPath]: adminProductsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
       userApi.middleware,
       productsApi.middleware,
-      adminApi.middleware,
-      adminUsersApi.middleware
+      adminOrdersApi.middleware,
+      adminUsersApi.middleware,
+      adminProductsApi.middleware,
     ),
 });
 
-// 👇 МАГИЯ TYPESCRIPT 👇
-// Эти типы вытаскивают всю структуру твоего Redux-стейта автоматически
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

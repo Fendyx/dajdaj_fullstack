@@ -1,0 +1,206 @@
+.order-modal__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 24px;
+  }
+  
+  .order-modal {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  /* ── Header ── */
+  .order-modal__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+  }
+  
+  .order-modal__title {
+    font-family: "DM Mono", monospace;
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 6px;
+  }
+  
+  .order-modal__status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  
+  .order-modal__status--pending    { background: #2a2000; color: #f59e0b; }
+  .order-modal__status--processing { background: #001a2a; color: #38bdf8; }
+  .order-modal__status--paid       { background: #002a1a; color: #4ade80; }
+  .order-modal__status--shipping   { background: #1a0e2a; color: #a78bfa; }
+  .order-modal__status--delivered  { background: #002a1a; color: #34d399; }
+  .order-modal__status--canceled   { background: #2a0000; color: #f87171; }
+  .order-modal__status--failed     { background: #2a0a00; color: #fb923c; }
+  
+  .order-modal__close {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1;
+  }
+  
+  .order-modal__close:hover {
+    color: #fff;
+    background: #222;
+  }
+  
+  /* ── Body ── */
+  .order-modal__body {
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  /* ── Section ── */
+  .order-modal__section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #444;
+    margin: 0 0 12px;
+    font-weight: 500;
+  }
+  
+  .order-modal__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  
+  .order-modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .order-modal__label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #444;
+  }
+  
+  .order-modal__value {
+    font-size: 13px;
+    color: #ccc;
+    word-break: break-all;
+  }
+  
+  .order-modal__mono {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    color: #888;
+  }
+  
+  /* ── Products ── */
+  .order-modal__products {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  
+  .order-modal__product {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #0f0f0f;
+    border: 1px solid #1a1a1a;
+    border-radius: 6px;
+  }
+  
+  .order-modal__product-img {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 4px;
+    background: #1a1a1a;
+    flex-shrink: 0;
+  }
+  
+  .order-modal__product-info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .order-modal__product-name {
+    font-size: 13px;
+    color: #ccc;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .order-modal__product-personal {
+    font-size: 10px;
+    color: #a78bfa;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  
+  .order-modal__product-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  
+  .order-modal__product-qty {
+    font-size: 11px;
+    color: #555;
+  }
+  
+  .order-modal__product-price {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+  
+  .order-modal__total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0 0;
+    border-top: 1px solid #1e1e1e;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+  }

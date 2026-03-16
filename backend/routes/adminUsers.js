@@ -2,15 +2,23 @@ const express = require("express");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const User = require("../models/user");
-const authorizeRole = require("../middleware/authorizeRole");
 
-// Получение всех пользователей (только для админа)
-router.get("/", auth, async (req, res) => {
+// Middleware: пропускает admin ИЛИ superadmin
+const adminOrSuper = [
+  auth,
+  (req, res, next) => {
+    if (req.user.role === "admin" || req.user.role === "superadmin") return next();
+    return res.status(403).json({ message: "Доступ запрещен" });
+  },
+];
+
+// GET /api/users — все пользователи (список)
+router.get("/", adminOrSuper, async (req, res) => {
   try {
-    const users = await User.find().select(
-      "clientId name email registrationDate cardNumber"
-    );
-    console.log("📦 Users fetched:", users.length);
+    const users = await User.find()
+      .select("clientId name email cardNumber registrationDate role")
+      .sort({ registrationDate: -1 })
+      .lean();
     res.json(users);
   } catch (err) {
     console.error("❌ Ошибка получения пользователей:", err.message);
@@ -18,26 +26,12 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-// Удаление пользователя по ID (только для админа)
-router.delete("/:id", auth, async (req, res) => {
-  try {
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
-    if (!deletedUser) {
-      return res.status(404).json({ message: "Пользователь не найден" });
-    }
-    console.log("🗑️ User deleted:", deletedUser._id);
-    res.json({ message: "Пользователь удален" });
-  } catch (err) {
-    console.error("❌ Ошибка удаления пользователя:", err.message);
-    res.status(500).json({ message: "Ошибка сервера" });
-  }
-});
-
-// ✅ Получить всех админов и супер-админов
-router.get("/admins", auth, authorizeRole("superadmin"), async (req, res) => {
+// GET /api/users/admins — только admin и superadmin
+router.get("/admins", adminOrSuper, async (req, res) => {
   try {
     const admins = await User.find({ role: { $in: ["admin", "superadmin"] } })
-      .select("name email role registrationDate");
+      .select("name email role registrationDate")
+      .lean();
     res.json(admins);
   } catch (err) {
     console.error("❌ Ошибка получения админов:", err.message);
@@ -45,13 +39,14 @@ router.get("/admins", auth, authorizeRole("superadmin"), async (req, res) => {
   }
 });
 
-// 🔍 Найти пользователя по email
-router.get("/find-by-email", auth, authorizeRole("superadmin"), async (req, res) => {
+// GET /api/users/find-by-email?email=... — поиск по email
+router.get("/find-by-email", adminOrSuper, async (req, res) => {
   const { email } = req.query;
   if (!email) return res.status(400).json({ message: "Email обязателен" });
-
   try {
-    const user = await User.findOne({ email }).select("name email role registrationDate clientId cardNumber");
+    const user = await User.findOne({ email })
+      .select("name email role registrationDate clientId cardNumber")
+      .lean();
     if (!user) return res.status(404).json({ message: "Пользователь не найден" });
     res.json(user);
   } catch (err) {
@@ -60,14 +55,40 @@ router.get("/find-by-email", auth, authorizeRole("superadmin"), async (req, res)
   }
 });
 
-// 🛡 Назначить админом
-router.put("/promote/:id", auth, authorizeRole("superadmin"), async (req, res) => {
+// GET /api/users/:id — полная инфа об одном юзере
+router.get("/:id", adminOrSuper, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id)
+      .select("-password")
+      .lean();
+    if (!user) return res.status(404).json({ message: "Пользователь не найден" });
+    res.json(user);
+  } catch (err) {
+    console.error("❌ Ошибка получения пользователя:", err.message);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
+});
+
+// DELETE /api/users/:id — удаление
+router.delete("/:id", adminOrSuper, async (req, res) => {
+  try {
+    const deleted = await User.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Пользователь не найден" });
+    res.json({ message: "Пользователь удален" });
+  } catch (err) {
+    console.error("❌ Ошибка удаления пользователя:", err.message);
+    res.status(500).json({ message: "Ошибка сервера" });
+  }
+});
+
+// PUT /api/users/promote/:id — назначить админом
+router.put("/promote/:id", adminOrSuper, async (req, res) => {
   try {
     const user = await User.findByIdAndUpdate(
       req.params.id,
       { role: "admin" },
       { new: true }
-    ).select("name email role registrationDate");
+    ).select("name email role registrationDate").lean();
     if (!user) return res.status(404).json({ message: "Пользователь не найден" });
     res.json({ message: "Пользователь назначен админом", user });
   } catch (err) {
@@ -76,5 +97,4 @@ router.put("/promote/:id", auth, authorizeRole("superadmin"), async (req, res) =
   }
 });
 
-
-module.exports = router; // ✅ обязательно router, не { router }
+module.exports = router;

@@ -1,0 +1,203 @@
+.user-modal__backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 24px;
+  }
+  
+  .user-modal {
+    background: #141414;
+    border: 1px solid #222;
+    border-radius: 10px;
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  
+  .user-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #1e1e1e;
+    flex-shrink: 0;
+  }
+  
+  .user-modal__title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0;
+  }
+  
+  .user-modal__close {
+    background: none;
+    border: none;
+    color: #555;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: color 0.15s, background 0.15s;
+  }
+  
+  .user-modal__close:hover { color: #fff; background: #222; }
+  
+  .user-modal__loading {
+    padding: 40px;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+  }
+  
+  .user-modal__body {
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  
+  .user-modal__section-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #444;
+    margin: 0 0 12px;
+    font-weight: 500;
+  }
+  
+  .user-modal__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  
+  .user-modal__grid--sm {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+  
+  .user-modal__field {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  
+  .user-modal__label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #444;
+  }
+  
+  .user-modal__value {
+    font-size: 13px;
+    color: #ccc;
+    word-break: break-all;
+  }
+  
+  .user-modal__mono {
+    font-family: "DM Mono", monospace;
+    font-size: 11px;
+    color: #888;
+  }
+  
+  .user-modal__muted { font-size: 11px; color: #555; }
+  
+  .user-modal__role {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    width: fit-content;
+  }
+  
+  .user-modal__role--user       { background: #1a1a1a; color: #555; }
+  .user-modal__role--admin      { background: #001a2a; color: #38bdf8; }
+  .user-modal__role--superadmin { background: #1a0e2a; color: #a78bfa; }
+  
+  .user-modal__badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    background: #2a2000;
+    color: #f59e0b;
+  }
+  
+  .user-modal__badge--green {
+    background: #002a1a;
+    color: #4ade80;
+  }
+  
+  .user-modal__list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  
+  .user-modal__list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    background: #0f0f0f;
+    border: 1px solid #1a1a1a;
+    border-radius: 6px;
+    font-size: 12px;
+  }
+  
+  .user-modal__delivery-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .user-modal__delivery-card {
+    background: #0f0f0f;
+    border: 1px solid #1a1a1a;
+    border-radius: 6px;
+    padding: 12px;
+  }
+  
+  .user-modal__delivery-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  
+  .user-modal__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  
+  .user-modal__tag {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    color: #888;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-family: "DM Mono", monospace;
+  }
+  
+  .user-modal__empty {
+    font-size: 12px;
+    color: #444;
+  }

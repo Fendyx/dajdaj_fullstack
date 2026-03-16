@@ -1,0 +1,155 @@
+.orders-page__header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  
+  .orders-page__title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+  
+  .orders-page__count {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  
+  /* ── Table wrapper ── */
+  .orders-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #1e1e1e;
+    border-radius: 8px;
+  }
+  
+  .orders-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  
+  .orders-table thead th {
+    background: #141414;
+    padding: 12px 16px;
+    text-align: left;
+    color: #444;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    font-size: 11px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #1e1e1e;
+    white-space: nowrap;
+  }
+  
+  .orders-table tbody tr {
+    border-bottom: 1px solid #1a1a1a;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  
+  .orders-table tbody tr:last-child {
+    border-bottom: none;
+  }
+  
+  .orders-table tbody tr:hover {
+    background: #161616;
+  }
+  
+  .orders-table tbody td {
+    padding: 12px 16px;
+    color: #ccc;
+    vertical-align: middle;
+  }
+  
+  /* ── Cell styles ── */
+  .orders-table__order-num {
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    color: #fff;
+  }
+  
+  .orders-table__email {
+    color: #888;
+    font-size: 12px;
+  }
+  
+  .orders-table__products {
+    color: #aaa;
+    font-size: 12px;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+  }
+  
+  .orders-table__date {
+    color: #555;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  
+  .orders-table__total {
+    font-weight: 600;
+    color: #fff;
+    white-space: nowrap;
+  }
+  
+  /* ── Status badge ── */
+  .orders-table__status {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  
+  .orders-table__status--pending   { background: #2a2000; color: #f59e0b; }
+  .orders-table__status--processing { background: #001a2a; color: #38bdf8; }
+  .orders-table__status--paid      { background: #002a1a; color: #4ade80; }
+  .orders-table__status--shipping  { background: #1a0e2a; color: #a78bfa; }
+  .orders-table__status--delivered { background: #002a1a; color: #34d399; }
+  .orders-table__status--canceled  { background: #2a0000; color: #f87171; }
+  .orders-table__status--failed    { background: #2a0a00; color: #fb923c; }
+  
+  /* ── Select ── */
+  .orders-table__select {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    color: #ccc;
+    font-size: 12px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  
+  .orders-table__select:hover,
+  .orders-table__select:focus {
+    border-color: #4ade80;
+  }
+  
+  /* ── Shared states ── */
+  .admin-loading,
+  .admin-error {
+    padding: 40px;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+  }
+  
+  .admin-error {
+    color: #f87171;
+  }

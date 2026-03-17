@@ -167,10 +167,13 @@ export const DeliverySelectorModal = ({
                     {data.type === "new" ? (
                       <NewRecipientCard onAdd={() => {}} />
                     ) : data.type === "main" ? (
-                      <UserCard profile={data} isFlipped={isFlipped} />
+                      <UserCard
+                        deliveryData={{ personalData: data.personalData, delivery: data.delivery }}
+                        isFlipped={isFlipped}
+                      />
                     ) : (
                       <FlippableDeliveryCard
-                        profile={data}
+                        deliveryData={{ personalData: data.personalData, delivery: data.delivery }}
                         isFlipped={isFlipped}
                         gradient={gradients[index % gradients.length]}
                       />

@@ -1,17 +1,16 @@
-// frontend/src/utils/notify.js
+// frontend/src/utils/notify.ts
 import { toast } from "react-toastify";
 
-// Функция проверяет, мобильное ли устройство
-const isMobile = () => window.innerWidth <= 768; // можно изменить breakpoint
+const isMobile = () => window.innerWidth <= 768;
 
 const notify = {
-  success: (message, options = {}) => {
+  success: (message: string, options = {}) => {
     if (!isMobile()) toast.success(message, options);
   },
-  info: (message, options = {}) => {
+  info: (message: string, options = {}) => {
     if (!isMobile()) toast.info(message, options);
   },
-  error: (message, options = {}) => {
+  error: (message: string, options = {}) => {
     if (!isMobile()) toast.error(message, options);
   },
 };

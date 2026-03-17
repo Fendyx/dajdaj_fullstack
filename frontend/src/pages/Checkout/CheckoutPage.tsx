@@ -1,8 +1,10 @@
-import { useState } from "react";
+// frontend/src/pages/Checkout/CheckoutPage.tsx
+import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
 import { useDeliveryForm } from "@/features/checkout/hooks/useDeliveryForm";
 import { useStripePayment } from "@/features/checkout/hooks/useStripePayment";
+import { usePaymentRequest } from "@/features/checkout/hooks/usePaymentRequest";
 import { useCheckoutTotal } from "@/features/checkout/hooks/useCheckoutTotal";
 import { DeliverySection } from "@/features/checkout/components/DeliverySection/DeliverySection";
 import { PaymentMethods } from "@/features/checkout/components/PaymentSection/PaymentMethods";
@@ -31,18 +33,30 @@ export function CheckoutPage() {
   const { formData, handleInputChange, hasNoDeliveryProfile } = useDeliveryForm(
     auth.token,
     auth.email,
-    (auth as any).name  // ← имя аккаунта для prefill когда нет профиля доставки
+    (auth as any).name
   );
 
   const { totalCents, subtotalPLN, deliveryPLN, totalPLN, isFreeDelivery } =
     useCheckoutTotal(itemsToPurchase, formData.method);
 
-  const { handlePaymentSubmit, paymentError, isProcessing } = useStripePayment(
-    itemsToPurchase,
-    formData,
-    auth.token,
-    hasNoDeliveryProfile  // ← если true — после оплаты сохраним первый профиль
-  );
+  const { handlePaymentSubmit, setupWalletPayment, paymentError, isProcessing } =
+    useStripePayment(itemsToPurchase, formData, auth.token, hasNoDeliveryProfile);
+
+  // ── Apple Pay / Google Pay detection ─────────────────
+  const { paymentRequest, canMakePaymentResult } = usePaymentRequest(totalCents);
+
+  // Авто-выбор кошелька если доступен
+  useEffect(() => {
+    if (!canMakePaymentResult) return;
+    if (canMakePaymentResult.applePay) setSelectedMethod("apple_pay");
+    else if (canMakePaymentResult.googlePay) setSelectedMethod("google_pay");
+  }, [canMakePaymentResult]);
+
+  // Подключаем listener для wallet-платежей
+  useEffect(() => {
+    if (!paymentRequest) return;
+    setupWalletPayment(paymentRequest);
+  }, [paymentRequest]); // eslint-disable-line
 
   const onSubmit = (e: React.FormEvent | React.MouseEvent) => {
     e.preventDefault();
@@ -56,9 +70,7 @@ export function CheckoutPage() {
         {/* ── LEFT COLUMN ─────────────────────────────── */}
         <div className="checkout-col checkout-col--left">
           {paymentError && <div className="checkout-error">❌ {paymentError}</div>}
-
           <SelectedCartItem items={itemsToPurchase} />
-
           <DeliverySection
             token={auth.token}
             formData={formData as any}
@@ -74,6 +86,7 @@ export function CheckoutPage() {
             blikCode={blikCode}
             setBlikCode={setBlikCode}
             handleCardFieldChange={handleCardFieldChange}
+            canMakePaymentResult={canMakePaymentResult}
           />
 
           <div className="checkout-summary">
@@ -95,6 +108,7 @@ export function CheckoutPage() {
 
           <PaymentFooter
             selected={selectedMethod}
+            paymentRequest={paymentRequest}
             amount={totalCents}
             disabled={isProcessing}
             onSubmit={onSubmit}

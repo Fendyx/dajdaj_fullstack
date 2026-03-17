@@ -5,7 +5,7 @@
   }
   
   .pr-gr-container {
-    max-width: 80rem; /* Аналог max-w-7xl (1280px) */
+    max-width: 85rem; /* Аналог max-w-7xl (1280px) */
     margin-left: auto; /* Аналог mx-auto */
     margin-right: auto; /* Аналог mx-auto */
     padding: 2rem 1rem; /* Аналог py-8 (32px) и px-4 (16px) */

@@ -1,8 +1,10 @@
-import { ArrowRight, CloudUpload, Box, Truck } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { ArrowRight, Volume2, VolumeX, Pause, Play } from 'lucide-react';
 import './HeroPersonalFigurine.css';
 
-// 1️⃣ Типизируем пропсы. Если у тебя есть общий тип Product, можно импортировать его.
-// Пока опишем то, что реально используется в этом компоненте.
+const VIDEO_URL =
+  'https://cdn.pixabay.com/video/2022/01/27/105760-672185993_large.mp4';
+
 interface HeroProduct {
   price: number | string;
   currency?: string;
@@ -16,80 +18,107 @@ interface HeroPersonalFigurineProps {
   handleHeroClick: () => void;
 }
 
-export const HeroPersonalFigurine = ({ heroProduct, handleHeroClick }: HeroPersonalFigurineProps) => {
+export const HeroPersonalFigurine = ({
+  heroProduct,
+  handleHeroClick,
+}: HeroPersonalFigurineProps) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+  const [paused, setPaused] = useState(false);
+
   if (!heroProduct) return null;
 
-  // Безопасно достаем картинку (в старом коде было image || img)
   const productImageUrl = heroProduct.image || heroProduct.img;
 
+  const toggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    videoRef.current.muted = !muted;
+    setMuted((m) => !m);
+  };
+
+  const togglePause = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!videoRef.current) return;
+    if (paused) {
+      videoRef.current.play();
+    } else {
+      videoRef.current.pause();
+    }
+    setPaused((p) => !p);
+  };
+
   return (
-    <section className="hero-product-section" onClick={handleHeroClick}>
-      <div className="hero-card compact-style">
-        
-        {/* Левая часть: Контент */}
-        <div className="hero-content">
-          <div className="hero-badge-row">
-            <span className="pill-badge new">🔥 HIT</span>
-            <span className="pill-badge">Handmade 3D</span>
-          </div>
+    <section className="hpf-section" onClick={handleHeroClick}>
+      <div className="hpf-card">
 
-          <h2 className="hero-title">
-            Make your own figurine <br />
-          </h2>
-
-          {/* UX Visualizer (Заменили иконки на Lucide) */}
-          <div className="steps-visualizer">
-            <div className="step-item">
-              <div className="step-icon"><CloudUpload size={24} /></div>
-              <span>Upload</span>
-            </div>
-            <div className="step-arrow">→</div>
-            <div className="step-item">
-              <div className="step-icon"><Box size={24} /></div>
-              <span>3D Print</span>
-            </div>
-            <div className="step-arrow">→</div>
-            <div className="step-item">
-              <div className="step-icon"><Truck size={24} /></div>
-              <span>Receive</span>
-            </div>
-          </div>
-
-          <div className="hero-bottom-row">
-            <div className="price-container">
-              <span className="price-label">Price from</span>
-              <span className="price-value">
-                {heroProduct.price} {heroProduct.currency || 'PLN'}
-              </span>
-            </div>
-            
-            <button className="hero-cta-button">
-              Create My Figurine <ArrowRight size={18} className="ml-2" />
+        {/* ═══ 1. VIDEO BLOCK ═══ */}
+        <div className="hpf-video-block">
+          <video
+            ref={videoRef}
+            src={VIDEO_URL}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="hpf-video"
+          />
+          <div className="hpf-video-overlay" />
+          <div className="hpf-video-controls">
+            <button
+              className="hpf-ctrl-btn"
+              onClick={togglePause}
+              aria-label={paused ? 'Play' : 'Pause'}
+            >
+              {paused ? <Play size={15} /> : <Pause size={15} />}
+            </button>
+            <button
+              className="hpf-ctrl-btn"
+              onClick={toggleMute}
+              aria-label={muted ? 'Unmute' : 'Mute'}
+            >
+              {muted ? <VolumeX size={15} /> : <Volume2 size={15} />}
             </button>
           </div>
         </div>
 
-        {/* Правая часть: Визуал с деталями */}
-        <div className="hero-visual">
-          <div className="visual-circle-bg"></div>
-          
-          {/* Тот самый "Floating UI" с анимацией загрузки */}
-          <div className="floating-ui-card upload-hint">
-             <div className="skeleton-photo"></div>
-             <div className="ui-text">
-               <span>Your Photo</span>
-               <div className="loading-bar"></div>
-             </div>
-          </div>
+        {/* ═══ 2. PRODUCT BLOCK ═══ */}
+        <div className="hpf-product-block">
+          <span className="hpf-hit-badge">✦ Hit</span>
 
           {productImageUrl && (
-            <img
-              src={productImageUrl}
-              alt={heroProduct.name || "Personal Figurine"}
-              className="hero-main-image"
-            />
+            <div className="hpf-img-wrap">
+              <img
+                src={productImageUrl}
+                alt={heroProduct.name || 'Personal Figurine'}
+                className="hpf-product-img"
+              />
+            </div>
           )}
+
+          <div className="hpf-content">
+            <h2 className="hpf-title">
+              Make your own <span className="hpf-highlight">figurine</span>
+            </h2>
+            <div className="hpf-price">
+              <span className="hpf-price-label">from</span>
+              <span className="hpf-price-value">
+                {heroProduct.price} {heroProduct.currency || 'PLN'}
+              </span>
+            </div>
+          </div>
         </div>
+
+        {/* ═══ 3. CTA BUTTON — прямой потомок hpf-card ═══ */}
+        <button
+          className="hpf-cta"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleHeroClick();
+          }}
+        >
+          Сделать мою фигурку <ArrowRight size={14} />
+        </button>
 
       </div>
     </section>

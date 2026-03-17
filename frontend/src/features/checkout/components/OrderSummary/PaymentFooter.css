@@ -103,3 +103,22 @@
     font-size: 0.73rem;
     color: #9ca3af;
   }
+
+
+  /* ── Sticky на мобилке ─────────────────────────────── */
+@media (max-width: 768px) {
+  .pf-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 20px 20px 0 0;
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+    z-index: 100;
+    background: #fff;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.10);
+    padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom));
+  }
+}

@@ -1,3 +1,4 @@
+//frontend/src/features/checkout/components/PaymentSection/GoogleApplePayButton.tsx
 import { useState, useEffect, useMemo } from "react";
 import { PaymentRequestButtonElement } from "@stripe/react-stripe-js";
 import { type PaymentRequest } from "@stripe/stripe-js";

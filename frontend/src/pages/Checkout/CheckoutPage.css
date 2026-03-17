@@ -17,9 +17,9 @@
   /* ── Two-column form ───────────────────────────────── */
   .checkout-form {
     display: flex;
-    flex-direction: row !important; /* Принудительно ставим в строку */
-    flex-wrap: nowrap !important;   /* ЗАПРЕЩАЕМ падать в колонку на десктопе */
-    width: 100%;                    /* Заставляем форму занять весь контейнер */
+    flex-direction: row;   /* ← убрал !important */
+    flex-wrap: nowrap;     /* ← убрал !important */
+    width: 100%;
     gap: 2.5rem;
     align-items: flex-start;
   }
@@ -75,18 +75,22 @@
   /* ── Mobile ≤ 768px ────────────────────────────────── */
   @media (max-width: 768px) {
     .checkout-page {
-      padding: 80px 1rem 2.5rem;
+      padding: 80px 1.25rem 6rem; /* было 1rem — добавляем чуть больше воздуха */
     }
   
     .checkout-form {
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
+      width: 100%;
     }
   
+    .checkout-col--left,
     .checkout-col--right {
       width: 100%;
+      min-width: 0;
       position: static;
       max-height: none;
       overflow-y: visible;
+      padding-bottom: 160px; /* чтобы summary не прятался за fixed кнопкой */
     }
   }

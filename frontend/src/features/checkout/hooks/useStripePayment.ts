@@ -1,3 +1,4 @@
+// frontend/src/features/checkout/hooks/useStripePayment.ts
 import { useState, useRef } from "react";
 import { useStripe, useElements, CardNumberElement } from "@stripe/react-stripe-js";
 import axios from "axios";
@@ -45,14 +46,7 @@ export function useStripePayment(
   };
 
   const saveDeliveryProfileIfNeeded = async () => {
-    // 🔍 DEBUG
-    console.log("[saveDelivery] token:", token);
-    console.log("[saveDelivery] hasNoDeliveryProfile:", hasNoDeliveryProfile);
-    console.log("[saveDelivery] formData:", formData);
-
-    if (!token) { console.log("[saveDelivery] SKIP: no token"); return; }
-    if (!hasNoDeliveryProfile) { console.log("[saveDelivery] SKIP: profile exists"); return; }
-
+    if (!token || !hasNoDeliveryProfile) return;
     try {
       const payload = {
         personalData: {
@@ -68,18 +62,52 @@ export function useStripePayment(
           method: formData.method || "inpost",
         },
       };
-      console.log("[saveDelivery] Sending:", payload);
-      const res = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_API_URL}/api/user/delivery`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      console.log("[saveDelivery] SUCCESS:", res.data);
     } catch (err: any) {
       console.error("[saveDelivery] FAILED:", err.response?.data || err.message);
     }
   };
 
+  // ── Wallet (Apple Pay / Google Pay) ──────────────────
+  const setupWalletPayment = (paymentRequest: any) => {
+    paymentRequest.on("paymentmethod", async (ev: any) => {
+      try {
+        const pi = await getOrCreatePaymentIntent();
+        const { clientSecret, orderToken } = pi;
+
+        const { error, paymentIntent } = await stripe!.confirmCardPayment(
+          clientSecret,
+          { payment_method: ev.paymentMethod.id },
+          { handleActions: false }
+        );
+
+        if (error) {
+          ev.complete("fail");
+          setPaymentError(error.message || "Payment failed");
+          return;
+        }
+
+        ev.complete("success");
+
+        if (paymentIntent.status === "requires_action") {
+          await stripe!.confirmCardPayment(clientSecret);
+        }
+
+        await saveDeliveryProfileIfNeeded();
+        const returnUrl = `${window.location.origin}/checkout-success?orderToken=${orderToken}`;
+        window.location.href = returnUrl;
+      } catch (err: any) {
+        ev.complete("fail");
+        setPaymentError(err.message || "Payment failed");
+      }
+    });
+  };
+
+  // ── Card / BLIK / P24 / Klarna ────────────────────────
   const handlePaymentSubmit = async (selectedMethod: string, blikCode?: string) => {
     if (!stripe || !elements || isProcessing) return;
     setIsProcessing(true);
@@ -94,25 +122,30 @@ export function useStripePayment(
         const cardElement = elements.getElement(CardNumberElement);
         if (!cardElement) throw new Error("Card not found");
 
-        console.log("[payment] Confirming card...");
         const { error } = await stripe.confirmCardPayment(clientSecret, {
           payment_method: {
             card: cardElement,
-            billing_details: { name: formData.name, email: formData.email, phone: formData.phone },
+            billing_details: {
+              name: formData.name,
+              email: formData.email,
+              phone: formData.phone,
+            },
           },
         });
 
-        if (error) { console.error("[payment] Error:", error.message); throw error; }
-
-        console.log("[payment] SUCCESS — calling saveDeliveryProfileIfNeeded");
+        if (error) throw error;
         await saveDeliveryProfileIfNeeded();
         window.location.href = returnUrl;
 
       } else if (selectedMethod === "blik") {
-        if (!blikCode || blikCode.length !== 6) throw new Error("Please enter a valid 6-digit BLIK code.");
+        if (!blikCode || blikCode.length !== 6)
+          throw new Error("Please enter a valid 6-digit BLIK code.");
 
         const { error } = await stripe.confirmBlikPayment(clientSecret, {
-          payment_method: { blik: {}, billing_details: { name: formData.name || "Guest", email: formData.email } },
+          payment_method: {
+            blik: {},
+            billing_details: { name: formData.name || "Guest", email: formData.email },
+          },
           payment_method_options: { blik: { code: blikCode } },
           return_url: returnUrl,
         });
@@ -129,5 +162,5 @@ export function useStripePayment(
     }
   };
 
-  return { handlePaymentSubmit, paymentError, isProcessing };
+  return { handlePaymentSubmit, setupWalletPayment, paymentError, isProcessing };
 }

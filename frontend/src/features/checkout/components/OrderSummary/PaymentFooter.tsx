@@ -63,10 +63,10 @@ export const PaymentFooter = ({
         )}
       </div>
 
-      <div className="pf-security">
+      {/* <div className="pf-security">
         <ShieldCheck size={13} />
         <span>Secure SSL Encrypted Payment</span>
-      </div>
+      </div> */}
 
     </div>
   );

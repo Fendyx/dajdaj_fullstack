@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { ArrowRight, Volume2, VolumeX, Pause, Play } from 'lucide-react';
 import './HeroPersonalFigurine.css';
+import video from "@/assets/Product_Animation_Couple_Figurine_Revealed.mp4"
 
-const VIDEO_URL =
-  'https://cdn.pixabay.com/video/2022/01/27/105760-672185993_large.mp4';
+const VIDEO_URL = video;
 
 interface HeroProduct {
   price: number | string;

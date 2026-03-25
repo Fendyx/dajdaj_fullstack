@@ -7,18 +7,21 @@
   margin-bottom: 1.25rem;
 }
 
+.category-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .category-title {
-  font-size: 1.1rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #111;
-  letter-spacing: -0.01em;
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.8rem;
 }
 
-/* Thin sharp divider — matches card accent line */
 .category-divider {
   height: 1px;
   width: 100%;
@@ -37,12 +40,39 @@
   background: #111;
 }
 
-/* ── Grid ── */
+/* ── Carousel controls ── */
+.carousel-controls {
+  display: flex;
+  gap: 6px;
+}
+
+.carousel-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid #e0e0e0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #444;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.carousel-btn:hover {
+  background: #111;
+  color: #fff;
+  border-color: #111;
+}
+
+/* ── GRID layout ── */
 .category-grid {
   display: grid;
   gap: 1rem;
-  grid-template-columns: repeat(2, 1fr);
   margin-top: 1.25rem;
+  /* Mobile: always 2 cols */
+  grid-template-columns: repeat(2, 1fr);
 }
 
 @media (min-width: 640px) {
@@ -51,29 +81,48 @@
   }
 }
 
+/* Desktop: use the configured column count via CSS variable */
 @media (min-width: 1024px) {
   .category-grid {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(var(--cat-cols, 4), 1fr);
     gap: 1.25rem;
   }
 }
 
-/* ── Mobile horizontal scroll ── */
+/* ── CAROUSEL layout ── */
+.category-carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  margin-top: 1.25rem;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+}
+
+.category-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Each carousel item takes up 1/columns of the visible space */
+.carousel-item {
+  flex: 0 0 calc(
+    (100% - (var(--cat-cols, 4) - 1) * 1rem) / var(--cat-cols, 4)
+  );
+  scroll-snap-align: start;
+}
+
+/* Carousel responsive overrides */
 @media (max-width: 479px) {
-  .category-grid {
-    display: flex;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    gap: 0.75rem;
-    padding-bottom: 6px;
-    scrollbar-width: none;
+  .carousel-item {
+    /* Mobile: show ~1.5 cards as peek UX */
+    flex: 0 0 72%;
   }
+}
 
-  .category-grid::-webkit-scrollbar {
-    display: none;
-  }
-
-  .category-grid > * {
-    flex: 0 0 44%;
+@media (min-width: 480px) and (max-width: 1023px) {
+  .carousel-item {
+    flex: 0 0 calc((100% - 2rem) / 3);
   }
 }

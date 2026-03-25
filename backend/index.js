@@ -24,6 +24,8 @@ const analytics = require("./routes/analytics");
 const upload = require("./routes/upload");
 const productsRoute = require("./routes/products");
 const adminProducts = require("./routes/adminProducts");
+const categoriesRouter = require("./routes/categories");
+const adminCategoriesRouter = require("./routes/adminCategories");
 
 const app = express();
 
@@ -79,6 +81,8 @@ app.use("/api/analytics", analytics);
 app.use("/api/upload", upload);
 app.use("/api/products", productsRoute);
 app.use("/api/admin/products", adminProducts);
+app.use("/api/categories", categoriesRouter);
+app.use("/api/admin/categories", adminCategoriesRouter);
 
 // Root
 app.get("/", (req, res) => {

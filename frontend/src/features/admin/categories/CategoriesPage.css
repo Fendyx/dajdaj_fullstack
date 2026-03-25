@@ -1,0 +1,219 @@
+.categories-page__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+  }
+  
+  .categories-page__title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.02em;
+    margin: 0;
+  }
+  
+  .categories-page__count {
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    color: #666;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 20px;
+  }
+  
+  .categories-page__add-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    color: #ccc;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  
+  .categories-page__add-btn:hover {
+    border-color: #4ade80;
+    color: #4ade80;
+  }
+  
+  /* ── Table ── */
+  .categories-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #1e1e1e;
+    border-radius: 8px;
+  }
+  
+  .categories-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  
+  .categories-table thead th {
+    background: #141414;
+    padding: 12px 16px;
+    text-align: left;
+    color: #444;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    font-size: 11px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #1e1e1e;
+    white-space: nowrap;
+  }
+  
+  .categories-table tbody tr {
+    border-bottom: 1px solid #1a1a1a;
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+  
+  .categories-table tbody tr:last-child {
+    border-bottom: none;
+  }
+  
+  .categories-table tbody tr:hover {
+    background: #161616;
+  }
+  
+  .categories-table tbody td {
+    padding: 12px 16px;
+    color: #ccc;
+    vertical-align: middle;
+  }
+  
+  .categories-table__row--hidden td {
+    opacity: 0.4;
+  }
+  
+  .categories-table__td-center {
+    text-align: center;
+  }
+  
+  /* ── Cell types ── */
+  .categories-table__order {
+    font-family: "DM Mono", monospace;
+    font-size: 12px;
+    color: #555;
+  }
+  
+  .categories-table__slug {
+    background: #1a1a1a;
+    border: 1px solid #252525;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #888;
+    font-family: "DM Mono", monospace;
+  }
+  
+  .categories-table__name {
+    color: #ccc;
+    font-size: 13px;
+  }
+  
+  /* ── Layout badge ── */
+  .categories-table__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+  }
+  
+  .categories-table__badge--grid {
+    background: #001a2a;
+    color: #38bdf8;
+  }
+  
+  .categories-table__badge--carousel {
+    background: #2a2000;
+    color: #f59e0b;
+  }
+  
+  /* ── Columns pill ── */
+  .categories-table__cols {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #1e1e1e;
+    border: 1px solid #2a2a2a;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 12px;
+    color: #fff;
+    font-family: "DM Mono", monospace;
+  }
+  
+  .categories-table__muted {
+    color: #444;
+    font-size: 11px;
+  }
+  
+  /* ── Visibility toggle ── */
+  .categories-table__vis-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: inline-flex;
+    transition: background 0.15s;
+  }
+  
+  .categories-table__vis-btn.visible { color: #4ade80; }
+  .categories-table__vis-btn.hidden  { color: #333; }
+  
+  .categories-table__vis-btn:hover {
+    background: #1e1e1e;
+  }
+  
+  /* ── Row actions ── */
+  .categories-table__actions {
+    display: flex;
+    gap: 6px;
+  }
+  
+  .categories-table__btn {
+    width: 28px;
+    height: 28px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: 1px solid #2a2a2a;
+    background: #1a1a1a;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  
+  .categories-table__btn.edit   { color: #38bdf8; }
+  .categories-table__btn.delete { color: #f87171; }
+  
+  .categories-table__btn.edit:hover   { background: #001a2a; border-color: #38bdf8; }
+  .categories-table__btn.delete:hover { background: #2a0000; border-color: #f87171; }
+  
+  /* ── Shared states ── */
+  .admin-loading,
+  .admin-error {
+    padding: 40px;
+    text-align: center;
+    color: #555;
+    font-size: 14px;
+  }
+  
+  .admin-error { color: #f87171; }

@@ -1,32 +1,36 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Heart, ShoppingBag, CircleUserRound, Search, LogIn, UserPlus } from "lucide-react";
-
+import {
+  Heart,
+  ShoppingBag,
+  CircleUserRound,
+  Search,
+  LogIn,
+  UserPlus,
+} from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getTotals } from "@/features/cart/cartSlice";
 import { useUI } from "@/shared/context/UIContext";
 import { useNavScroll } from "./hooks/useNavScroll";
-
 import { LanguageSelector } from "./LanguageSelector";
 import { MobileMenu } from "./MobileMenu";
-
 import logo from "@/assets/img/dajdaj_180.png";
 import "./NavBar.css";
 
 export const NavBar = () => {
   const { t } = useTranslation();
   const dispatch = useAppDispatch();
-  const { isMenuOpen, setIsMenuOpen } = useUI();
-
+  const { isMenuOpen, setIsMenuOpen, setIsSearchOpen } = useUI();
   const cart = useAppSelector((state) => state.cart);
   const auth = useAppSelector((state) => state.auth);
-
   const navVisible = useNavScroll();
 
   useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
-    return () => { document.body.style.overflow = "auto"; };
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isMenuOpen]);
 
   useEffect(() => {
@@ -37,7 +41,6 @@ export const NavBar = () => {
 
   return (
     <nav className={`nav-bar${navVisible ? "" : " nav-bar--hidden"}`}>
-
       {/* ── Logo ── */}
       <div className="nav-left">
         <Link to="/" className="logo-link">
@@ -46,17 +49,20 @@ export const NavBar = () => {
         </Link>
       </div>
 
-      {/* ── Desktop Search ── */}
+      {/* ── Desktop Search — click to open modal ── */}
       <div className="nav-center">
-        <div className="nav-search">
+        <button
+          className="nav-search"
+          onClick={() => setIsSearchOpen(true)}
+          aria-label={t("search.ariaLabel", "Search")}
+          type="button"
+        >
           <Search className="nav-search__icon" size={15} strokeWidth={2.2} />
-          <input
-            type="text"
-            className="nav-search__input"
-            placeholder={t("navbar.searchPlaceholder", "Search products…")}
-          />
+          <span className="nav-search__placeholder">
+            {t("navbar.searchPlaceholder", "Search products…")}
+          </span>
           <kbd className="nav-search__kbd">⌘K</kbd>
-        </div>
+        </button>
       </div>
 
       {/* ── Right actions ── */}

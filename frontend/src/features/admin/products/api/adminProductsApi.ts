@@ -9,6 +9,7 @@ export interface ProductRaw {
   descriptionProductPage: { en: string; pl: string };
   price: number;
   category: string;
+  keywords: { en: string[]; pl: string[] }; // ← добавлено
   image: string;
   images: string[];
   threeDModelSrc: string | null;

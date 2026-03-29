@@ -10,7 +10,7 @@ const specificationSchema = new mongoose.Schema(
 
 const orderExampleSchema = new mongoose.Schema(
   {
-    image: { type: String, required: true }, // URL фото готового заказа
+    image: { type: String, required: true },
     caption: {
       en: { type: String, default: "" },
       pl: { type: String, default: "" },
@@ -46,16 +46,25 @@ const productSchema = new mongoose.Schema(
     price: { type: Number, required: true },
     category: { type: String, required: true },
 
+    // ── Ключевые слова для поиска ───────────────────────────────
+    // Примеры: ["boyfriend", "for him", "couple", "парень", "подарок"]
+    // Чем больше — тем лучше findability. Добавляй синонимы, кому подходит,
+    // повод (день рождения, свадьба), материал, стиль.
+    keywords: {
+      en: { type: [String], default: [] },
+      pl: { type: [String], default: [] },
+    },
+
     // ── Медиа ──────────────────────────────────────────────────
-    image: { type: String, default: "" },          // главное фото
-    images: { type: [String], default: [] },        // галерея
+    image: { type: String, default: "" },
+    images: { type: [String], default: [] },
     threeDModelSrc: { type: String, default: null },
 
     // ── Флаги ──────────────────────────────────────────────────
     isNew: { type: Boolean, default: false },
     isPopular: { type: Boolean, default: false },
     isPersonalized: { type: Boolean, default: false },
-    personalizationType: { type: String, default: null }, // 'figurine' | 'custom' | null
+    personalizationType: { type: String, default: null },
 
     // ── Персонализация ─────────────────────────────────────────
     phrases: {
@@ -64,7 +73,6 @@ const productSchema = new mongoose.Schema(
     },
 
     // ── Характеристики ─────────────────────────────────────────
-    // Пример: { label: { en: "Material", pl: "Materiał" }, value: { en: "PLA", pl: "PLA" } }
     specifications: { type: [specificationSchema], default: [] },
 
     // ── Примеры заказов ────────────────────────────────────────
@@ -75,7 +83,7 @@ const productSchema = new mongoose.Schema(
       type: [
         {
           question: { en: String, pl: String },
-          answer:   { en: String, pl: String },
+          answer: { en: String, pl: String },
           _id: false,
         },
       ],
@@ -88,8 +96,19 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-// Индексы
+// ── Индексы ────────────────────────────────────────────────────────────────
 productSchema.index({ slug: 1 });
 productSchema.index({ category: 1 });
+
+// name — строки, можно в одном составном индексе
+productSchema.index(
+  { "name.en": 1, "name.pl": 1 },
+  { collation: { locale: "en", strength: 2 } }
+);
+
+// keywords — массивы, MongoDB запрещает два массива в одном индексе,
+// поэтому каждый язык индексируется отдельно
+productSchema.index({ "keywords.en": 1 });
+productSchema.index({ "keywords.pl": 1 });
 
 module.exports = mongoose.model("Product", productSchema);

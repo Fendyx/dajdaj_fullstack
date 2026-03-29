@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useUpdateProductMutation, useDeleteProductMutation } from "../api/adminProductsApi";
 import type { ProductRaw } from "../api/adminProductsApi";
 import { resolveImage } from "../../utils/resolveImage";
@@ -10,11 +10,20 @@ interface Props {
 }
 
 export function ProductModal({ product, onClose }: Props) {
-  const [form, setForm] = useState<ProductRaw>({ ...product });
+  console.log("ProductModal rendered");
+  const [form, setForm] = useState<ProductRaw>({
+    ...product,
+    // на случай если старый продукт ещё не имеет keywords
+    keywords: product.keywords ?? { en: [], pl: [] },
+  });
   const [activeTab, setActiveTab] = useState<"main" | "media" | "content">("main");
   const [updateProduct, { isLoading: isSaving }] = useUpdateProductMutation();
   const [deleteProduct, { isLoading: isDeleting }] = useDeleteProductMutation();
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // refs для инпутов добавления keyword
+  const kwEnRef = useRef<HTMLInputElement>(null);
+  const kwPlRef = useRef<HTMLInputElement>(null);
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) onClose();
@@ -33,6 +42,44 @@ export function ProductModal({ product, onClose }: Props) {
       cur[keys[keys.length - 1]] = value;
       return next as unknown as ProductRaw;
     });
+  };
+
+  // ── Keywords helpers ──────────────────────────────────────
+  const addKeyword = (lang: "en" | "pl", ref: React.RefObject<HTMLInputElement | null>) => {
+    const val = ref.current?.value.trim().toLowerCase();
+    console.log("addKeyword called:", lang, val); // ← добавь
+    if (!val) return;
+    setForm((prev) => {
+      console.log("prev.keywords:", prev.keywords); // ← добавь
+      const current = prev.keywords?.[lang] ?? [];
+      if (current.includes(val)) return prev;
+      return {
+        ...prev,
+        keywords: { ...prev.keywords, [lang]: [...current, val] },
+      };
+    });
+    if (ref.current) ref.current.value = "";
+  };
+  
+  const removeKeyword = (lang: "en" | "pl", index: number) => {
+    setForm((prev) => ({
+      ...prev,
+      keywords: {
+        ...prev.keywords,
+        [lang]: prev.keywords[lang].filter((_, i) => i !== index),
+      },
+    }));
+  };
+
+  const handleKeywordKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    lang: "en" | "pl",
+    ref: React.RefObject<HTMLInputElement | null>
+  ) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addKeyword(lang, ref);
+    }
   };
 
   // ── Image gallery ─────────────────────────────────────────
@@ -198,6 +245,72 @@ export function ProductModal({ product, onClose }: Props) {
                 </div>
               </section>
 
+              {/* ── KEYWORDS ── */}
+              <section className="product-modal__section">
+                <h3 className="product-modal__section-title">
+                  Search Keywords
+                  <span className="product-modal__section-hint">
+                    EN: {form.keywords.en.length} · PL: {form.keywords.pl.length}
+                  </span>
+                </h3>
+
+                <div className="product-modal__form-grid">
+                  {/* EN */}
+                  <div className="product-modal__form-field">
+                    <label>EN</label>
+                    <div className="product-modal__tags-box">
+                      {form.keywords.en.map((kw, i) => (
+                        <span key={i} className="product-modal__tag">
+                          {kw}
+                          <button
+                            className="product-modal__tag-del"
+                            onClick={() => removeKeyword("en", i)}
+                            title="Remove"
+                          >✕</button>
+                        </span>
+                      ))}
+                      <input
+                        ref={kwEnRef}
+                        className="product-modal__tag-input"
+                        placeholder="Add keyword, press Enter or ,"
+                        onKeyDown={(e) => handleKeywordKeyDown(e, "en", kwEnRef)}
+                      />
+                    </div>
+                    <button
+                      className="product-modal__tag-add-btn"
+                      onClick={() => addKeyword("en", kwEnRef)}
+                    >+ Add</button>
+                  </div>
+
+                  {/* PL */}
+                  <div className="product-modal__form-field">
+                    <label>PL</label>
+                    <div className="product-modal__tags-box">
+                      {form.keywords.pl.map((kw, i) => (
+                        <span key={i} className="product-modal__tag">
+                          {kw}
+                          <button
+                            className="product-modal__tag-del"
+                            onClick={() => removeKeyword("pl", i)}
+                            title="Remove"
+                          >✕</button>
+                        </span>
+                      ))}
+                      <input
+                        ref={kwPlRef}
+                        className="product-modal__tag-input"
+                        placeholder="Dodaj słowo, Enter lub ,"
+                        onKeyDown={(e) => handleKeywordKeyDown(e, "pl", kwPlRef)}
+                      />
+                    </div>
+                    <button
+                      className="product-modal__tag-add-btn"
+                      onClick={() => addKeyword("pl", kwPlRef)}
+                    >+ Add</button>
+                  </div>
+                </div>
+              </section>
+
               <section className="product-modal__section">
                 <h3 className="product-modal__section-title">Flags</h3>
                 <div className="product-modal__flags">
@@ -266,26 +379,13 @@ export function ProductModal({ product, onClose }: Props) {
                       />
                       <div className="product-modal__gallery-path">{img}</div>
                       <div className="product-modal__gallery-actions">
-                        <button
-                          onClick={() => moveImage(i, -1)}
-                          disabled={i === 0}
-                          title="Move up"
-                        >←</button>
-                        <button
-                          onClick={() => moveImage(i, 1)}
-                          disabled={i === form.images.length - 1}
-                          title="Move down"
-                        >→</button>
-                        <button
-                          className="product-modal__gallery-del"
-                          onClick={() => removeImage(i)}
-                          title="Remove"
-                        >✕</button>
+                        <button onClick={() => moveImage(i, -1)} disabled={i === 0} title="Move up">←</button>
+                        <button onClick={() => moveImage(i, 1)} disabled={i === form.images.length - 1} title="Move down">→</button>
+                        <button className="product-modal__gallery-del" onClick={() => removeImage(i)} title="Remove">✕</button>
                       </div>
                     </div>
                   ))}
                 </div>
-                {/* Add image path */}
                 <div className="product-modal__gallery-add">
                   <input
                     id="gallery-add-input"

@@ -6,6 +6,7 @@ import { NavBar } from "@/components/layout/NavBar/NavBar";
 import { BottomNav } from "@/components/layout/BottomNav/BottomNav";
 import { Footer } from "@/components/layout/Footer/Footer";
 import { ScrollToTop } from "@/components/layout/ScrollToTop";
+import { SearchModal} from "@/components/ui/SearchModal/SearchModal";
 
 // Инициализация GA4
 ReactGA.initialize("G-B1FPX1YX71");
@@ -28,6 +29,7 @@ export function MainLayout() {
     <>
       <NavBar />
       <ScrollToTop />
+      <SearchModal />
       
       {/* Здесь будут рендериться все страницы (Home, Profile, Product) */}
       <main>

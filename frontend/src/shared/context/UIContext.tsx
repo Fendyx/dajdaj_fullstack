@@ -1,20 +1,20 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-// 1. Описываем, какие данные лежат в контексте
 interface UIContextType {
   isMenuOpen: boolean;
   setIsMenuOpen: (isOpen: boolean) => void;
   isModalOpen: boolean;
   setIsModalOpen: (isOpen: boolean) => void;
+  isSearchOpen: boolean;
+  setIsSearchOpen: (isOpen: boolean) => void;
 }
 
-// 2. Создаем сам контекст (с пустым дефолтным значением)
 const UIContext = createContext<UIContextType | undefined>(undefined);
 
-// 3. Создаем Провайдер (Радиовышку)
 export const UIProvider = ({ children }: { children: ReactNode }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
     <UIContext.Provider
@@ -23,6 +23,8 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
         setIsMenuOpen,
         isModalOpen,
         setIsModalOpen,
+        isSearchOpen,
+        setIsSearchOpen,
       }}
     >
       {children}
@@ -30,7 +32,6 @@ export const UIProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-// 4. Создаем безопасный Хук (Приемник)
 export const useUI = () => {
   const context = useContext(UIContext);
   if (!context) {

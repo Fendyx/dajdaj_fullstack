@@ -101,4 +101,29 @@
       /* border-radius: 50px; */
     }
   }
+
+
+  /*
+  BottomNav.css PATCH
+  ─────────────────────────────────────────────
+  Add this rule so the search <button> inherits the same
+  look as the <Link> nav-items:
+  ─────────────────────────────────────────────
+*/
+ 
+.nav-item--search {
+  /* Reset button defaults */
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 0;
+ 
+  /*
+    All other styles come from .nav-item —
+    no extra rules needed unless you have overrides.
+  */
+}
   

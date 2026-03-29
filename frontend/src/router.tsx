@@ -14,6 +14,7 @@ import { PrivacyPolicyPage } from "@/pages/Legal/PrivacyPolicyPage";
 import { TermsPage } from "@/pages/Legal/TermsPage";
 import NotFound from "./pages/NotFound/NotFound";
 import { CheckoutSuccess } from "./pages/Checkout/CheckoutSuccess/CheckoutSuccess";
+import { SearchPage } from "@/pages/Search/SearchPage"; // ← новый импорт
 // Pages — Admin
 import { OrdersPage } from "@/features/admin/orders/OrdersPage";
 import { UsersPage } from "@/features/admin/users/UsersPage";
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
       { path: "checkout-stripe", element: <CheckoutPage /> },
       { path: "checkout-success", element: <CheckoutSuccess /> },
       { path: "products/:slug", element: <ProductPage /> },
+      { path: "search", element: <SearchPage /> }, // ← новый роут
       { path: "privacy", element: <PrivacyPolicyPage /> },
       { path: "terms", element: <TermsPage /> },
       {

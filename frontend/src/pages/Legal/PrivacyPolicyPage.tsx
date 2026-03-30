@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { Shield, ChevronRight } from "lucide-react";
@@ -8,6 +9,11 @@ export function PrivacyPolicyPage() {
 
   return (
     <div className="legal-page">
+      <Helmet>
+        <title>Polityka prywatności — DajDaj</title>
+        <meta name="description" content="Dowiedz się jak DajDaj przetwarza Twoje dane osobowe zgodnie z RODO. Informacje o administratorze, prawach użytkownika i bezpieczeństwie danych." />
+        <link rel="canonical" href="https://dajdaj.pl/privacy" />
+      </Helmet>
       <div className="legal-hero">
         <Shield size={40} className="legal-hero-icon" />
         <h1>{t("legal.privacy.title", "Privacy Policy")}</h1>

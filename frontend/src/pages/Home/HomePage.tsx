@@ -1,16 +1,22 @@
+import { Helmet } from "react-helmet-async";
 import { HeroBanner } from '@/features/marketing/components/HeroBanner/HeroBanner';
-// Если Categories решишь вернуть, раскомментируй:
-// import { Categories } from '@/features/products/components/Categories'; 
 import { ProductGrid } from '@/features/products/components/ProductGrid/ProductGrid';
 
 export function HomePage() {
   return (
-    <div className="home-container">
-      {/* 1. Главный анимированный баннер */}
-      <HeroBanner />
+    <>
+      <Helmet>
+        <title>DajDaj — Personalizowane figurki 3D na prezent</title>
+        <meta name="description" content="Stwórz unikalną figurkę 3D na podstawie zdjęć. Idealny prezent dla pary, przyjaciół i rodziny. Szybka realizacja, dostawa do domu." />
+        <link rel="canonical" href="https://dajdaj.pl" />
+        <meta property="og:title" content="DajDaj — Personalizowane figurki 3D na prezent" />
+        <meta property="og:url" content="https://dajdaj.pl" />
+      </Helmet>
 
-      {/* 2. Сетка товаров (Она сама внутри себя загрузит товары и покажет модалки) */}
-      <ProductGrid />
-    </div>
+      <div className="home-container">
+        <HeroBanner />
+        <ProductGrid />
+      </div>
+    </>
   );
 }

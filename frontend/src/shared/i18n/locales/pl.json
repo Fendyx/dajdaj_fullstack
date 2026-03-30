@@ -1,4 +1,8 @@
 {
+  "hero":{
+    "title": "Discover Your Style",
+    "slogan": "Ale Bydlę!"
+  },
   "navbar": {
     "signIn": "Zaloguj się",
     "joinUs": "Dołącz się",
@@ -59,5 +63,17 @@
       "title": "Brak kuponów",
       "description": "Składaj zamówienia i bierz udział w promocjach, aby zdobywać kupony zniżkowe."
     }
+  },
+  "hero_figurine": {
+    "hit_badge": "Hit",
+    "default_alt": "Personalizowana figurka",
+    "title_start": "Stwórz własną",
+    "title_highlight": "figurkę",
+    "price_from": "od",
+    "cta_button": "Zrób moją figurkę",
+    "play": "Odtwórz",
+    "pause": "Pauza",
+    "mute": "Wycisz",
+    "unmute": "Wyłącz wyciszenie"
   }
 }

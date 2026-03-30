@@ -89,6 +89,11 @@ app.get("/", (req, res) => {
   res.send("Добро пожаловать в API нашего интернет-магазина...");
 });
 
+// Sitemap — редирект на API
+app.get("/sitemap.xml", (req, res) => {
+  res.redirect(301, "/api/products/sitemap");
+});
+
 // InPost points
 app.get("/api/inpost-points", async (req, res) => {
   try {

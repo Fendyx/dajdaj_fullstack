@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+
+Disallow: /admin/
+Disallow: /checkout-stripe
+Disallow: /checkout-success
+Disallow: /profile
+Disallow: /cart
+
+Sitemap: https://dajdaj.pl/sitemap.xml

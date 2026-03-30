@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useSearchParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Search } from "lucide-react";
@@ -45,6 +46,15 @@ export function SearchPage() {
 
   return (
     <div className="search-page">
+        <Helmet>
+        <title>
+          {query
+            ? `${query} — Szukaj prezentów | DajDaj`
+            : "Szukaj prezentów — DajDaj"}
+        </title>
+        <meta name="description" content="Znajdź idealny prezent na każdą okazję — figurki 3D, upominki personalizowane i wyjątkowe podarunki." />
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
       {/* ── Header ── */}
       <div className="search-page__header">
         <h1 className="search-page__title">

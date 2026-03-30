@@ -99,6 +99,52 @@ router.get("/search", async (req, res) => {
   }
 });
 
+// ── GET /api/sitemap.xml — динамический sitemap ───────────────────────────────
+router.get("/sitemap", async (req, res) => {
+  try {
+    const products = await Product.find({}, { slug: 1, updatedAt: 1 }).lean();
+
+    const productUrls = products.map((p) => `
+  <url>
+    <loc>https://dajdaj.pl/products/${p.slug}</loc>
+    <lastmod>${p.updatedAt ? new Date(p.updatedAt).toISOString().split("T")[0] : "2025-01-01"}</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>`).join("");
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <url>
+    <loc>https://dajdaj.pl/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  <url>
+    <loc>https://dajdaj.pl/privacy</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+
+  <url>
+    <loc>https://dajdaj.pl/terms</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+${productUrls}
+</urlset>`;
+
+    res.setHeader("Content-Type", "application/xml");
+    res.setHeader("Cache-Control", "public, max-age=3600"); // кэш 1 час
+    res.send(xml);
+  } catch (err) {
+    console.error("❌ Ошибка генерации sitemap:", err);
+    res.status(500).send("Ошибка генерации sitemap");
+  }
+});
+
+
 // ── GET /api/products — все продукты ─────────────────────────────────────────
 router.get("/", async (req, res) => {
   try {

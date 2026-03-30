@@ -1,3 +1,4 @@
+import { Helmet } from "react-helmet-async";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { ScrollText, ChevronRight } from "lucide-react";
@@ -8,6 +9,11 @@ export function TermsPage() {
 
   return (
     <div className="legal-page">
+      <Helmet>
+        <title>Regulamin sklepu — DajDaj</title>
+        <meta name="description" content="Regulamin sklepu internetowego DajDaj. Zasady składania zamówień, płatności, dostaw, reklamacji i zwrotów." />
+        <link rel="canonical" href="https://dajdaj.pl/terms" />
+      </Helmet>
       <div className="legal-hero">
         <ScrollText size={40} className="legal-hero-icon" />
         <h1>{t("legal.terms.title", "Terms of Service")}</h1>

@@ -1,4 +1,8 @@
 {
+  "hero":{
+    "title": "Discover Your Style",
+    "slogan": "Ale Bydlę!"
+  },
   "navbar": {
     "signIn": "Sign In",
     "joinUs": "Join Us",
@@ -59,5 +63,17 @@
       "title": "No coupons yet",
       "description": "Complete orders and participate in promotions to earn discount coupons."
     }
+  },
+  "hero_figurine": {
+    "hit_badge": "Hit",
+    "default_alt": "Personal Figurine",
+    "title_start": "Make your own",
+    "title_highlight": "figurine",
+    "price_from": "from",
+    "cta_button": "Create my figurine",
+    "play": "Play",
+    "pause": "Pause",
+    "mute": "Mute",
+    "unmute": "Unmute"
   }
 }

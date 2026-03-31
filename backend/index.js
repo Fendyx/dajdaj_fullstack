@@ -30,7 +30,31 @@ const adminCategoriesRouter = require("./routes/adminCategories");
 const app = express();
 
 // 1. HELMET — заголовки безопасности
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: [
+        "'self'",
+        "'unsafe-inline'",
+        "https://js.stripe.com",
+        "https://www.googletagmanager.com",
+        "https://www.google-analytics.com",
+      ],
+      styleSrc: ["'self'", "'unsafe-inline'", "https:"],
+      fontSrc: ["'self'", "https:", "data:"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: [
+        "'self'",
+        "https://api.stripe.com",
+        "https://cdn.lottielab.com",
+        "https://www.google-analytics.com",
+        "https://dajdaj-fullstack-backend.onrender.com",
+      ],
+      frameSrc: ["'self'", "https://js.stripe.com"],
+    },
+  },
+}));
 
 // 2. CORS
 const corsOptions = {

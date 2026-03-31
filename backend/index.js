@@ -84,9 +84,12 @@ app.use("/api/admin/products", adminProducts);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/admin/categories", adminCategoriesRouter);
 
-// Root
-app.get("/", (req, res) => {
-  res.send("Добро пожаловать в API нашего интернет-магазина...");
+// Фронтенд статика
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+// Все остальные роуты отдают index.html (React Router)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
 });
 
 // Sitemap — редирект на API

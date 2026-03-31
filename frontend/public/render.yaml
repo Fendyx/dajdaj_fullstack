@@ -1,0 +1,7 @@
+routes:
+  - type: rewrite
+    source: /api/*
+    destination: https://dajdaj-fullstack-backend.onrender.com/api/:splat
+  - type: rewrite
+    source: /sitemap.xml
+    destination: https://dajdaj-fullstack-backend.onrender.com/api/products/sitemap

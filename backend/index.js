@@ -84,17 +84,17 @@ app.use("/api/admin/products", adminProducts);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/admin/categories", adminCategoriesRouter);
 
+// Sitemap — редирект на API
+app.get("/sitemap.xml", (req, res) => {
+  res.redirect(301, "/api/products/sitemap");
+});
+
 // Фронтенд статика
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
 // Все остальные роуты отдают index.html (React Router)
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-});
-
-// Sitemap — редирект на API
-app.get("/sitemap.xml", (req, res) => {
-  res.redirect(301, "/api/products/sitemap");
 });
 
 // InPost points

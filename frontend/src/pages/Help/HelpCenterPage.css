@@ -1,0 +1,178 @@
+/* ── Help Center общие стили ─────────────────────────────────────────────── */
+.help-page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  
+  .help-hero {
+    text-align: center;
+    padding: 48px 20px 40px;
+  }
+  
+  .help-hero__icon {
+    color: var(--color-primary, #000);
+    margin-bottom: 16px;
+  }
+  
+  .help-hero h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  
+  .help-hero p {
+    color: #666;
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  /* ── Breadcrumb ──────────────────────────────────────────────────────────── */
+  .help-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 32px;
+  }
+  
+  .help-breadcrumb a {
+    color: #888;
+    text-decoration: none;
+  }
+  
+  .help-breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  
+  /* ── Карточки статей ─────────────────────────────────────────────────────── */
+  .help-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+  
+  .help-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 24px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .help-card:hover {
+    border-color: #000;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+  
+  .help-card__icon {
+    font-size: 1.8rem;
+  }
+  
+  .help-card__title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .help-card__desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.5;
+  }
+  
+  /* ── Статья ──────────────────────────────────────────────────────────────── */
+  .help-article {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 40px 20px 80px;
+  }
+  
+  .help-article h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .help-article__meta {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 32px;
+  }
+  
+  .help-article h2 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    margin: 32px 0 12px;
+  }
+  
+  .help-article p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 12px;
+  }
+  
+  .help-article ul,
+  .help-article ol {
+    padding-left: 20px;
+    margin-bottom: 16px;
+  }
+  
+  .help-article li {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 6px;
+  }
+  
+  .help-article__highlight {
+    background: #f5f5f5;
+    border-left: 3px solid #000;
+    padding: 16px 20px;
+    border-radius: 4px;
+    margin: 24px 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  
+  .help-article__footer {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e5e5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .help-article__footer a {
+    font-size: 0.9rem;
+    color: #000;
+    text-decoration: underline;
+  }
+  
+  .help-contact-box {
+    background: #f9f9f9;
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    margin-top: 40px;
+  }
+  
+  .help-contact-box p {
+    margin-bottom: 8px;
+    color: #444;
+  }
+  
+  .help-contact-box a {
+    font-weight: 600;
+    color: #000;
+  }

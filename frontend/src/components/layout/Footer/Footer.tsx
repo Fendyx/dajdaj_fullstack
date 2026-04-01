@@ -92,11 +92,14 @@ export const Footer = () => {
             <li><Link to="/category/home">{t("footer.home", "Home & Decor")}</Link></li>
           </FooterColumn>
 
-          <FooterColumn title={t("footer.help", "Help & Info")} sectionKey="help" isOpen={!!openSections['help']} toggleSection={toggleSection}>
-            <li><Link to="/shipping">{t("footer.shipping", "Shipping & Delivery")}</Link></li>
-            <li><Link to="/returns">{t("footer.returns", "Returns & Refunds")}</Link></li>
-            <li><Link to="/faq">{t("footer.faq", "FAQs")}</Link></li>
-            <li><Link to="/contacts">{t("footer.contact", "Contact Us")}</Link></li>
+          <FooterColumn title={t("footer.help", "Pomoc")} sectionKey="help" isOpen={!!openSections['help']} toggleSection={toggleSection}>
+            <li><Link to="/pl/pomoc">Centrum pomocy</Link></li>
+            <li><Link to="/pl/pomoc/jak-zlozyc-zamowienie">Jak złożyć zamówienie?</Link></li>
+            <li><Link to="/pl/pomoc/dostawa-i-terminy">Dostawa i terminy</Link></li>
+            <li><Link to="/pl/pomoc/zwroty-i-reklamacje">Zwroty i reklamacje</Link></li>
+            <li><Link to="/pl/pomoc/platnosci">Płatności</Link></li>
+            <li><Link to="/privacy">Polityka prywatności</Link></li>
+            <li><Link to="/terms">Regulamin</Link></li>
           </FooterColumn>
 
           <FooterColumn title={t("footer.partners", "Partners")} sectionKey="partners" isOpen={!!openSections['partners']} toggleSection={toggleSection}>
@@ -117,7 +120,7 @@ export const Footer = () => {
               <Mail size={20} className="text-gray-400" />
               <div>
                 <span className="contact-label">Email us</span>
-                <a href="mailto:support@dajdaj.com" className="contact-value">support@dajdaj.com</a>
+                <a href="mailto:support@dajdaj.pl" className="contact-value">support@dajdaj.pl</a>
               </div>
             </div>
           </div>

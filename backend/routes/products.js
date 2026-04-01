@@ -112,28 +112,77 @@ router.get("/sitemap", async (req, res) => {
     <priority>0.9</priority>
   </url>`).join("");
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
-  <url>
-    <loc>https://dajdaj.pl/</loc>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-
-  <url>
-    <loc>https://dajdaj.pl/privacy</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-
-  <url>
-    <loc>https://dajdaj.pl/terms</loc>
-    <changefreq>yearly</changefreq>
-    <priority>0.3</priority>
-  </url>
-${productUrls}
-</urlset>`;
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+  <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+    <url>
+      <loc>https://dajdaj.pl/</loc>
+      <changefreq>weekly</changefreq>
+      <priority>1.0</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/pl/pomoc</loc>
+      <changefreq>monthly</changefreq>
+      <priority>0.8</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/pl/pomoc/jak-zlozyc-zamowienie</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/pl/pomoc/personalizacja-figurki</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/pl/pomoc/dostawa-i-terminy</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/pl/pomoc/platnosci</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/pl/pomoc/zwroty-i-reklamacje</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.7</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/pl/pomoc/jak-usunac-konto</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.6</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/pl/pomoc/jak-zrobic-zdjecie</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.6</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/privacy</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.3</priority>
+    </url>
+  
+    <url>
+      <loc>https://dajdaj.pl/terms</loc>
+      <changefreq>yearly</changefreq>
+      <priority>0.3</priority>
+    </url>
+  
+  ${productUrls}
+  </urlset>`;
 
     res.setHeader("Content-Type", "application/xml");
     res.setHeader("Cache-Control", "public, max-age=3600"); // кэш 1 час

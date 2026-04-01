@@ -12,6 +12,7 @@ import {
   Package,
   Info,
   Mail,
+  HelpCircle,
 } from "lucide-react";
 import "./MobileMenu.css";
 
@@ -137,18 +138,41 @@ export const MobileMenu = ({ isOpen, onClose, auth, cartQuantity }: MobileMenuPr
 
           {/* 4. Info */}
           <div className="mobile-section">
-            <p className="section-label">Information</p>
+            <p className="section-label">Pomoc</p>
             <ul className="mobile-list">
               <li>
-                <Link to="/about" onClick={onClose} className="mobile-link">
-                  <span className="link-icon link-icon--blue"><Info size={18} strokeWidth={1.8} /></span>
-                  <span className="link-text">About Us</span>
+                <Link to="/pl/pomoc" onClick={onClose} className="mobile-link">
+                  <span className="link-icon link-icon--blue"><HelpCircle size={18} strokeWidth={1.8} /></span>
+                  <span className="link-text">Centrum pomocy</span>
+                  <ChevronRight size={15} className="arrow-icon" />
                 </Link>
               </li>
               <li>
-                <Link to="/contact" onClick={onClose} className="mobile-link">
-                  <span className="link-icon link-icon--green"><Mail size={18} strokeWidth={1.8} /></span>
-                  <span className="link-text">Contact</span>
+                <Link to="/pl/pomoc/jak-zlozyc-zamowienie" onClick={onClose} className="mobile-link">
+                  <span className="link-icon link-icon--green"><ShoppingCart size={18} strokeWidth={1.8} /></span>
+                  <span className="link-text">Jak złożyć zamówienie?</span>
+                  <ChevronRight size={15} className="arrow-icon" />
+                </Link>
+              </li>
+              <li>
+                <Link to="/pl/pomoc/dostawa-i-terminy" onClick={onClose} className="mobile-link">
+                  <span className="link-icon link-icon--orange"><Package size={18} strokeWidth={1.8} /></span>
+                  <span className="link-text">Dostawa i terminy</span>
+                  <ChevronRight size={15} className="arrow-icon" />
+                </Link>
+              </li>
+              <li>
+                <Link to="/pl/pomoc/zwroty-i-reklamacje" onClick={onClose} className="mobile-link">
+                  <span className="link-icon link-icon--red"><Info size={18} strokeWidth={1.8} /></span>
+                  <span className="link-text">Zwroty i reklamacje</span>
+                  <ChevronRight size={15} className="arrow-icon" />
+                </Link>
+              </li>
+              <li>
+                <Link to="/pl/pomoc/jak-usunac-konto" onClick={onClose} className="mobile-link">
+                  <span className="link-icon link-icon--blue"><Mail size={18} strokeWidth={1.8} /></span>
+                  <span className="link-text">Jak usunąć konto?</span>
+                  <ChevronRight size={15} className="arrow-icon" />
                 </Link>
               </li>
             </ul>

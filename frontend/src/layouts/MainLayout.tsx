@@ -32,7 +32,7 @@ export function MainLayout() {
       <SearchModal />
       
       {/* Здесь будут рендериться все страницы (Home, Profile, Product) */}
-      <main>
+      <main style={{ paddingTop: 'var(--nav-height)' }}>
         <Outlet /> 
       </main>
 

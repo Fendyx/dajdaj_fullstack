@@ -4,7 +4,6 @@
     min-height: 100vh;
     background-color: #f8f9fa;
     padding: 20px;
-    padding-top: 90px;
     margin-bottom: 80px;
   }
   
@@ -88,7 +87,6 @@
   @media (max-width: 480px) {
     .product-page {
       padding: 0px;
-      padding-top: 80px;
     }
        
     .product-hero {

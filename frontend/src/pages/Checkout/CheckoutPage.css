@@ -7,7 +7,7 @@
    .checkout-page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 100px 2rem 5rem;
+    padding: 20px 2rem 5rem;
     min-height: 100vh;
     background: #fff;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -75,7 +75,7 @@
   /* ── Mobile ≤ 768px ────────────────────────────────── */
   @media (max-width: 768px) {
     .checkout-page {
-      padding: 80px 1.25rem 6rem; /* было 1rem — добавляем чуть больше воздуха */
+      padding: 20px 1.25rem 6rem; 
     }
   
     .checkout-form {
@@ -91,6 +91,6 @@
       position: static;
       max-height: none;
       overflow-y: visible;
-      padding-bottom: 160px; /* чтобы summary не прятался за fixed кнопкой */
+      padding-bottom: 160px;
     }
   }

@@ -49,6 +49,7 @@ app.use(helmet({
         "https://api.stripe.com",
         "https://cdn.lottielab.com",
         "https://www.google-analytics.com",
+        "https://region1.google-analytics.com",
         "https://dajdaj-fullstack-backend.onrender.com",
       ],
       frameSrc: ["'self'", "https://js.stripe.com"],

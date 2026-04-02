@@ -1,0 +1,30 @@
+.activity-chart {
+    background: var(--card-bg, #1a1a1a);
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 12px;
+    padding: 1.5rem;
+  }
+  
+  .activity-chart__title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary, #fff);
+    margin: 0 0 1.25rem;
+  }
+  
+  .activity-tooltip {
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    color: #ccc;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+  }
+  
+  .activity-tooltip__date {
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+  }

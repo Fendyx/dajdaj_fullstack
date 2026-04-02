@@ -32,6 +32,7 @@ import { CategoriesPage } from "@/features/admin/categories/CategoriesPage";
 // Routing guards
 import { PrivateRoute } from "@/components/routing/PrivateRoute";
 import { AdminRoute } from "@/components/routing/AdminRoute";
+import { AnalyticsPage } from "./features/admin/analytics/AnalyticsPage";
 
 export const router = createBrowserRouter([
   // ── SHOP ────────────────────────────────────────────────────
@@ -83,6 +84,7 @@ export const router = createBrowserRouter([
       { path: "users", element: <UsersPage /> },
       { path: "products", element: <ProductsPage /> },
       { path: "categories", element: <CategoriesPage /> },
+      { path: "analytics", element: <AnalyticsPage /> },
     ],
   },
 ]);

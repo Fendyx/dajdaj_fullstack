@@ -1,0 +1,90 @@
+.geo-table-card {
+    background: var(--card-bg, #1a1a1a);
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 12px;
+    padding: 1.5rem;
+    overflow: hidden;
+  }
+  
+  .geo-table-card__title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary, #fff);
+    margin: 0 0 1.25rem;
+  }
+  
+  .geo-table-card__empty {
+    color: var(--text-secondary, #888);
+    font-size: 0.875rem;
+    text-align: center;
+    padding: 2rem 0;
+  }
+  
+  .geo-table-scroll {
+    overflow-x: auto;
+  }
+  
+  .geo-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+  }
+  
+  .geo-table th {
+    text-align: left;
+    color: var(--text-secondary, #888);
+    font-weight: 500;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border, #2a2a2a);
+  }
+  
+  .geo-table td {
+    padding: 0.6rem 0.5rem;
+    color: var(--text-primary, #ddd);
+    border-bottom: 1px solid var(--border-subtle, #1e1e1e);
+    vertical-align: middle;
+  }
+  
+  .geo-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .geo-table__flag {
+    margin-right: 6px;
+  }
+  
+  .geo-table__cities {
+    color: var(--text-secondary, #888);
+    font-size: 0.75rem;
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .geo-table__num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  
+  .pct-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  .pct-bar__fill {
+    height: 4px;
+    background: #6366f1;
+    border-radius: 2px;
+    min-width: 2px;
+    transition: width 0.4s ease;
+  }
+  
+  .geo-table__pct {
+    min-width: 80px;
+  }

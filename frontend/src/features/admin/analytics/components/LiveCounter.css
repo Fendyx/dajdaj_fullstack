@@ -1,0 +1,96 @@
+.live-counter {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    background: var(--card-bg, #1a1a1a);
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    flex-wrap: wrap;
+  }
+  
+  /* ── Hero ── */
+  .live-counter__hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    text-align: center;
+  }
+  
+  .live-counter__pulse-ring {
+    position: absolute;
+    inset: -12px;
+    border-radius: 50%;
+    border: 2px solid #22c55e;
+    animation: ring-pulse 2.4s ease-out infinite;
+    pointer-events: none;
+  }
+  
+  @keyframes ring-pulse {
+    0%   { opacity: 0.8; transform: scale(0.85); }
+    70%  { opacity: 0;   transform: scale(1.15); }
+    100% { opacity: 0;   transform: scale(1.15); }
+  }
+  
+  .live-counter__count {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #22c55e;
+    letter-spacing: -1px;
+  }
+  
+  .live-counter__label {
+    margin-top: 4px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary, #888);
+  }
+  
+  /* ── Tiles ── */
+  .live-counter__tiles {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  
+  .live-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: var(--bg-subtle, #111);
+    border: 1px solid var(--border, #2a2a2a);
+    border-radius: 8px;
+    padding: 0.75rem 1.25rem;
+    min-width: 80px;
+    gap: 2px;
+  }
+  
+  .live-tile--peak {
+    border-color: #f59e0b44;
+    background: #f59e0b08;
+  }
+  
+  .live-tile__value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+    line-height: 1;
+  }
+  
+  .live-tile--peak .live-tile__value {
+    color: #f59e0b;
+  }
+  
+  .live-tile__label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-secondary, #888);
+    white-space: nowrap;
+  }

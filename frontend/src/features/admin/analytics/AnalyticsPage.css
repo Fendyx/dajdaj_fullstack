@@ -1,0 +1,95 @@
+.analytics-page {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 1400px;
+  }
+  
+  .analytics-page--loading,
+  .analytics-page--error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    height: 60vh;
+    color: var(--text-secondary, #888);
+  }
+  
+  .analytics-page--error button {
+    padding: 0.5rem 1.25rem;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    color: inherit;
+    font-size: 0.875rem;
+  }
+  
+  .analytics-spinner {
+    width: 32px;
+    height: 32px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  /* ── Header ── */
+  .analytics-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .analytics-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--text-primary, #fff);
+    margin: 0;
+  }
+  
+  .analytics-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: var(--text-secondary, #888);
+  }
+  
+  .analytics-meta__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: pulse-dot 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%       { opacity: 0.5; transform: scale(0.75); }
+  }
+  
+  /* ── Geo row ── */
+  .analytics-geo-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  @media (max-width: 1024px) {
+    .analytics-geo-row {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .analytics-page {
+      padding: 1rem;
+    }
+  }

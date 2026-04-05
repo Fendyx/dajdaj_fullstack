@@ -13,7 +13,7 @@ export function HomePage() {
         <meta property="og:url" content="https://dajdaj.pl" />
       </Helmet>
 
-      <div className="home-container">
+      <div>
         <HeroBanner />
         <ProductGrid />
       </div>

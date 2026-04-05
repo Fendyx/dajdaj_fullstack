@@ -26,6 +26,7 @@ const categorySchema = new mongoose.Schema(
       max: 6,
       default: 4,
     },
+    mobileColumns: { type: Number, default: 2 },
     // Max products to show (0 = show all)
     showCount: {
       type: Number,

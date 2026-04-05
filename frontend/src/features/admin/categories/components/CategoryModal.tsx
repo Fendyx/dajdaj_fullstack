@@ -20,6 +20,7 @@ interface CategoryForm {
     showCount: number;
     sortOrder: number;
     isVisible: boolean;
+    mobileColumns: number;
   }
   
   const DEFAULTS: CategoryForm = {
@@ -30,6 +31,7 @@ interface CategoryForm {
     showCount: 0,
     sortOrder: 0,
     isVisible: true,
+    mobileColumns: 2,
   };
 
 export function CategoryModal({ category, onClose }: Props) {
@@ -51,6 +53,7 @@ export function CategoryModal({ category, onClose }: Props) {
         showCount: category.showCount,
         sortOrder: category.sortOrder,
         isVisible: category.isVisible,
+        mobileColumns: category.mobileColumns ?? 2,
       });
     } else {
       setForm({ ...DEFAULTS });
@@ -172,6 +175,32 @@ export function CategoryModal({ category, onClose }: Props) {
               <span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
             </div>
           </div>
+
+
+          {/* Mobile columns — только для карусели */}
+          {form.layout === "carousel" && (
+            <div className="cat-modal__field">
+              <label className="cat-modal__label">
+                Visible cards (mobile)
+                <span className="cat-modal__value-badge">{form.mobileColumns}</span>
+              </label>
+              <input
+                type="range"
+                min={1}
+                max={3}
+                step={1}
+                value={form.mobileColumns}
+                onChange={(e) => set("mobileColumns", Number(e.target.value))}
+                className="cat-modal__range"
+              />
+              <div className="cat-modal__range-labels">
+                <span>1</span><span>2</span><span>3</span>
+              </div>
+              <p className="cat-modal__hint">
+                1 = одна карточка + peek, 2 = две + peek (default), 3 = три + peek
+              </p>
+            </div>
+          )}
 
           {/* Show count + sort order */}
           <div className="cat-modal__row">

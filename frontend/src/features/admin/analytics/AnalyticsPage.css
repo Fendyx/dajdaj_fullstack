@@ -1,3 +1,4 @@
+/*frontend/src/features/admin/analytics/AnalyticsPage.css*/
 .analytics-page {
     padding: 2rem;
     display: flex;
@@ -92,4 +93,148 @@
     .analytics-page {
       padding: 1rem;
     }
+  }
+
+
+  /* В конец файла AnalyticsPage.css */
+
+.analytics-new-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #1e1e1e;
+  }
+  
+  .analytics-section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 20px;
+    letter-spacing: 0.02em;
+  }
+  
+  .analytics-grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  
+  @media (max-width: 1024px) {
+    .analytics-grid-2 {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  /* Стили для SearchQueries */
+  .search-queries {
+    background: #141414;
+    border: 1px solid #1e1e1e;
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+  
+  .search-queries__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 12px;
+  }
+  
+  .search-queries__empty {
+    font-size: 12px;
+    color: #444;
+  }
+  
+  .search-queries__grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .search-queries__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #0f0f0f;
+    border: 1px solid #222;
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    color: #888;
+    font-family: "DM Mono", monospace;
+  }
+  
+  .search-queries__rank {
+    color: #4ade80;
+    font-weight: 600;
+  }
+  
+  .search-queries__text {
+    color: #ccc;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .search-queries__count {
+    color: #444;
+  }
+  
+  /* Стили для TrafficSources */
+  .traffic-sources {
+    background: #141414;
+    border: 1px solid #1e1e1e;
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+  
+  .traffic-sources__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 12px;
+  }
+  
+  .traffic-sources__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .traffic-sources__item {
+    display: grid;
+    grid-template-columns: 80px 1fr 50px;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+  }
+  
+  .traffic-sources__name {
+    color: #ccc;
+    font-family: "DM Mono", monospace;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .traffic-sources__bar {
+    height: 6px;
+    background: #0f0f0f;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  
+  .traffic-sources__fill {
+    height: 100%;
+    background: #6366f1;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+  
+  .traffic-sources__count {
+    text-align: right;
+    font-family: "DM Mono", monospace;
+    color: #888;
+    font-size: 11px;
   }

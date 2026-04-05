@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Search, X, Clock, ArrowRight } from "lucide-react";
+import { useTrack } from '@/hooks/useTrack';
 import { useTranslation } from "react-i18next";
 import { useUI } from "@/shared/context/UIContext";
 import { useSearchSuggestions } from "./useSearchSuggestions";
@@ -26,6 +27,9 @@ export const SearchModal = () => {
 
   const showSuggestions = query.trim().length >= 2;
   const showDefault = query.trim().length < 2;
+
+  const track = useTrack();
+
 
   // Lock body scroll
   useEffect(() => {
@@ -84,6 +88,10 @@ export const SearchModal = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
+      track('search_query', { 
+        query: query.trim(), 
+        resultsCount: suggestions.length 
+      });
       navigate(`/search?q=${encodeURIComponent(query.trim())}`);
       handleClose();
     }

@@ -1,7 +1,8 @@
 // frontend/src/pages/Checkout/CheckoutPage.tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useAppSelector } from "@/store/hooks";
+import { useTrack } from '@/hooks/useTrack';
 import { useDeliveryForm } from "@/features/checkout/hooks/useDeliveryForm";
 import { useStripePayment } from "@/features/checkout/hooks/useStripePayment";
 import { usePaymentRequest } from "@/features/checkout/hooks/usePaymentRequest";
@@ -44,6 +45,20 @@ export function CheckoutPage() {
 
   // ── Apple Pay / Google Pay detection ─────────────────
   const { paymentRequest, canMakePaymentResult } = usePaymentRequest(totalCents);
+  const track = useTrack();
+
+  function useTrackOnce(event: string, meta?: Record<string, unknown>) {
+    const trackedRef = useRef(false);
+    const track = useTrack();
+    
+    useEffect(() => {
+      if (trackedRef.current) return;
+      trackedRef.current = true;
+      track(event, meta);
+    }, [event, meta, track]);
+  }
+
+  useTrackOnce('checkout_start');
 
   // Авто-выбор кошелька если доступен
   useEffect(() => {

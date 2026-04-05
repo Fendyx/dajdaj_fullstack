@@ -5,13 +5,14 @@ import { addToCart, getTotals } from "@/features/cart/cartSlice";
 import type { Product } from "./ProductDetails/ProductDetails";
 import type { PersonalizationData } from "./PersonalizationForm/PersonalizationForm";
 import "./ProductActions.css";
+import { useTrack } from "@/hooks/useTrack";
 
 interface ProductActionsProps {
   product: Product;
   onPayNow?: (data?: PersonalizationData | null) => void;
   layout?: "row" | "col";
   personalizationData?: PersonalizationData | null;
-  onValidationFail?: () => void; // вызывается когда форма не заполнена
+  onValidationFail?: () => void;
 }
 
 export function ProductActions({
@@ -22,6 +23,7 @@ export function ProductActions({
   onValidationFail,
 }: ProductActionsProps) {
   const dispatch = useAppDispatch();
+  const track = useTrack();
 
   const needsPersonalization = product.isPersonalized === true;
   const isLocked = needsPersonalization && !personalizationData;
@@ -58,6 +60,14 @@ export function ProductActions({
     }
 
     dispatch(getTotals());
+
+    track('add_to_cart', {
+      productId: product._id,
+      price: product.price,
+      name: product.name,
+      category: product.category,
+      hasPersonalization: !!personalizationData,
+    });
   };
 
   const handleBuyNowClick = () => {
@@ -65,6 +75,15 @@ export function ProductActions({
       onValidationFail?.();
       return;
     }
+
+    track('buy_now_click', {
+      productId: product._id,
+      price: product.price,
+      name: product.name,
+      category: product.category,
+      hasPersonalization: !!personalizationData,
+    });
+
     onPayNow?.(personalizationData);
   };
 
@@ -78,7 +97,6 @@ export function ProductActions({
         <ShoppingCart size={18} />
         <span>Add to Cart</span>
       </button>
-
       {onPayNow && (
         <button className="btn-primary-buy" onClick={handleBuyNowClick}>
           <Zap size={18} />

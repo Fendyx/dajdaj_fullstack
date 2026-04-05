@@ -18,6 +18,7 @@ export interface FaqItem {
 }
 
 export interface Product {
+  _id?: string; 
   slug: string;
   name: string;
   price: number;

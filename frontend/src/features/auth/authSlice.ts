@@ -1,3 +1,4 @@
+//frontend/src/features/auth/authSlice.ts
 import { createSlice, createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 

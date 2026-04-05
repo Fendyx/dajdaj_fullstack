@@ -11,6 +11,7 @@ import { ProductFaq } from "@/features/products/components/ProductFaq/ProductFaq
 import { ThreeDViewer } from "@/features/products/components/ThreeDViewer";
 import { Spinner } from "@/components/ui/Spinner/Spinner";
 import "./ProductPage.css";
+import { useTrack } from "@/hooks/useTrack";
 
 export function ProductPage() {
   const { t, i18n } = useTranslation();
@@ -23,6 +24,25 @@ export function ProductPage() {
 
   const [currentImage, setCurrentImage] = useState<string>("");
   const [show3D, setShow3D] = useState(false);
+
+  const track = useTrack();
+
+  useEffect(() => {
+    if (product) {
+      // 🔍 Лог для отладки
+      console.log('📡 Tracking product_view:', { 
+        _id: product._id, 
+        id: product.id,
+        slug: product.slug 
+      });
+      
+      track('product_view', { 
+        productId: product._id || product.id, // ← страхуемся
+        category: product.category,
+        price: product.price 
+      });
+    }
+  }, [product]); // ← зависим от всего product, а не только _id
 
   useEffect(() => {
     if (product?.images?.length) {

@@ -65,6 +65,7 @@ export function CategoriesPage() {
               <th>Name PL</th>
               <th>Layout</th>
               <th>Columns</th>
+              <th>Mobile</th>
               <th>Show</th>
               <th>Visible</th>
               <th>Actions</th>
@@ -91,6 +92,13 @@ export function CategoriesPage() {
                 </td>
                 <td className="categories-table__td-center">
                   <span className="categories-table__cols">{cat.columns}</span>
+                </td>
+                <td className="categories-table__td-center">
+                  {cat.layout === "carousel" ? (
+                    <span className="categories-table__cols">{cat.mobileColumns ?? 2}</span>
+                  ) : (
+                    <span className="categories-table__muted">—</span>
+                  )}
                 </td>
                 <td className="categories-table__td-center">
                   {cat.showCount === 0

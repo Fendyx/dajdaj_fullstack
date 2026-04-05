@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/hooks"; 
+import { useTrack } from '@/hooks/useTrack';
 import { clearCart } from "@/features/cart/cartSlice";
 import { CheckCircle, PackageOpen, ArrowRight, Loader2 } from "lucide-react"; 
 import "./CheckoutSuccess.css";
@@ -37,6 +38,16 @@ export function CheckoutSuccess() {
   const params = new URLSearchParams(window.location.search);
   const orderToken = params.get("orderToken");
   const API = import.meta.env.VITE_API_URL || "";
+
+  const track = useTrack();
+  useEffect(() => {
+    if (status === 'paid' && order) {
+      track('order_complete', { 
+        orderId: order.orderId,
+        total: order.totalPrice 
+      });
+    }
+  }, [status]);
 
   // ← Подгружаем фото из personalOrder когда заказ загружен
   useEffect(() => {

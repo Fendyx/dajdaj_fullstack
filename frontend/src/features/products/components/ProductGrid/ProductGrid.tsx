@@ -65,6 +65,7 @@ export function ProductGrid() {
             layout={cat.layout}
             columns={cat.columns}
             showCount={cat.showCount}
+            mobileColumns={cat.mobileColumns ?? 2}  // NEW
             favorites={favorites}
             onAddToCart={handleAddToCart}
             onToggleFavorite={toggleFavorite}

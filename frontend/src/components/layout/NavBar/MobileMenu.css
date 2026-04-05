@@ -7,7 +7,6 @@
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
-  /* FIX: изолируем overlay от основного layout-дерева */
   contain: strict;
 }
 
@@ -25,17 +24,14 @@
   height: 100dvh;
   background: #f7f8fa;
   z-index: 2000;
+  /* Критично: flex-колонка + overflow:hidden = панель не растягивается */
   display: flex;
   flex-direction: column;
-  /* FIX: overflow: hidden чтобы контент не вылезал за пределы панели */
   overflow: hidden;
-  transform: translateX(100%);
-  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
-  /* FIX: принудительно создаём отдельный composited-слой на GPU */
-  will-change: transform;
   transform: translateX(100%) translateZ(0);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  will-change: transform;
   backface-visibility: hidden;
-  /* FIX: изолируем панель — layout/paint не затрагивает остальной DOM */
   contain: layout style;
   isolation: isolate;
   box-shadow: -8px 0 40px rgba(0, 0, 0, 0.12);
@@ -51,12 +47,12 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
+  /* Фиксированная высота, не сжимается никогда */
   height: 60px;
+  min-height: 60px;
+  flex-shrink: 0;
   background: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-  /* FIX: flex-shrink: 0 уже был, но добавляем явный min-height */
-  flex-shrink: 0;
-  min-height: 60px;
 }
 
 .menu-title {
@@ -83,13 +79,13 @@
 
 /* ── Scrollable content ──────────────────────────── */
 .mobile-content {
+  /* flex: 1 + min-height: 0 — ключевая пара.
+     Без min-height: 0 flex-item не может быть
+     меньше своего контента и распирает панель */
   flex: 1;
-  /* FIX: min-height: 0 критично для flex — без него flex-child не сжимается
-     и содержимое вылезает за границы панели */
   min-height: 0;
   overflow-y: auto;
   overscroll-behavior: contain;
-  /* FIX: плавный скролл на iOS (momentum scrolling) */
   -webkit-overflow-scrolling: touch;
   padding: 12px 0 32px;
   display: flex;
@@ -103,9 +99,10 @@
   border-radius: 12px;
   margin: 0 12px;
   overflow: hidden;
-  /* FIX: убрали box-shadow — он вызывает repaint при каждом кадре скролла.
-     Заменяем на лёгкую границу */
+  /* box-shadow убран — вызывает repaint при скролле */
   border: 1px solid rgba(0, 0, 0, 0.06);
+  /* Секции не сжимаются */
+  flex-shrink: 0;
 }
 
 .section-label {
@@ -136,19 +133,15 @@
   text-decoration: none;
   font-weight: 600;
   font-size: 0.9rem;
-  transition: all 0.18s ease;
+  transition: background 0.18s ease;
 }
 
-.btn-auth.login {
-  background: #f3f4f6;
-  color: #374151;
-}
+.btn-auth.login { background: #f3f4f6; color: #374151; }
 .btn-auth.login:hover { background: #e5e7eb; }
 
 .btn-auth.register {
   background: #4b70e2;
   color: #fff;
-  /* FIX: box-shadow только на статичном элементе — не в анимации */
   box-shadow: 0 2px 10px rgba(75, 112, 226, 0.3);
 }
 .btn-auth.register:hover { background: #3a5fd1; }
@@ -182,17 +175,8 @@
   gap: 2px;
 }
 
-.user-name {
-  font-weight: 700;
-  font-size: 0.95rem;
-  color: #111827;
-}
-
-.user-action {
-  font-size: 0.8rem;
-  color: #9ca3af;
-}
-
+.user-name { font-weight: 700; font-size: 0.95rem; color: #111827; }
+.user-action { font-size: 0.8rem; color: #9ca3af; }
 .arrow-icon { color: #d1d5db; flex-shrink: 0; }
 
 /* ── Lists ───────────────────────────────────────── */
@@ -215,7 +199,6 @@
 }
 
 .mobile-list li:last-child .mobile-link { border-bottom: none; }
-
 .mobile-link:active { background: #f3f4f6; }
 
 .link-icon {
@@ -224,22 +207,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #eef2ff;
   border-radius: 8px;
-  color: #4b70e2;
   flex-shrink: 0;
 }
 
+.link-icon--blue   { background: #eef2ff; color: #4b70e2; }
 .link-icon--green  { background: #ecfdf5; color: #10b981; }
 .link-icon--red    { background: #fff1f2; color: #f43f5e; }
 .link-icon--orange { background: #fff7ed; color: #f97316; }
-.link-icon--blue   { background: #eef2ff; color: #4b70e2; }
 
-.link-text {
-  flex: 1;
-  font-size: 0.95rem;
-  font-weight: 500;
-}
+.link-text { flex: 1; font-size: 0.95rem; font-weight: 500; }
 
 /* ── Badge ───────────────────────────────────────── */
 .mobile-badge {

@@ -1,0 +1,244 @@
+.conversion-funnel {
+  background: #141414;
+  border: 1px solid #1e1e1e;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+
+/* ── Header ── */
+.conversion-funnel__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.conversion-funnel__title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.conversion-funnel__spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid #333;
+  border-top-color: #6366f1;
+  border-radius: 50%;
+  animation: cf-spin 0.7s linear infinite;
+}
+
+@keyframes cf-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Controls ── */
+.conversion-funnel__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Range tabs */
+.conversion-funnel__ranges {
+  display: flex;
+  gap: 3px;
+  background: #0f0f0f;
+  border: 1px solid #222;
+  border-radius: 6px;
+  padding: 3px;
+}
+
+.cf-range-btn {
+  padding: 3px 9px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #555;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.03em;
+}
+
+.cf-range-btn:hover { color: #aaa; }
+
+.cf-range-btn--active {
+  background: #1e1e1e;
+  color: #fff;
+}
+
+/* Date picker */
+.conversion-funnel__datepicker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.conversion-funnel__datepicker-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: #0f0f0f;
+  border: 1px solid #222;
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  color: #555;
+  transition: border-color 0.15s;
+}
+
+.conversion-funnel__datepicker-label:hover {
+  border-color: #333;
+  color: #888;
+}
+
+.conversion-funnel__date-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #ccc;
+  font-size: 11px;
+  cursor: pointer;
+  /* Hide native date icon on webkit */
+  -webkit-appearance: none;
+  width: 100px;
+}
+
+/* Dark calendar icon on webkit */
+::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+  cursor: pointer;
+}
+
+.conversion-funnel__clear-date {
+  background: none;
+  border: none;
+  color: #444;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+  transition: color 0.15s;
+  line-height: 1;
+}
+
+.conversion-funnel__clear-date:hover { color: #888; }
+
+.conversion-funnel__period {
+  font-size: 11px;
+  color: #444;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Bars ── */
+.conversion-funnel__bars {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.conversion-funnel__row {
+  display: grid;
+  grid-template-columns: 140px 1fr 44px;
+  align-items: center;
+  gap: 10px;
+}
+
+.conversion-funnel__label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  color: #888;
+  white-space: nowrap;
+}
+
+.conversion-funnel__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.conversion-funnel__bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #0a0a0a;
+  border-radius: 4px;
+  height: 26px;
+  padding: 0 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.conversion-funnel__bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+  opacity: 0.85;
+}
+
+.conversion-funnel__value {
+  position: relative;
+  font-size: 12px;
+  color: #ccc;
+  font-variant-numeric: tabular-nums;
+  margin-left: auto;
+  font-weight: 500;
+  text-shadow: 0 0 8px rgba(0,0,0,0.8);
+}
+
+.conversion-funnel__conv {
+  font-size: 11px;
+  font-weight: 600;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.conversion-funnel__conv.good { color: #22c55e; }
+.conversion-funnel__conv.mid  { color: #f59e0b; }
+.conversion-funnel__conv.low  { color: #ef4444; }
+
+/* ── Summary ── */
+.conversion-funnel__summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #1a1a1a;
+  font-size: 12px;
+  color: #666;
+}
+
+.conversion-funnel__summary strong {
+  color: #22c55e;
+  font-size: 14px;
+}
+
+.conversion-funnel__summary-hint {
+  color: #333;
+  font-size: 11px;
+}
+
+.conversion-funnel__no-data {
+  text-align: center;
+  padding: 16px 0 4px;
+  font-size: 12px;
+  color: #333;
+}

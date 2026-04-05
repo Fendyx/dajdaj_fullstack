@@ -10,6 +10,7 @@ export interface CategoryConfig {
   showCount: number;
   sortOrder: number;
   isVisible: boolean;
+  mobileColumns: number;
 }
 
 export const categoriesApi = createApi({

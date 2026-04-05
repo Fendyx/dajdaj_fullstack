@@ -26,6 +26,7 @@ const productsRoute = require("./routes/products");
 const adminProducts = require("./routes/adminProducts");
 const categoriesRouter = require("./routes/categories");
 const adminCategoriesRouter = require("./routes/adminCategories");
+const eventsRouter = require('./routes/events');
 
 const app = express();
 
@@ -108,6 +109,22 @@ app.use("/api/products", productsRoute);
 app.use("/api/admin/products", adminProducts);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/admin/categories", adminCategoriesRouter);
+
+const optionalAuth = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return next(); // анонимный — пропускаем
+  
+  const jwt = require('jsonwebtoken');
+  try {
+    const token = authHeader.split(' ')[1];
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+  } catch {
+    // невалидный токен — тоже пропускаем, просто без user
+  }
+  next();
+};
+
+app.use('/api/events', optionalAuth, eventsRouter);
 
 // Sitemap — редирект на API
 app.get("/sitemap.xml", (req, res) => {

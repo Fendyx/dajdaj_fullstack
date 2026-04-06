@@ -2,7 +2,7 @@
 import { ShoppingCart, Zap } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { addToCart, getTotals } from "@/features/cart/cartSlice";
-import type { Product } from "./ProductDetails/ProductDetails";
+import type { Product } from "@/types/product";
 import type { PersonalizationData } from "./PersonalizationForm/PersonalizationForm";
 import "./ProductActions.css";
 import { useTrack } from "@/hooks/useTrack";

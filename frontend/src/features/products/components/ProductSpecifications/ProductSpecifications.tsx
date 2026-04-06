@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { Specification } from "@/services/productsApi";
+import type { Specification } from "@/types/product";
 import "./ProductSpecifications.css";
 
 interface ProductSpecificationsProps {

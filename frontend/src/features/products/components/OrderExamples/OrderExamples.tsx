@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import type { OrderExample } from "@/services/productsApi";
+import type { OrderExample } from "@/types/product";
 import "./OrderExamples.css";
 
 interface OrderExamplesProps {

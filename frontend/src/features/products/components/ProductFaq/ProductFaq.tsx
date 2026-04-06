@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ChevronDown } from "lucide-react";
-import type { FaqItem } from "@/services/productsApi";
+import type { FaqItem } from "@/types/product";
 import "./ProductFaq.css";
 
 interface ProductFaqProps {

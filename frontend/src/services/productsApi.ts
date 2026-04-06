@@ -1,45 +1,7 @@
 //frontend/src/services/productsApi.ts
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import type { Product } from "@/types/product";
 
-// ── Типы ──────────────────────────────────────────────────────────────────────
-export interface Specification {
-  label: string;
-  value: string;
-}
-
-export interface OrderExample {
-  image: string;
-  caption: string;
-}
-
-export interface FaqItem {
-  question: string;
-  answer: string;
-}
-
-export interface Product {
-  _id?: string; 
-  slug: string;
-  name: string;
-  price: number;
-  image: string;
-  images?: string[];
-  category: string;
-  description?: string;
-  descriptionProductPage?: string;
-  isNew?: boolean;
-  isPopular?: boolean;
-  isPersonalized?: boolean;
-  personalizationType?: string | null;
-  phrases?: string[];
-  threeDModelSrc?: string | null;
-  specifications?: Specification[];
-  orderExamples?: OrderExample[];
-  faq?: FaqItem[];
-  sortOrder?: number;
-}
-
-// Лёгкий объект который возвращает /search endpoint
 export interface ProductSuggestion {
   slug: string;
   name: string;

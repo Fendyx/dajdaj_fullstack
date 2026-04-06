@@ -1,18 +1,8 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ShoppingCart, Heart, Check } from "lucide-react";
+import type { Product } from "@/types/product";
 import "./ProductCard.css";
-
-export interface Product {
-  slug: string;
-  name: string;
-  image: string;
-  price: number;
-  oldPrice?: number;
-  isNew?: boolean;
-  isPopular?: boolean;
-  [key: string]: any;
-}
 
 interface ProductCardProps {
   product: Product;

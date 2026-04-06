@@ -12,7 +12,7 @@ import { LoginPage } from "@/pages/Auth/LoginPage";
 import { RegisterPage } from "@/pages/Auth/RegisterPage";
 import { PrivacyPolicyPage } from "@/pages/Legal/PrivacyPolicyPage";
 import { TermsPage } from "@/pages/Legal/TermsPage";
-import NotFound from "./pages/NotFound/NotFound";
+import NotFound from "./pages/Product/NotFound/NotFound";
 import { CheckoutSuccess } from "./pages/Checkout/CheckoutSuccess/CheckoutSuccess";
 import { SearchPage } from "@/pages/Search/SearchPage";
 // Pages — Help Center

@@ -1,26 +1,50 @@
 // backend/routes/events.js
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const Event = require('../models/Event');
 const auth = require('../middleware/auth');
 
-// POST /api/events — принимает события с фронта
-// Без auth — события пишут анонимы тоже
+// ── Хелперы дат ─────────────────────────────────────────────────────────────
+// 🔥 ФИКС TIMEZONE: "2025-04-06" → 2025-04-06T23:59:59.999Z (конец дня UTC)
+function endOfDayUTC(dateStr) {
+  return new Date(dateStr + 'T23:59:59.999Z');
+}
+// "2025-04-06" → 2025-04-06T00:00:00.000Z (начало дня UTC)
+function startOfDayUTC(dateStr) {
+  return new Date(dateStr + 'T00:00:00.000Z');
+}
+
+// Безопасно конвертирует любой productId в ObjectId (или null)
+function toObjectId(val) {
+  if (!val) return null;
+  if (val instanceof mongoose.Types.ObjectId) return val;
+  const str = String(val).trim();
+  // ObjectId = 24-символьная hex строка
+  if (mongoose.Types.ObjectId.isValid(str) && str.length === 24) {
+    return new mongoose.Types.ObjectId(str);
+  }
+  return null;
+}
+
+// ── POST /api/events ────────────────────────────────────────────────────────
 router.post('/', async (req, res) => {
   try {
     const { event, productId, sessionId, meta, source, medium, campaign } = req.body;
     if (!event) return res.sendStatus(400);
 
+    // 🔥 ФИКС: явно кастим productId в ObjectId, не полагаемся на Mongoose авто-каст
+    const safeProductId = toObjectId(productId);
+
     await Event.create({
       event,
       userId:    req.user?.id ?? null,
       sessionId: sessionId   ?? null,
-      productId: productId   ?? null,
+      productId: safeProductId,
       meta:      meta        ?? {},
-      // Пишем null явно если нет UTM — не undefined
-      source:   source   ?? null,
-      medium:   medium   ?? null,
-      campaign: campaign ?? null,
+      source:    source      ?? null,
+      medium:    medium      ?? null,
+      campaign:  campaign    ?? null,
     });
 
     res.sendStatus(204);
@@ -30,14 +54,15 @@ router.post('/', async (req, res) => {
   }
 });
 
-// GET /api/events/funnel?from=...&to=...
+// ── GET /api/events/funnel?from=YYYY-MM-DD&to=YYYY-MM-DD ───────────────────
 router.get('/funnel', auth, async (req, res) => {
   try {
     const { from, to } = req.query;
+
     const dateFilter = {
       createdAt: {
-        $gte: new Date(from || Date.now() - 30 * 86400000),
-        $lte: new Date(to   || Date.now()),
+        $gte: from ? startOfDayUTC(from) : new Date(Date.now() - 30 * 86400000),
+        $lte: to   ? endOfDayUTC(to)     : new Date(),   // ← конец дня, не начало!
       }
     };
 
@@ -53,11 +78,11 @@ router.get('/funnel', auth, async (req, res) => {
   }
 });
 
-// GET /api/events/top-products?limit=10
+// ── GET /api/events/top-products?limit=10 ──────────────────────────────────
 router.get('/top-products', auth, async (req, res) => {
   try {
     const limit = Math.min(parseInt(req.query.limit) || 10, 50);
- 
+
     const result = await Event.aggregate([
       { $match: { event: 'product_view', productId: { $type: 'objectId' } } },
       {
@@ -81,15 +106,12 @@ router.get('/top-products', auth, async (req, res) => {
       { $unwind: '$product' },
       {
         $project: {
-          _id:         0,
-          productId:   '$_id',
-          // 🔥 ФИКС: product.name может быть строкой ИЛИ объектом { en: '...', pl: '...' }
-          // Пробуем оба варианта
+          _id:       0,
+          productId: '$_id',
           name: {
             $cond: {
               if:   { $eq: [{ $type: '$product.name' }, 'string'] },
               then: '$product.name',
-              // Если объект — берём en, потом pl
               else: { $ifNull: ['$product.name.en', { $ifNull: ['$product.name.pl', 'Unknown'] }] }
             }
           },
@@ -100,33 +122,32 @@ router.get('/top-products', auth, async (req, res) => {
               else: { $ifNull: ['$product.name.pl', ''] }
             }
           },
-          slug:       '$product.slug',
-          views:      1,
+          slug:        '$product.slug',
+          views:       1,
           uniqueViews: { $size: '$uniqueSessions' },
         }
       }
     ]);
- 
+
     res.json(result);
   } catch (e) {
-    console.error('❌ Top products error:', e.message, e.stack);
+    console.error('❌ Top products error:', e.message);
     res.status(500).json({ message: 'Error', error: e.message });
   }
 });
-// GET /api/events/sources
-// Показывает ВСЕ источники: UTM-теггированные + прямые/органические
+
+// ── GET /api/events/sources ─────────────────────────────────────────────────
 router.get('/sources', auth, async (req, res) => {
   try {
     const { from, to } = req.query;
     const dateFilter = from || to ? {
       createdAt: {
-        $gte: new Date(from || Date.now() - 30 * 86400000),
-        $lte: new Date(to   || Date.now()),
+        $gte: from ? startOfDayUTC(from) : new Date(Date.now() - 30 * 86400000),
+        $lte: to   ? endOfDayUTC(to)     : new Date(),
       }
     } : {};
 
     const result = await Event.aggregate([
-      // Берём product_view (первый реальный контакт с контентом)
       { $match: { event: 'product_view', ...dateFilter } },
       {
         $group: {
@@ -134,7 +155,7 @@ router.get('/sources', auth, async (req, res) => {
             $cond: {
               if:   { $ne: ['$source', null] },
               then: '$source',
-              else: 'direct / organic',   // null source = прямой/органический трафик
+              else: 'direct / organic',
             }
           },
           count: { $sum: 1 }
@@ -150,7 +171,7 @@ router.get('/sources', auth, async (req, res) => {
   }
 });
 
-// GET /api/events/searches
+// ── GET /api/events/searches ────────────────────────────────────────────────
 router.get('/searches', auth, async (req, res) => {
   try {
     const result = await Event.aggregate([

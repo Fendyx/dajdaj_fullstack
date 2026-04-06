@@ -12,20 +12,9 @@ import {
 import { ProductActions } from "../ProductActions";
 import { PersonalizationForm } from "../PersonalizationForm/PersonalizationForm";
 import type { PersonalizationData } from "../PersonalizationForm/PersonalizationForm";
+import type { Product } from "@/types/product";
 
 import "./ProductDetails.css";
-
-export interface Product {
-  slug: string;
-  name: string;
-  price: number;
-  descriptionProductPage?: string;
-  isPersonalized?: boolean;
-  phrases?: string[];
-  isNew?: boolean;
-  isPopular?: boolean;
-  [key: string]: any;
-}
 
 interface ProductDetailsProps {
   product: Product;

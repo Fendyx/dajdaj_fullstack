@@ -28,21 +28,20 @@ export function ProductPage() {
   const track = useTrack();
 
   useEffect(() => {
-    if (product) {
-      // 🔍 Лог для отладки
-      console.log('📡 Tracking product_view:', { 
-        _id: product._id, 
-        id: product.id,
-        slug: product.slug 
-      });
-      
-      track('product_view', { 
-        productId: product._id || product.id, // ← страхуемся
-        category: product.category,
-        price: product.price 
-      });
-    }
-  }, [product]); // ← зависим от всего product, а не только _id
+    if (!product) return;
+ 
+    // _id гарантированно есть (из MongoDB). id — виртуальное поле, может отсутствовать.
+    // Берём строго _id, он всегда 24-символьный hex ObjectId
+    const productId = product._id ?? product.id;
+    if (!productId) return;
+ 
+    track('product_view', {
+      productId,
+      category: product.category,
+      price:    product.price,
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product?._id]);   // ← зависим только от _id, не от всего объекта product
 
   useEffect(() => {
     if (product?.images?.length) {
